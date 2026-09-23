@@ -1,0 +1,1362 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1716">
+  <meta name="description" content="固定机位360度锦溪场景取景与客观色彩语境分析原型。">
+  <title>锦溪 Color Lens · 360° Field Prototype</title>
+  <style>
+    :root {
+      --ink: #0b1110;
+      --paper: #efe9dc;
+      --paper-soft: #d8d3c8;
+      --moss: #92a792;
+      --jade: #9bc5b4;
+      --amber: #e9bc69;
+      --danger: #e57b67;
+      --glass: rgba(13, 24, 22, .72);
+      --glass-heavy: rgba(10, 17, 16, .92);
+      --line: rgba(239, 233, 220, .2);
+      --shadow: 0 24px 80px rgba(0, 0, 0, .38);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, input:focus-visible, canvas:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 3px;
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+      background: #12201e;
+    }
+    #scene:active { cursor: grabbing; }
+
+    .vignette, .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+    .vignette {
+      background:
+        linear-gradient(180deg, rgba(5, 9, 8, .62), transparent 22%, transparent 68%, rgba(5, 9, 8, .75)),
+        radial-gradient(circle at 50% 45%, transparent 48%, rgba(4, 8, 7, .3) 100%);
+    }
+    .grain {
+      opacity: .09;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      right: 0;
+      min-height: 96px;
+      padding: max(22px, env(safe-area-inset-top)) 32px 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    .brand { pointer-events: auto; }
+    .brand-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(239, 233, 220, .62);
+      border-radius: 50%;
+    }
+    .brand-mark::after {
+      content: "";
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 0 4px rgba(233, 188, 105, .12);
+    }
+    .brand h1 {
+      margin: 8px 0 0;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 400;
+      letter-spacing: .06em;
+    }
+    .brand h1 span {
+      margin-left: 8px;
+      color: var(--paper-soft);
+      font-family: inherit;
+      font-size: .5em;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
+    .glass-button {
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(12, 22, 20, .5);
+      backdrop-filter: blur(16px) saturate(1.2);
+      cursor: pointer;
+      transition: transform .25s ease, background .25s ease, border-color .25s ease;
+    }
+    .glass-button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(239, 233, 220, .45);
+      background: rgba(17, 31, 28, .76);
+    }
+    .glass-button[aria-pressed="true"] {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .scene-card {
+      position: fixed;
+      z-index: 8;
+      left: 32px;
+      top: 142px;
+      width: min(272px, calc(100vw - 64px));
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(11, 20, 18, .5);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .12);
+      backdrop-filter: blur(18px) saturate(1.12);
+      animation: rise .8s .15s both cubic-bezier(.2, .7, .2, 1);
+    }
+    .scene-kicker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--jade);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #9bd5a9;
+      box-shadow: 0 0 0 0 rgba(155, 213, 169, .5);
+      animation: ping 2.4s infinite;
+    }
+    .scene-card h2 {
+      margin: 11px 0 5px;
+      font-size: 18px;
+      font-weight: 580;
+    }
+    .scene-card p {
+      margin: 0;
+      color: rgba(239, 233, 220, .7);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .scene-meta {
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(239, 233, 220, .12);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .meta-label {
+      display: block;
+      margin-bottom: 3px;
+      color: rgba(239, 233, 220, .5);
+      font-size: 9px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .meta-value {
+      font-variant-numeric: tabular-nums;
+      font-size: 14px;
+    }
+
+    .bearing {
+      position: fixed;
+      z-index: 8;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 188px;
+      text-align: center;
+      pointer-events: none;
+    }
+    .bearing strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .18em;
+    }
+    .bearing-track {
+      position: relative;
+      height: 16px;
+      margin-top: 3px;
+      opacity: .72;
+      background: repeating-linear-gradient(90deg, transparent 0 14px, rgba(239, 233, 220, .58) 14px 15px);
+      mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+    }
+    .bearing-track::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 1px;
+      left: 50%;
+      width: 1px;
+      background: var(--amber);
+    }
+    .bearing small {
+      display: block;
+      margin-top: 1px;
+      color: rgba(239, 233, 220, .56);
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .viewfinder {
+      position: fixed;
+      z-index: 5;
+      inset: 14% 15%;
+      pointer-events: none;
+      opacity: .65;
+      transition: opacity .3s ease;
+    }
+    .viewfinder::before, .viewfinder::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-color: rgba(239, 233, 220, .45);
+      border-style: solid;
+    }
+    .viewfinder::before {
+      border-width: 1px 0;
+      clip-path: polygon(0 0, 6% 0, 6% 1px, 94% 1px, 94% 0, 100% 0, 100% 100%, 94% 100%, 94% calc(100% - 1px), 6% calc(100% - 1px), 6% 100%, 0 100%);
+    }
+    .viewfinder::after {
+      border-width: 0 1px;
+      clip-path: polygon(0 0, 100% 0, 100% 6%, calc(100% - 1px) 6%, calc(100% - 1px) 94%, 100% 94%, 100% 100%, 0 100%, 0 94%, 1px 94%, 1px 6%, 0 6%);
+    }
+    .thirds {
+      position: absolute;
+      inset: 0;
+      opacity: .2;
+      background:
+        linear-gradient(90deg, transparent 33.25%, rgba(239, 233, 220, .75) 33.3% 33.4%, transparent 33.45% 66.55%, rgba(239, 233, 220, .75) 66.6% 66.7%, transparent 66.75%),
+        linear-gradient(0deg, transparent 33.25%, rgba(239, 233, 220, .75) 33.3% 33.4%, transparent 33.45% 66.55%, rgba(239, 233, 220, .75) 66.6% 66.7%, transparent 66.75%);
+    }
+    .reticle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 26px;
+      height: 26px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(239, 233, 220, .8);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .16);
+    }
+    .reticle::before, .reticle::after {
+      content: "";
+      position: absolute;
+      background: rgba(239, 233, 220, .8);
+    }
+    .reticle::before { left: 50%; top: -8px; bottom: -8px; width: 1px; transform: translateX(-50%); }
+    .reticle::after { top: 50%; left: -8px; right: -8px; height: 1px; transform: translateY(-50%); }
+
+    .bottom-deck {
+      position: fixed;
+      z-index: 10;
+      left: 50%;
+      bottom: max(24px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 13px 10px 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(9, 17, 15, .68);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px) saturate(1.2);
+      animation: rise .8s .28s both cubic-bezier(.2, .7, .2, 1);
+    }
+    .deck-copy {
+      min-width: 130px;
+      padding-right: 3px;
+    }
+    .deck-copy strong {
+      display: block;
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+    .deck-copy span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(239, 233, 220, .52);
+      font-size: 9px;
+    }
+    .mini-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(239, 233, 220, .14);
+      border-radius: 50%;
+      background: rgba(239, 233, 220, .05);
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .icon-button:hover { background: rgba(239, 233, 220, .13); transform: translateY(-1px); }
+    .shutter-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 66px;
+      height: 66px;
+    }
+    .shutter-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border: 1px solid rgba(239, 233, 220, .58);
+      border-radius: 50%;
+    }
+    #captureButton {
+      position: relative;
+      width: 51px;
+      height: 51px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: inset 0 0 0 2px rgba(11, 17, 16, .15);
+      transition: transform .16s ease, background .2s ease;
+    }
+    #captureButton::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(11, 17, 16, .22);
+      border-radius: 50%;
+    }
+    #captureButton:hover { transform: scale(1.06); background: #fffaf0; }
+    #captureButton:active { transform: scale(.9); }
+    #captureButton:disabled { cursor: wait; opacity: .65; }
+
+    .capture-peek {
+      position: fixed;
+      z-index: 9;
+      left: 32px;
+      bottom: 30px;
+      width: 142px;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(9, 17, 15, .78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      opacity: 0;
+      transform: translateY(18px) scale(.96);
+      pointer-events: none;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .capture-peek.visible { opacity: 1; transform: none; }
+    .capture-peek img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .capture-peek span {
+      display: block;
+      margin: 6px 4px 2px;
+      color: rgba(239, 233, 220, .65);
+      font-size: 9px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .analysis-drawer {
+      position: fixed;
+      z-index: 30;
+      top: 12px;
+      right: 12px;
+      bottom: 12px;
+      width: min(520px, calc(100vw - 24px));
+      border: 1px solid rgba(239, 233, 220, .16);
+      border-radius: 24px;
+      background: var(--glass-heavy);
+      box-shadow: -24px 0 90px rgba(0, 0, 0, .36);
+      backdrop-filter: blur(26px) saturate(1.2);
+      transform: translateX(calc(100% + 28px));
+      transition: transform .55s cubic-bezier(.2, .76, .2, 1);
+      overflow: hidden;
+    }
+    .analysis-drawer.open { transform: translateX(0); }
+    .drawer-scroll {
+      height: 100%;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-color: rgba(239, 233, 220, .3) transparent;
+    }
+    .drawer-head {
+      position: sticky;
+      z-index: 2;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 22px 16px;
+      background: rgba(10, 17, 16, .9);
+      border-bottom: 1px solid rgba(239, 233, 220, .1);
+      backdrop-filter: blur(18px);
+    }
+    .drawer-title small {
+      display: block;
+      color: var(--jade);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .drawer-title h2 {
+      margin: 4px 0 0;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 23px;
+      font-weight: 400;
+    }
+    .close-button {
+      width: 39px;
+      height: 39px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+    }
+    .analysis-content { padding: 18px 22px 28px; }
+
+    .pipeline {
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+    .scan-orbit {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 22px;
+      border: 1px solid rgba(239, 233, 220, .16);
+      border-radius: 50%;
+    }
+    .scan-orbit::before, .scan-orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+    .scan-orbit::before {
+      inset: 10px;
+      border: 1px dashed rgba(155, 197, 180, .5);
+      animation: spin 6s linear infinite;
+    }
+    .scan-orbit::after {
+      inset: 33px;
+      background: var(--amber);
+      box-shadow: 0 0 0 10px rgba(233, 188, 105, .08);
+      animation: breathe 1.5s ease-in-out infinite;
+    }
+    .pipeline h3 { margin: 0; font-size: 17px; font-weight: 560; }
+    .pipeline p { margin: 7px 0 0; color: rgba(239, 233, 220, .55); font-size: 12px; }
+    .pipeline-steps {
+      width: min(330px, 80vw);
+      margin: 24px auto 0;
+      display: grid;
+      gap: 9px;
+      text-align: left;
+    }
+    .pipeline-step {
+      position: relative;
+      padding: 9px 12px 9px 34px;
+      border: 1px solid rgba(239, 233, 220, .09);
+      border-radius: 10px;
+      color: rgba(239, 233, 220, .38);
+      font-size: 11px;
+      transition: color .3s ease, border-color .3s ease, background .3s ease;
+    }
+    .pipeline-step::before {
+      content: "";
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      transform: translateY(-50%);
+      border: 1px solid currentColor;
+      border-radius: 50%;
+    }
+    .pipeline-step.active {
+      color: var(--paper);
+      border-color: rgba(233, 188, 105, .38);
+      background: rgba(233, 188, 105, .07);
+    }
+    .pipeline-step.done { color: var(--jade); }
+    .pipeline-step.done::before { background: var(--jade); border-color: var(--jade); }
+
+    .results { display: none; }
+    .results.ready { display: block; animation: softIn .45s ease both; }
+    .summary {
+      margin: 0 0 15px;
+      padding: 13px 14px;
+      border-left: 2px solid var(--amber);
+      border-radius: 0 10px 10px 0;
+      background: rgba(239, 233, 220, .05);
+      color: rgba(239, 233, 220, .77);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .view-tabs {
+      display: flex;
+      gap: 5px;
+      margin: 0 0 11px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .view-tabs::-webkit-scrollbar { display: none; }
+    .tab-button {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border: 1px solid rgba(239, 233, 220, .12);
+      border-radius: 999px;
+      background: rgba(239, 233, 220, .04);
+      color: rgba(239, 233, 220, .6);
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .tab-button.active {
+      background: var(--paper);
+      color: var(--ink);
+      border-color: var(--paper);
+    }
+    .result-frame {
+      position: relative;
+      min-height: 270px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(239, 233, 220, .11);
+      border-radius: 15px;
+      background: #070c0b;
+    }
+    .result-frame img {
+      display: block;
+      width: 100%;
+      max-height: 470px;
+      object-fit: contain;
+    }
+    .result-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 9px 2px 18px;
+      color: rgba(239, 233, 220, .47);
+      font-size: 10px;
+    }
+    .text-link {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--jade);
+      font-size: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .section-label {
+      margin: 20px 0 10px;
+      color: rgba(239, 233, 220, .48);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .candidate-list { display: grid; gap: 8px; }
+    .candidate {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      border: 1px solid rgba(239, 233, 220, .1);
+      border-radius: 12px;
+      background: rgba(239, 233, 220, .035);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .candidate:hover {
+      transform: translateX(-2px);
+      border-color: rgba(239, 233, 220, .24);
+      background: rgba(239, 233, 220, .065);
+    }
+    .candidate-rank {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 750;
+    }
+    .candidate-main strong { display: block; font-size: 12px; }
+    .candidate-main span { color: rgba(239, 233, 220, .48); font-size: 9px; }
+    .candidate-swatch {
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 9px;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15);
+    }
+    .boundary-note {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid rgba(155, 197, 180, .18);
+      border-radius: 12px;
+      background: rgba(155, 197, 180, .06);
+      color: rgba(239, 233, 220, .61);
+      font-size: 10px;
+      line-height: 1.65;
+    }
+    .boundary-note strong { color: var(--jade); }
+
+    .settings {
+      margin-top: 15px;
+      border-top: 1px solid rgba(239, 233, 220, .1);
+    }
+    .settings summary {
+      padding: 14px 0;
+      color: rgba(239, 233, 220, .58);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .settings-grid { display: grid; gap: 13px; padding-bottom: 4px; }
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr 48px;
+      align-items: center;
+      gap: 8px;
+    }
+    .range-row label { font-size: 10px; color: rgba(239, 233, 220, .68); }
+    .range-row small { display: block; color: rgba(239, 233, 220, .36); }
+    .range-row output { text-align: right; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .range-row input { grid-column: 1 / -1; width: 100%; accent-color: var(--amber); }
+
+    .error-state {
+      display: none;
+      padding: 38px 4px;
+      text-align: center;
+    }
+    .error-state.visible { display: block; }
+    .error-state strong { display: block; color: var(--danger); }
+    .error-state p { color: rgba(239, 233, 220, .56); font-size: 12px; }
+
+    #loading {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: #101a18;
+      transition: opacity .65s ease, visibility .65s ease;
+    }
+    #loading.hidden { opacity: 0; visibility: hidden; }
+    .loader-copy { text-align: center; }
+    .loader-ring {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 17px;
+      border: 1px solid rgba(239, 233, 220, .18);
+      border-top-color: var(--amber);
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+    }
+    .loader-copy strong { display: block; font-family: Georgia, serif; font-size: 18px; font-weight: 400; }
+    .loader-copy small { color: rgba(239, 233, 220, .45); }
+
+    .flash {
+      position: fixed;
+      z-index: 90;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .flash.fire { animation: flash .48s ease-out; }
+    .toast {
+      position: fixed;
+      z-index: 80;
+      left: 50%;
+      top: 50%;
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(9, 17, 15, .82);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(15px);
+      font-size: 11px;
+      opacity: 0;
+      transform: translate(-50%, -38%) scale(.96);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .toast.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+    dialog {
+      width: min(620px, calc(100vw - 30px));
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #111d1b;
+      color: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    dialog::backdrop { background: rgba(3, 7, 6, .68); backdrop-filter: blur(8px); }
+    .dialog-inner { padding: 24px; }
+    .dialog-head { display: flex; justify-content: space-between; gap: 20px; }
+    .dialog-head h2 { margin: 4px 0 0; font-family: Georgia, serif; font-weight: 400; }
+    .dialog-body { color: rgba(239, 233, 220, .66); font-size: 12px; line-height: 1.75; }
+    .dialog-body ul { padding-left: 18px; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes softIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes breathe { 50% { transform: scale(.68); opacity: .72; } }
+    @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(155, 213, 169, 0); } 100% { box-shadow: 0 0 0 0 rgba(155, 213, 169, 0); } }
+    @keyframes flash { 0% { opacity: 0; } 15% { opacity: .9; } 100% { opacity: 0; } }
+
+    @media (max-width: 780px) {
+      .topbar { padding: max(17px, env(safe-area-inset-top)) 18px 12px; }
+      .brand h1 { font-size: 25px; }
+      .brand h1 span { display: none; }
+      .top-actions .label { display: none; }
+      .bearing { top: 92px; }
+      .scene-card { left: 18px; top: 132px; width: 228px; }
+      .scene-card p, .scene-meta { display: none; }
+      .viewfinder { inset: 18% 7%; }
+      .deck-copy { display: none; }
+      .bottom-deck { bottom: max(16px, env(safe-area-inset-bottom)); padding-left: 11px; }
+      .capture-peek { display: none; }
+      .analysis-drawer { top: 7vh; right: 7px; bottom: 7px; width: calc(100vw - 14px); border-radius: 20px; }
+      .analysis-content { padding-left: 16px; padding-right: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene" tabindex="0" aria-label="锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。"></canvas>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-line"><span class="brand-mark"></span> JINXI / COLOR LENS</div>
+      <h1>锦溪取景实验室 <span>Field prototype 01</span></h1>
+    </div>
+    <div class="top-actions">
+      <button class="glass-button" id="autoButton" aria-pressed="false" title="自动环视">◌ <span class="label">自动环视</span></button>
+      <button class="glass-button" id="fullscreenButton" title="进入全屏">⛶ <span class="label">全屏</span></button>
+      <button class="glass-button" id="helpButton" title="查看说明">? <span class="label">说明</span></button>
+    </div>
+  </header>
+
+  <aside class="scene-card" aria-label="场景信息">
+    <div class="scene-kicker"><span class="live-dot"></span> Fixed camera · Online</div>
+    <h2>水岸观察点 A</h2>
+    <p>从固定位置选择视角。快门只记录全景画面，不包含界面元素。</p>
+    <div class="scene-meta">
+      <div><span class="meta-label">方向</span><span class="meta-value" id="angleValue">000°</span></div>
+      <div><span class="meta-label">视野</span><span class="meta-value" id="fovValue">75°</span></div>
+    </div>
+  </aside>
+
+  <div class="bearing" aria-hidden="true">
+    <strong id="bearingValue">000°</strong>
+    <div class="bearing-track"></div>
+    <small>relative view · not geographic north</small>
+  </div>
+
+  <div class="viewfinder" aria-hidden="true">
+    <div class="thirds"></div>
+    <div class="reticle"></div>
+  </div>
+
+  <div class="capture-peek" id="capturePeek" aria-hidden="true">
+    <img id="peekImage" alt="最近一次取景缩略图">
+    <span>Latest frame · ready for analysis</span>
+  </div>
+
+  <div class="bottom-deck" role="group" aria-label="相机控制">
+    <div class="deck-copy"><strong>拖动选择画面</strong><span>滚轮缩放 · 空格拍摄</span></div>
+    <div class="mini-controls">
+      <button class="icon-button" id="zoomOut" aria-label="缩小视野">−</button>
+      <button class="icon-button" id="resetButton" aria-label="回到初始视角">↺</button>
+      <button class="icon-button" id="zoomIn" aria-label="放大视野">＋</button>
+    </div>
+    <div class="shutter-wrap">
+      <button id="captureButton" aria-label="拍摄当前画面并分析"></button>
+    </div>
+  </div>
+
+  <aside class="analysis-drawer" id="analysisDrawer" aria-label="色彩分析结果" aria-hidden="true">
+    <div class="drawer-scroll">
+      <header class="drawer-head">
+        <div class="drawer-title"><small>Contextual color evidence</small><h2>画面色彩分析</h2></div>
+        <button class="close-button" id="closeDrawer" aria-label="关闭分析结果">×</button>
+      </header>
+      <div class="analysis-content">
+        <section class="pipeline" id="pipeline" aria-live="polite">
+          <div>
+            <div class="scan-orbit"></div>
+            <h3 id="pipelineTitle">正在读取你的取景</h3>
+            <p id="pipelineCopy">系统只计算色彩差异，不判断美丑。</p>
+            <div class="pipeline-steps">
+              <div class="pipeline-step active">01 · 固化当前取景</div>
+              <div class="pipeline-step">02 · 划分局部颜色区域</div>
+              <div class="pipeline-step">03 · 比较区域与周围语境</div>
+              <div class="pipeline-step">04 · 排列潜在突出区域</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="results" id="results">
+          <p class="summary" id="summary"></p>
+          <div class="view-tabs" role="tablist" aria-label="分析视图">
+            <button class="tab-button active" data-view="overlay" role="tab">检测叠图</button>
+            <button class="tab-button" data-view="original" role="tab">原始取景</button>
+            <button class="tab-button" data-view="mosaic" role="tab">空间色谱</button>
+            <button class="tab-button" data-view="palette" role="tab">主色卡</button>
+            <button class="tab-button" data-view="diagnostics" role="tab">诊断视图</button>
+          </div>
+          <div class="result-frame">
+            <img id="resultImage" alt="色彩分析结果">
+          </div>
+          <div class="result-caption">
+            <span id="resultCaption">热力与轮廓显示相对色彩突出区域</span>
+            <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png">下载当前视图 ↓</a>
+          </div>
+
+          <h3 class="section-label">Ranked candidates · 同一画面内比较</h3>
+          <div class="candidate-list" id="candidateList"></div>
+
+          <div class="boundary-note">
+            <strong>解释边界</strong><br>
+            高分只表示某区域的颜色与局部环境差异更突出。它不表示该对象丑陋、缺乏文化价值或应当被移除。阴影、反光和相机白平衡都可能影响结果。
+          </div>
+
+          <details class="settings">
+            <summary>调整分析参数并重新拍摄</summary>
+            <div class="settings-grid">
+              <div class="range-row">
+                <label for="sensitivity">检测灵敏度 <small>越高越只保留极端区域</small></label><output id="sensitivityOutput">84</output>
+                <input id="sensitivity" type="range" min="60" max="96" value="84" step="1">
+              </div>
+              <div class="range-row">
+                <label for="detail">分区细节 <small>越高越容易发现小装饰</small></label><output id="detailOutput">260</output>
+                <input id="detail" type="range" min="80" max="520" value="260" step="20">
+              </div>
+              <div class="range-row">
+                <label for="topK">候选区域数</label><output id="topKOutput">5</output>
+                <input id="topK" type="range" min="1" max="8" value="5" step="1">
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="error-state" id="errorState">
+          <strong>本次分析没有完成</strong>
+          <p id="errorMessage"></p>
+          <button class="glass-button" id="retryButton">重新拍摄</button>
+        </section>
+      </div>
+    </div>
+  </aside>
+
+  <div id="loading" role="status">
+    <div class="loader-copy"><div class="loader-ring"></div><strong>正在展开锦溪水岸</strong><small>Preparing fixed-position panorama</small></div>
+  </div>
+  <div class="flash" id="flash"></div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <dialog id="helpDialog">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <div><div class="scene-kicker">Prototype guide</div><h2>如何使用这个版本</h2></div>
+        <button class="close-button" id="closeHelp" aria-label="关闭说明">×</button>
+      </div>
+      <div class="dialog-body">
+        <ul>
+          <li>拖动画面或使用方向键改变拍摄方向，滚轮或加减按钮改变视野。</li>
+          <li>按下圆形快门或空格键。系统会截取无界面的全景画面，并自动运行色彩语境分析。</li>
+          <li>这是固定机位360°原型。用户可以改变角度，但暂时不能在空间中自由移动。</li>
+          <li>场景由有限实拍素材辅助重建。缺失方向与建筑细节可能不等同于现场测量。</li>
+        </ul>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    "use strict";
+
+    const canvas = document.querySelector("#scene");
+    const loading = document.querySelector("#loading");
+    const drawer = document.querySelector("#analysisDrawer");
+    const flash = document.querySelector("#flash");
+    const toast = document.querySelector("#toast");
+    const gl = canvas.getContext("webgl", {
+      antialias: true,
+      alpha: false,
+      preserveDrawingBuffer: true,
+      powerPreference: "high-performance"
+    });
+
+    let yaw = 0;
+    let pitch = 0;
+    let fov = 75;
+    let rotating = false;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let lastTime = 0;
+    let ready = false;
+    let analyzing = false;
+    let capturedBlob = null;
+    let capturedUrl = "";
+    let resultImages = {};
+    let activeView = "overlay";
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const el = (selector) => document.querySelector(selector);
+    const els = (selector) => [...document.querySelectorAll(selector)];
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("visible"), 1800);
+    }
+
+    function failLoading(message) {
+      loading.querySelector("strong").textContent = message;
+      loading.querySelector("small").textContent = "请刷新页面或确认浏览器已启用 WebGL";
+    }
+
+    function compileShader(type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        throw new Error(gl.getShaderInfoLog(shader));
+      }
+      return shader;
+    }
+
+    let program;
+    let uniforms;
+    function initPanorama() {
+      if (!gl) {
+        failLoading("当前浏览器不支持 WebGL");
+        return;
+      }
+
+      try {
+        program = gl.createProgram();
+        gl.attachShader(program, compileShader(gl.VERTEX_SHADER, `
+          attribute vec2 position;
+          varying vec2 v;
+          void main() {
+            v = position;
+            gl_Position = vec4(position, 0.0, 1.0);
+          }
+        `));
+        gl.attachShader(program, compileShader(gl.FRAGMENT_SHADER, `
+          precision highp float;
+          varying vec2 v;
+          uniform sampler2D pano;
+          uniform float aspect;
+          uniform float yaw;
+          uniform float pitch;
+          uniform float fov;
+          const float PI = 3.141592653589793;
+          void main() {
+            vec3 ray = normalize(vec3(v.x * aspect * tan(fov / 2.0), v.y * tan(fov / 2.0), 1.0));
+            float rotatedY = ray.y * cos(pitch) + ray.z * sin(pitch);
+            float rotatedZ = -ray.y * sin(pitch) + ray.z * cos(pitch);
+            ray = vec3(
+              ray.x * cos(yaw) + rotatedZ * sin(yaw),
+              rotatedY,
+              -ray.x * sin(yaw) + rotatedZ * cos(yaw)
+            );
+            vec2 uv = vec2(
+              fract(0.5 + atan(ray.x, ray.z) / (2.0 * PI)),
+              acos(clamp(ray.y, -1.0, 1.0)) / PI
+            );
+            gl_FragColor = texture2D(pano, uv);
+          }
+        `));
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error("WebGL program link failed");
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+          -1, -1, 1, -1, -1, 1,
+          -1, 1, 1, -1, 1, 1
+        ]), gl.STATIC_DRAW);
+        const position = gl.getAttribLocation(program, "position");
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+        uniforms = {};
+        ["aspect", "yaw", "pitch", "fov"].forEach(name => {
+          uniforms[name] = gl.getUniformLocation(program, name);
+        });
+
+        const texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+        const image = new Image();
+        image.onload = () => {
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+          ready = true;
+          renderFrame(performance.now());
+          loading.classList.add("hidden");
+          setTimeout(() => canvas.focus({ preventScroll: true }), 700);
+        };
+        image.onerror = () => failLoading("全景素材未能载入");
+        image.src = "/static/panorama.png";
+      } catch (error) {
+        console.error(error);
+        failLoading("全景初始化失败");
+      }
+    }
+
+    function resizeCanvas() {
+      let ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      let width = Math.round(innerWidth * ratio);
+      let height = Math.round(innerHeight * ratio);
+      if (width > 1600) {
+        const scale = 1600 / width;
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+    }
+
+    function updateHud() {
+      const degrees = Math.round((yaw * 180 / Math.PI % 360 + 360) % 360);
+      const label = `${String(degrees).padStart(3, "0")}°`;
+      el("#bearingValue").textContent = label;
+      el("#angleValue").textContent = label;
+      el("#fovValue").textContent = `${Math.round(fov)}°`;
+    }
+
+    function drawScene() {
+      if (!ready) return;
+      resizeCanvas();
+      gl.useProgram(program);
+      gl.uniform1f(uniforms.aspect, canvas.width / canvas.height);
+      gl.uniform1f(uniforms.yaw, yaw);
+      gl.uniform1f(uniforms.pitch, pitch);
+      gl.uniform1f(uniforms.fov, fov * Math.PI / 180);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      gl.finish();
+      updateHud();
+    }
+
+    function renderFrame(time) {
+      const delta = Math.min((time - lastTime) / 1000, .05);
+      lastTime = time;
+      if (rotating && !dragging && !drawer.classList.contains("open")) yaw += delta * .055;
+      drawScene();
+      requestAnimationFrame(renderFrame);
+    }
+
+    canvas.addEventListener("pointerdown", event => {
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      canvas.setPointerCapture(event.pointerId);
+      canvas.focus();
+    });
+    canvas.addEventListener("pointermove", event => {
+      if (!dragging) return;
+      const scale = fov * Math.PI / 180 / innerHeight;
+      yaw -= (event.clientX - lastX) * scale;
+      pitch = clamp(pitch + (event.clientY - lastY) * scale, -1.35, 1.35);
+      lastX = event.clientX;
+      lastY = event.clientY;
+    });
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach(type => {
+      canvas.addEventListener(type, () => dragging = false);
+    });
+    canvas.addEventListener("wheel", event => {
+      event.preventDefault();
+      fov = clamp(fov + event.deltaY * .04, 34, 100);
+    }, { passive: false });
+
+    function openDrawer() {
+      drawer.classList.add("open");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      drawer.setAttribute("aria-hidden", "true");
+      canvas.focus({ preventScroll: true });
+    }
+
+    function setPipelineStep(index, title, copy) {
+      els(".pipeline-step").forEach((step, i) => {
+        step.classList.toggle("active", i === index);
+        step.classList.toggle("done", i < index);
+      });
+      el("#pipelineTitle").textContent = title;
+      el("#pipelineCopy").textContent = copy;
+    }
+
+    function resetAnalysisUi() {
+      el("#pipeline").style.display = "grid";
+      el("#results").classList.remove("ready");
+      el("#errorState").classList.remove("visible");
+      setPipelineStep(0, "正在读取你的取景", "系统只计算色彩差异，不判断美丑。");
+    }
+
+    function fireShutter() {
+      flash.classList.remove("fire");
+      void flash.offsetWidth;
+      flash.classList.add("fire");
+    }
+
+    function canvasBlob() {
+      return new Promise((resolve, reject) => {
+        drawScene();
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("无法从全景画布生成截图。")), "image/png");
+      });
+    }
+
+    function updatePreview(blob) {
+      if (capturedUrl) URL.revokeObjectURL(capturedUrl);
+      capturedUrl = URL.createObjectURL(blob);
+      el("#peekImage").src = capturedUrl;
+      el("#capturePeek").classList.add("visible");
+    }
+
+    async function captureAndAnalyze() {
+      if (!ready || analyzing) return;
+      analyzing = true;
+      rotating = false;
+      el("#autoButton").setAttribute("aria-pressed", "false");
+      el("#captureButton").disabled = true;
+      fireShutter();
+      resetAnalysisUi();
+      openDrawer();
+
+      try {
+        capturedBlob = await canvasBlob();
+        updatePreview(capturedBlob);
+        setPipelineStep(1, "正在划分颜色区域", "保留画面空间结构，而不是只计算平均色。 ");
+
+        const form = new FormData();
+        form.append("image", capturedBlob, "jinxi-view.png");
+        form.append("sensitivity", el("#sensitivity").value);
+        form.append("detail", el("#detail").value);
+        form.append("top_k", el("#topK").value);
+        form.append("mosaic_cells", "18");
+
+        const stepTimer = setTimeout(() => {
+          setPipelineStep(2, "正在比较局部色彩语境", "计算色相、彩度、明度和局部稀有度。 ");
+        }, 700);
+        const rankTimer = setTimeout(() => {
+          setPipelineStep(3, "正在整理候选区域", "高分表示相对突出，不表示审美结论。 ");
+        }, 1700);
+
+        const response = await fetch("/api/analyze", { method: "POST", body: form });
+        clearTimeout(stepTimer);
+        clearTimeout(rankTimer);
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.detail || `服务器返回 ${response.status}`);
+        }
+        const payload = await response.json();
+        showResults(payload);
+      } catch (error) {
+        console.error(error);
+        el("#pipeline").style.display = "none";
+        el("#errorMessage").textContent = error.message || "未知错误。请确认 Python 服务仍在运行。";
+        el("#errorState").classList.add("visible");
+      } finally {
+        analyzing = false;
+        el("#captureButton").disabled = false;
+      }
+    }
+
+    const captions = {
+      overlay: "热力与编号轮廓显示相对色彩突出区域",
+      original: "你从固定观察点选择并拍摄的原始画面",
+      mosaic: "空间色谱保留颜色在画面中的相对位置",
+      palette: "主色块宽度对应其在画面中的像素比例",
+      diagnostics: "CIELAB 分布与候选区域特征百分位"
+    };
+
+    function selectView(view) {
+      activeView = view;
+      els(".tab-button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+      const source = view === "original" ? capturedUrl : resultImages[view];
+      el("#resultImage").src = source;
+      el("#resultCaption").textContent = captions[view];
+      el("#downloadResult").href = source;
+      el("#downloadResult").download = view === "original" ? "jinxi-captured-view.png" : `jinxi-${view}.png`;
+    }
+
+    function renderCandidates(candidates) {
+      const container = el("#candidateList");
+      container.replaceChildren();
+      candidates.forEach(candidate => {
+        const item = document.createElement("article");
+        item.className = "candidate";
+        item.innerHTML = `
+          <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
+          <div class="candidate-main">
+            <strong>突出度 ${candidate.score.toFixed(1)} · ΔE00 ${candidate.delta_e.toFixed(1)}</strong>
+            <span>面积 ${candidate.area.toFixed(2)}% · 彩度提升 ${candidate.chroma_lift.toFixed(1)} · ${candidate.hex}</span>
+          </div>
+          <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
+        `;
+        container.append(item);
+      });
+    }
+
+    function showResults(payload) {
+      resultImages = payload.images;
+      el("#summary").textContent = payload.summary;
+      renderCandidates(payload.candidates);
+      el("#pipeline").style.display = "none";
+      el("#errorState").classList.remove("visible");
+      el("#results").classList.add("ready");
+      selectView("overlay");
+      showToast("色彩语境分析完成");
+    }
+
+    el("#captureButton").addEventListener("click", captureAndAnalyze);
+    el("#closeDrawer").addEventListener("click", closeDrawer);
+    el("#retryButton").addEventListener("click", () => { closeDrawer(); showToast("请重新选择取景并按下快门"); });
+    els(".tab-button").forEach(button => button.addEventListener("click", () => selectView(button.dataset.view)));
+
+    el("#zoomIn").addEventListener("click", () => fov = clamp(fov - 8, 34, 100));
+    el("#zoomOut").addEventListener("click", () => fov = clamp(fov + 8, 34, 100));
+    el("#resetButton").addEventListener("click", () => {
+      yaw = 0; pitch = 0; fov = 75; showToast("已回到初始取景");
+    });
+    el("#autoButton").addEventListener("click", event => {
+      rotating = !rotating;
+      event.currentTarget.setAttribute("aria-pressed", String(rotating));
+      event.currentTarget.querySelector(".label").textContent = rotating ? "暂停环视" : "自动环视";
+    });
+    el("#fullscreenButton").addEventListener("click", async () => {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await document.documentElement.requestFullscreen();
+      } catch { showToast("当前浏览器不允许全屏"); }
+    });
+
+    const helpDialog = el("#helpDialog");
+    el("#helpButton").addEventListener("click", () => helpDialog.showModal());
+    el("#closeHelp").addEventListener("click", () => helpDialog.close());
+    helpDialog.addEventListener("click", event => {
+      if (event.target === helpDialog) helpDialog.close();
+    });
+
+    ["sensitivity", "detail", "topK"].forEach(id => {
+      el(`#${id}`).addEventListener("input", event => el(`#${id}Output`).value = event.target.value);
+    });
+
+    window.addEventListener("keydown", event => {
+      if (event.target.matches("input, button, summary")) return;
+      const controlled = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "-", " "];
+      if (controlled.includes(event.key)) event.preventDefault();
+      if (event.key === "ArrowLeft") yaw -= .08;
+      if (event.key === "ArrowRight") yaw += .08;
+      if (event.key === "ArrowUp") pitch = clamp(pitch + .07, -1.35, 1.35);
+      if (event.key === "ArrowDown") pitch = clamp(pitch - .07, -1.35, 1.35);
+      if (event.key === "+" || event.key === "=") fov = clamp(fov - 5, 34, 100);
+      if (event.key === "-") fov = clamp(fov + 5, 34, 100);
+      if (event.key === " ") captureAndAnalyze();
+      if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+    });
+
+    window.panoramaState = () => ({ yaw, pitch, fov, ready, rotating, analyzing });
+    initPanorama();
+  </script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101917">
+  <meta name="description" content="锦溪 Color Lens 正面参考色彩学习过程、证据与限制。">
+  <title>Learning & Evidence · Jinxi Color Lens</title>
+  <style>
+    :root {
+      --ink: #101917;
+      --ink-soft: #17231f;
+      --paper: #f0eadf;
+      --paper-soft: #d5d0c4;
+      --muted: #99a49f;
+      --line: rgba(240, 234, 223, .14);
+      --jade: #9bc5b4;
+      --amber: #e9bc69;
+      --rose: #d98593;
+      --panel: rgba(240, 234, 223, .045);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 85% 0%, rgba(155, 197, 180, .10), transparent 30%),
+        linear-gradient(180deg, #101917, #0d1412 58%, #101917);
+      color: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    a { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 3px;
+    }
+    .shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(16, 25, 23, .84);
+      backdrop-filter: blur(20px) saturate(1.15);
+    }
+    .topbar-inner {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(155, 197, 180, .5);
+      border-radius: 50%;
+      color: var(--jade);
+    }
+    .brand strong { display: block; font-size: 12px; letter-spacing: .15em; }
+    .brand small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .pill, .language-switch {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(240, 234, 223, .045);
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 15px;
+      color: var(--paper-soft);
+      font-size: 11px;
+      text-decoration: none;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .pill:hover { transform: translateY(-1px); border-color: rgba(240, 234, 223, .36); }
+    .language-switch { display: flex; align-items: center; padding: 3px; }
+    .language-switch button {
+      min-width: 40px;
+      height: 30px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .language-switch button.active { background: var(--paper); color: var(--ink); }
+    main { padding-bottom: 90px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 60px;
+      padding: 86px 0 70px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--jade);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { font-family: Georgia, "Noto Serif SC", serif; font-weight: 400; }
+    h1 { max-width: 790px; margin: 0; font-size: clamp(42px, 7vw, 82px); line-height: .98; letter-spacing: -.035em; }
+    .hero-copy { max-width: 700px; margin: 26px 0 0; color: var(--paper-soft); font-size: 16px; line-height: 1.8; }
+    .status-card {
+      align-self: end;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+    }
+    .status-line { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .status-line:last-child { border: 0; }
+    .status-line span { color: var(--muted); font-size: 11px; }
+    .status-line strong { font-size: 12px; font-weight: 650; text-align: right; }
+    section { padding: 70px 0; border-bottom: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: 260px 1fr; gap: 44px; margin-bottom: 34px; }
+    .section-head h2 { margin: 0; font-size: clamp(30px, 4vw, 48px); }
+    .section-head p { max-width: 720px; margin: 5px 0 0; color: var(--paper-soft); line-height: 1.75; }
+    .reference-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .reference-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+    }
+    .reference-card .mosaic { width: 100%; aspect-ratio: 4 / 3; display: block; object-fit: cover; image-rendering: pixelated; background: #1b2824; }
+    .reference-card .palette { width: 100%; height: 48px; display: block; object-fit: cover; object-position: top; }
+    .reference-body { padding: 17px; }
+    .reference-body h3 { margin: 0 0 10px; font-size: 18px; }
+    .reference-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; color: var(--muted); font-size: 10px; }
+    .reference-meta strong { display: block; margin-top: 3px; color: var(--paper); font-size: 12px; }
+    .reference-note { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .pipeline { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--line); }
+    .stage { min-height: 204px; padding: 20px 17px; background: #121d1a; }
+    .stage-index { color: var(--amber); font-family: Georgia, serif; font-size: 28px; }
+    .stage h3 { margin: 30px 0 9px; font-size: 16px; }
+    .stage p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .model-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; }
+    .model-panel {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+    }
+    .panel-label { margin: 0 0 18px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+    .prototype-strip { height: 72px; display: flex; overflow: hidden; border-radius: 10px; background: var(--ink-soft); }
+    .prototype-strip span { min-width: 3px; height: 100%; }
+    canvas { display: block; width: 100%; height: auto; margin-top: 18px; border-radius: 12px; background: rgba(240, 234, 223, .025); }
+    .chart-caption { margin: 12px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .inspector { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; }
+    #colorPicker { width: 92px; height: 92px; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: transparent; cursor: pointer; }
+    #colorPicker::-webkit-color-swatch-wrapper { padding: 0; }
+    #colorPicker::-webkit-color-swatch { border: 1px solid var(--line); border-radius: 18px; }
+    .inspection-result { display: grid; gap: 13px; }
+    .inspection-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 11px; }
+    .inspection-row strong { color: var(--paper); font-size: 15px; font-weight: 600; }
+    .nearest-swatch { width: 34px; height: 34px; display: inline-block; vertical-align: middle; margin-left: 8px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; }
+    .meter { height: 8px; overflow: hidden; border-radius: 99px; background: rgba(240, 234, 223, .09); }
+    .meter span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--jade), var(--amber), var(--rose)); transition: width .25s ease; }
+    .formula {
+      margin-top: 18px;
+      padding: 17px 18px;
+      border-left: 2px solid var(--amber);
+      background: rgba(233, 188, 105, .055);
+      color: var(--paper-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .boundary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .boundary {
+      position: relative;
+      padding: 20px 20px 20px 48px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--panel);
+      color: var(--paper-soft);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .boundary::before { content: "!"; position: absolute; left: 18px; top: 18px; width: 19px; height: 19px; display: grid; place-items: center; border: 1px solid rgba(233, 188, 105, .5); border-radius: 50%; color: var(--amber); font-size: 10px; }
+    .next-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: next; }
+    .next-list li { counter-increment: next; padding: 16px 18px; border-bottom: 1px solid var(--line); color: var(--paper-soft); line-height: 1.6; }
+    .next-list li::before { content: "0" counter(next); margin-right: 16px; color: var(--jade); font-family: ui-monospace, monospace; }
+    .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .research-card { padding: 20px; border-top: 1px solid var(--line); background: var(--panel); }
+    .research-card h3 { margin: 0 0 9px; font-size: 18px; }
+    .research-card p { margin: 0 0 15px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .research-card a { color: var(--jade); font-size: 11px; text-underline-offset: 3px; }
+    .loading { padding: 30px; color: var(--muted); text-align: center; }
+    footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px 0 46px; color: var(--muted); font-size: 10px; }
+    @media (max-width: 900px) {
+      .hero, .section-head, .model-grid { grid-template-columns: 1fr; }
+      .hero { gap: 34px; padding-top: 60px; }
+      .reference-grid, .research-grid { grid-template-columns: 1fr; }
+      .pipeline { grid-template-columns: repeat(2, 1fr); }
+      .section-head { gap: 12px; }
+    }
+    @media (max-width: 580px) {
+      .shell { width: min(100% - 24px, 1160px); }
+      .topbar-inner { min-height: 64px; }
+      .brand small, .back-copy { display: none; }
+      .pill { width: 38px; padding: 0; justify-content: center; }
+      .hero { padding: 48px 0; }
+      .pipeline, .boundary-grid { grid-template-columns: 1fr; }
+      .stage { min-height: 150px; }
+      .stage h3 { margin-top: 18px; }
+      .inspector { grid-template-columns: 1fr; }
+      #colorPicker { width: 100%; height: 68px; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">◇</span>
+        <span><strong>JINXI / COLOR LENS</strong><small data-i18n="brandSub">学习与证据页面</small></span>
+      </a>
+      <div class="nav-actions">
+        <a class="pill" href="/"><span>←</span>&nbsp;<span class="back-copy" data-i18n="back">返回取景器</span></a>
+        <div class="language-switch" role="group" aria-label="语言 / Language">
+          <button class="active" data-language="zh-CN" aria-pressed="true">简中</button>
+          <button data-language="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">Reference learning / evidence boundary</p>
+        <h1 data-i18n="heroTitle">系统从什么证据中学习？</h1>
+        <p class="hero-copy" data-i18n="heroCopy">这个模型学习的是三张用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。</p>
+      </div>
+      <aside class="status-card" aria-live="polite">
+        <div class="status-line"><span data-i18n="status">模型状态</span><strong id="modelStatus">—</strong></div>
+        <div class="status-line"><span data-i18n="references">参考图数量</span><strong id="referenceCount">—</strong></div>
+        <div class="status-line"><span data-i18n="regions">学习区域</span><strong id="regionCount">—</strong></div>
+        <div class="status-line"><span data-i18n="prototypes">颜色原型</span><strong id="prototypeCount">—</strong></div>
+        <div class="status-line"><span data-i18n="weight">参考证据权重</span><strong id="referenceWeight">—</strong></div>
+      </aside>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="samplesTitle">学习样本</h2>
+        <p data-i18n="samplesCopy">页面只展示从参考图派生的低分辨率空间色谱和调色板。原始图片不会随项目分发，因为它们的使用许可尚未得到确认。</p>
+      </div>
+      <div class="reference-grid" id="referenceGrid"><div class="loading" data-i18n="loading">正在读取参考模型…</div></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="processTitle">学习过程</h2>
+        <p data-i18n="processCopy">每一步都可以被检查和复现。当前方法借鉴正常样本异常检测的“记忆库”逻辑，但使用可解释的颜色区域，而不是不可见的深度特征。</p>
+      </div>
+      <div class="pipeline">
+        <article class="stage"><span class="stage-index">01</span><h3 data-i18n="stage1Title">正面案例</h3><p data-i18n="stage1Copy">输入经用户选择的古镇色彩参考图。</p></article>
+        <article class="stage"><span class="stage-index">02</span><h3 data-i18n="stage2Title">区域分割</h3><p data-i18n="stage2Copy">SLIC 将每张图片划分为保持空间连续性的颜色区域。</p></article>
+        <article class="stage"><span class="stage-index">03</span><h3 data-i18n="stage3Title">感知色彩</h3><p data-i18n="stage3Copy">每个区域转换到 CIELAB，并计算中位颜色和面积。</p></article>
+        <article class="stage"><span class="stage-index">04</span><h3 data-i18n="stage4Title">平衡记忆</h3><p data-i18n="stage4Copy">每张图贡献相同权重，减少天空或大墙面的支配。</p></article>
+        <article class="stage"><span class="stage-index">05</span><h3 data-i18n="stage5Title">留一校准</h3><p data-i18n="stage5Copy">每张参考图都与另外两张比较，建立新颖度基线。</p></article>
+        <article class="stage"><span class="stage-index">06</span><h3 data-i18n="stage6Title">证据融合</h3><p data-i18n="stage6Copy">参考新颖度与当前画面的局部色差共同决定候选排名。</p></article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="memoryTitle">模型学到的颜色记忆</h2>
+        <p data-i18n="memoryCopy">色块宽度表示各原型在参考集中获得的支持度。散点图显示原型在 CIELAB 的 a*–b* 色度平面中的位置。</p>
+      </div>
+      <div class="model-grid">
+        <article class="model-panel">
+          <p class="panel-label" data-i18n="prototypeLabel">Reference prototypes</p>
+          <div class="prototype-strip" id="prototypeStrip" aria-label="Reference color prototypes"></div>
+          <canvas id="prototypeCanvas" width="760" height="430" role="img" aria-label="CIELAB color-prototype scatter plot"></canvas>
+          <p class="chart-caption" data-i18n="scatterCaption">横轴为 a*（绿色—红色），纵轴为 b*（蓝色—黄色）。点越大，参考支持度越高。</p>
+        </article>
+        <article class="model-panel">
+          <p class="panel-label" data-i18n="calibrationLabel">Leave-one-reference-out calibration</p>
+          <canvas id="calibrationCanvas" width="760" height="330" role="img" aria-label="Reference novelty calibration curve"></canvas>
+          <p class="chart-caption" id="calibrationCaption"></p>
+          <div class="formula" id="formula">—</div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="inspectTitle">亲自检查一种颜色</h2>
+        <p data-i18n="inspectCopy">选择一种颜色，页面会在参考记忆中找到最接近的原型，并显示它相对于正面案例的新颖程度。这只是颜色证据，不是审美评分。</p>
+      </div>
+      <div class="model-panel inspector">
+        <input id="colorPicker" type="color" value="#ef5b93" aria-label="Choose a color to inspect">
+        <div class="inspection-result" aria-live="polite">
+          <div class="inspection-row"><span data-i18n="selectedColor">选择的颜色</span><strong id="selectedHex">#EF5B93</strong></div>
+          <div class="inspection-row"><span data-i18n="nearestColor">最接近的参考色</span><strong><span id="nearestHex">—</span><span class="nearest-swatch" id="nearestSwatch"></span></strong></div>
+          <div class="inspection-row"><span data-i18n="distance">CIEDE2000 距离</span><strong id="distanceValue">—</strong></div>
+          <div class="inspection-row"><span data-i18n="percentile">参考新颖度百分位</span><strong id="percentileValue">—</strong></div>
+          <div class="meter" aria-hidden="true"><span id="noveltyMeter"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="boundaryTitle">证据边界</h2>
+        <p data-i18n="boundaryCopy">这些限制不是附注，而是模型输出的一部分。候选区域必须由人进一步解释、验证和讨论。</p>
+      </div>
+      <div class="boundary-grid" id="boundaryGrid"></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="nextTitle">下一步需要什么证据？</h2>
+        <p data-i18n="nextCopy">扩大参考图数量并不自动等于更可靠。数据还需要覆盖不同季节、天气、设备和利益相关者。</p>
+      </div>
+      <ol class="next-list" id="nextList"></ol>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 data-i18n="researchTitle">开源研究路线</h2>
+        <p data-i18n="researchCopy">我们采用了正常样本异常检测的核心思想，但当前先实现轻量、可解释的颜色记忆。当数据规模扩大后，可以用深度 patch 特征做对照实验。</p>
+      </div>
+      <div class="research-grid">
+        <article class="research-card"><h3>PatchCore</h3><p data-i18n="patchcoreCopy">以正常图像 patch 特征建立代表性记忆库，再用最近邻距离定位异常。</p><a href="https://github.com/amazon-science/patchcore-inspection" target="_blank" rel="noreferrer">Official repository ↗</a></article>
+        <article class="research-card"><h3>Anomalib</h3><p data-i18n="anomalibCopy">集合 PatchCore、PaDiM 等视觉异常检测方法，适合未来统一基准测试。</p><a href="https://github.com/open-edge-platform/anomalib" target="_blank" rel="noreferrer">Official repository ↗</a></article>
+        <article class="research-card"><h3>DINOv2</h3><p data-i18n="dinov2Copy">提供无需任务微调的通用视觉特征，可在更大数据集上补充物体与材质语义。</p><a href="https://github.com/facebookresearch/dinov2" target="_blank" rel="noreferrer">Official repository ↗</a></article>
+      </div>
+    </section>
+
+    <footer><span>Jinxi Color Lens · Prototype 03</span><span id="fingerprint">Model fingerprint —</span></footer>
+  </main>
+
+  <script>
+    const translations = {
+      "zh-CN": {
+        brandSub:"学习与证据页面", back:"返回取景器", eyebrow:"Reference learning / evidence boundary",
+        heroTitle:"系统从什么证据中学习？", heroCopy:"这个模型学习的是三张用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。",
+        status:"模型状态", references:"参考图数量", regions:"学习区域", prototypes:"颜色原型", weight:"参考证据权重",
+        samplesTitle:"学习样本", samplesCopy:"页面只展示从参考图派生的低分辨率空间色谱和调色板。原始图片不会随项目分发，因为它们的使用许可尚未得到确认。", loading:"正在读取参考模型…",
+        processTitle:"学习过程", processCopy:"每一步都可以被检查和复现。当前方法借鉴正常样本异常检测的“记忆库”逻辑，但使用可解释的颜色区域，而不是不可见的深度特征。",
+        stage1Title:"正面案例", stage1Copy:"输入经用户选择的古镇色彩参考图。", stage2Title:"区域分割", stage2Copy:"SLIC 将每张图片划分为保持空间连续性的颜色区域。", stage3Title:"感知色彩", stage3Copy:"每个区域转换到 CIELAB，并计算中位颜色和面积。", stage4Title:"平衡记忆", stage4Copy:"每张图贡献相同权重，减少天空或大墙面的支配。", stage5Title:"留一校准", stage5Copy:"每张参考图都与另外两张比较，建立新颖度基线。", stage6Title:"证据融合", stage6Copy:"参考新颖度与当前画面的局部色差共同决定候选排名。",
+        memoryTitle:"模型学到的颜色记忆", memoryCopy:"色块宽度表示各原型在参考集中获得的支持度。散点图显示原型在 CIELAB 的 a*–b* 色度平面中的位置。", prototypeLabel:"参考颜色原型", calibrationLabel:"留一参考图校准", scatterCaption:"横轴为 a*（绿色—红色），纵轴为 b*（蓝色—黄色）。点越大，参考支持度越高。",
+        calibrationCaption:"曲线来自留一图片比较：每张正面案例只与另外两张学习到的记忆匹配。", inspectTitle:"亲自检查一种颜色", inspectCopy:"选择一种颜色，页面会在参考记忆中找到最接近的原型，并显示它相对于正面案例的新颖程度。这只是颜色证据，不是审美评分。", selectedColor:"选择的颜色", nearestColor:"最接近的参考色", distance:"CIEDE2000 距离", percentile:"参考新颖度百分位",
+        boundaryTitle:"证据边界", boundaryCopy:"这些限制不是附注，而是模型输出的一部分。候选区域必须由人进一步解释、验证和讨论。", nextTitle:"下一步需要什么证据？", nextCopy:"扩大参考图数量并不自动等于更可靠。数据还需要覆盖不同季节、天气、设备和利益相关者。",
+        researchTitle:"开源研究路线", researchCopy:"我们采用了正常样本异常检测的核心思想，但当前先实现轻量、可解释的颜色记忆。当数据规模扩大后，可以用深度 patch 特征做对照实验。", patchcoreCopy:"以正常图像 patch 特征建立代表性记忆库，再用最近邻距离定位异常。", anomalibCopy:"集合 PatchCore、PaDiM 等视觉异常检测方法，适合未来统一基准测试。", dinov2Copy:"提供无需任务微调的通用视觉特征，可在更大数据集上补充物体与材质语义。",
+        positiveReference:"正面参考", regionsUnit:"个区域", rawExcluded:"原图未分发；右下角水印区已从学习中排除", modelStatus:"原型证据", formula:"融合分数 = (1 − {w}) × 局部证据 + {w} × 参考证据 + 0.08 × 二者较小值", q95:"正面参考的第95百分位距离为 ΔE00 {value}。超过该范围表示“参考集中少见”，不是“不美观”。",
+        loadError:"参考模型未能载入。请确认 Python 服务正在运行。"
+      },
+      en: {
+        brandSub:"Learning and evidence", back:"Back to viewfinder", eyebrow:"Reference learning / evidence boundary",
+        heroTitle:"What evidence does the system learn from?", heroCopy:"The model learns recurring color distributions from three user-supplied positive examples. It compresses them into an inspectable reference memory, then combines that evidence with local color contrast in the current frame.",
+        status:"Model status", references:"Reference images", regions:"Learning regions", prototypes:"Color prototypes", weight:"Reference weight",
+        samplesTitle:"Learning samples", samplesCopy:"This page shows only low-resolution spatial mosaics and palettes derived from the references. Raw images are not distributed with the project because their usage licenses have not been verified.", loading:"Loading reference model…",
+        processTitle:"Learning process", processCopy:"Every step is inspectable and reproducible. The method borrows the memory-bank logic of normal-only anomaly detection, but uses interpretable color regions rather than hidden deep features.",
+        stage1Title:"Positive examples", stage1Copy:"Input user-selected townscape color references.", stage2Title:"Region segmentation", stage2Copy:"SLIC divides each image into spatially continuous color regions.", stage3Title:"Perceptual color", stage3Copy:"Each region is converted to CIELAB and summarized by median color and area.", stage4Title:"Balanced memory", stage4Copy:"Each image contributes equal weight, limiting domination by sky or large walls.", stage5Title:"Held-out calibration", stage5Copy:"Each reference is compared with a memory learned from the other two.", stage6Title:"Evidence fusion", stage6Copy:"Reference novelty and within-frame contrast jointly rank candidate regions.",
+        memoryTitle:"The learned color memory", memoryCopy:"Block width represents support for each prototype in the reference set. The scatter plot positions prototypes in the CIELAB a*–b* chromatic plane.", prototypeLabel:"Reference color prototypes", calibrationLabel:"Leave-one-reference-out calibration", scatterCaption:"The x-axis is a* (green–red); the y-axis is b* (blue–yellow). Larger points have more reference support.",
+        calibrationCaption:"The curve comes from held-out comparisons: each positive example is matched only against memory learned from the other two.", inspectTitle:"Inspect a color yourself", inspectCopy:"Choose a color to find its nearest reference prototype and its novelty relative to the positive examples. This is color evidence, not an aesthetic score.", selectedColor:"Selected color", nearestColor:"Nearest reference color", distance:"CIEDE2000 distance", percentile:"Reference novelty percentile",
+        boundaryTitle:"Evidence boundaries", boundaryCopy:"These limitations are part of the model output, not a footnote. Candidate regions still require human interpretation, validation, and discussion.", nextTitle:"What evidence is needed next?", nextCopy:"More images do not automatically make the system reliable. Data must also cover seasons, weather, devices, and stakeholders.",
+        researchTitle:"Open-source research path", researchCopy:"We adopted the core idea of normal-only anomaly detection while implementing a lightweight, interpretable color memory first. Deep patch features can become a comparison model after the dataset expands.", patchcoreCopy:"Builds a representative memory bank of normal patch features and localizes anomalies through nearest-neighbor distance.", anomalibCopy:"Collects visual anomaly methods such as PatchCore and PaDiM for future standardized benchmarking.", dinov2Copy:"Provides general visual features without task-specific fine-tuning and could add object and material semantics with a larger dataset.",
+        positiveReference:"Positive reference", regionsUnit:"regions", rawExcluded:"Raw image excluded; bottom-right watermark zone omitted from learning", modelStatus:"Prototype evidence", formula:"Fusion score = (1 − {w}) × local evidence + {w} × reference evidence + 0.08 × their minimum", q95:"The 95th-percentile positive-reference distance is ΔE00 {value}. Exceeding it means “rare in this reference set,” not “unattractive.”",
+        loadError:"The reference model could not be loaded. Confirm that the Python service is running."
+      }
+    };
+
+    let language = "zh-CN";
+    let model = null;
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => [...document.querySelectorAll(selector)];
+    function t(key, values={}) {
+      let text = translations[language][key] ?? translations["zh-CN"][key] ?? key;
+      Object.entries(values).forEach(([name, value]) => text = text.replaceAll(`{${name}}`, value));
+      return text;
+    }
+    function applyLanguage(next) {
+      language = next === "en" ? "en" : "zh-CN";
+      document.documentElement.lang = language;
+      $$('[data-i18n]').forEach(node => node.textContent = t(node.dataset.i18n));
+      $$('[data-language]').forEach(button => {
+        const active = button.dataset.language === language;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      try { localStorage.setItem("jinxi-color-lens-language", language); } catch (_) {}
+      if (model) renderModel();
+    }
+
+    function hexToRgb(hex) {
+      const value = parseInt(hex.replace("#", ""), 16);
+      return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+    }
+    function rgbToLab(rgb) {
+      let [r,g,b] = rgb.map(v => v / 255).map(v => v > .04045 ? Math.pow((v + .055) / 1.055, 2.4) : v / 12.92);
+      let x = (r*.4124 + g*.3576 + b*.1805) / .95047;
+      let y = (r*.2126 + g*.7152 + b*.0722);
+      let z = (r*.0193 + g*.1192 + b*.9505) / 1.08883;
+      [x,y,z] = [x,y,z].map(v => v > .008856 ? Math.cbrt(v) : 7.787*v + 16/116);
+      return [116*y - 16, 500*(x-y), 200*(y-z)];
+    }
+    function deltaE00(lab1, lab2) {
+      const rad = Math.PI/180, deg = 180/Math.PI;
+      const [L1,a1,b1] = lab1, [L2,a2,b2] = lab2;
+      const C1 = Math.hypot(a1,b1), C2 = Math.hypot(a2,b2), Cbar = (C1+C2)/2;
+      const G = .5*(1-Math.sqrt(Math.pow(Cbar,7)/(Math.pow(Cbar,7)+Math.pow(25,7))));
+      const ap1=(1+G)*a1, ap2=(1+G)*a2, Cp1=Math.hypot(ap1,b1), Cp2=Math.hypot(ap2,b2);
+      const hp = (a,b) => { let h=Math.atan2(b,a)*deg; return h<0?h+360:h; };
+      const h1=hp(ap1,b1), h2=hp(ap2,b2), dL=L2-L1, dC=Cp2-Cp1;
+      let dh=h2-h1; if(Cp1*Cp2===0) dh=0; else if(dh>180) dh-=360; else if(dh<-180) dh+=360;
+      const dH=2*Math.sqrt(Cp1*Cp2)*Math.sin((dh/2)*rad), Lbar=(L1+L2)/2, Cpbar=(Cp1+Cp2)/2;
+      let hbar; if(Cp1*Cp2===0) hbar=h1+h2; else if(Math.abs(h1-h2)<=180) hbar=(h1+h2)/2; else hbar=(h1+h2+360)/2%360;
+      const T=1-.17*Math.cos((hbar-30)*rad)+.24*Math.cos(2*hbar*rad)+.32*Math.cos((3*hbar+6)*rad)-.20*Math.cos((4*hbar-63)*rad);
+      const SL=1+.015*Math.pow(Lbar-50,2)/Math.sqrt(20+Math.pow(Lbar-50,2));
+      const SC=1+.045*Cpbar, SH=1+.015*Cpbar*T;
+      const RT=-2*Math.sqrt(Math.pow(Cpbar,7)/(Math.pow(Cpbar,7)+Math.pow(25,7)))*Math.sin(60*Math.exp(-Math.pow((hbar-275)/25,2))*rad);
+      return Math.sqrt(Math.pow(dL/SL,2)+Math.pow(dC/SC,2)+Math.pow(dH/SH,2)+RT*(dC/SC)*(dH/SH));
+    }
+    function percentileForDistance(distance) {
+      const curve = model.calibration.curve;
+      if (distance <= curve[0].delta_e) return 0;
+      for (let i=1;i<curve.length;i++) {
+        if (distance <= curve[i].delta_e) {
+          const left=curve[i-1], right=curve[i], span=Math.max(.0001,right.delta_e-left.delta_e);
+          return left.percentile + (right.percentile-left.percentile)*(distance-left.delta_e)/span;
+        }
+      }
+      return 100;
+    }
+    function inspectColor() {
+      if (!model) return;
+      const hex = $("#colorPicker").value.toUpperCase();
+      const lab = rgbToLab(hexToRgb(hex));
+      let best = null;
+      model.prototype_colors.forEach(proto => {
+        const distance = deltaE00(lab, proto.lab);
+        if (!best || distance < best.distance) best = {proto, distance};
+      });
+      const percentile = percentileForDistance(best.distance);
+      $("#selectedHex").textContent = hex;
+      $("#nearestHex").textContent = best.proto.hex;
+      $("#nearestSwatch").style.background = best.proto.hex;
+      $("#distanceValue").textContent = best.distance.toFixed(1);
+      $("#percentileValue").textContent = `P${percentile.toFixed(0)}`;
+      $("#noveltyMeter").style.width = `${percentile}%`;
+    }
+    function renderReferences() {
+      const grid = $("#referenceGrid"); grid.replaceChildren();
+      model.references.forEach((reference, index) => {
+        const card = document.createElement("article"); card.className="reference-card";
+        card.innerHTML = `<img class="mosaic" src="${reference.derived_mosaic}" alt="${reference.label} derived spatial mosaic"><img class="palette" src="${reference.derived_palette}" alt="${reference.label} derived palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("rawExcluded")}</p></div>`;
+        grid.append(card);
+      });
+    }
+    function renderPrototypeStrip() {
+      const strip=$("#prototypeStrip"); strip.replaceChildren();
+      model.prototype_colors.forEach(proto => {
+        const swatch=document.createElement("span"); swatch.style.background=proto.hex; swatch.style.flexGrow=Math.max(.002,proto.support); swatch.title=`${proto.hex} · ${(proto.support*100).toFixed(1)}%`; strip.append(swatch);
+      });
+    }
+    function drawPrototypeCanvas() {
+      const canvas=$("#prototypeCanvas"), ctx=canvas.getContext("2d"), w=canvas.width, h=canvas.height, pad=58;
+      ctx.clearRect(0,0,w,h); ctx.strokeStyle="rgba(240,234,223,.15)"; ctx.fillStyle="#99a49f"; ctx.font="20px system-ui";
+      const aValues=model.prototype_colors.map(p=>p.lab[1]), bValues=model.prototype_colors.map(p=>p.lab[2]);
+      const minA=Math.min(-45,...aValues), maxA=Math.max(45,...aValues), minB=Math.min(-45,...bValues), maxB=Math.max(65,...bValues);
+      const x=a=>pad+(a-minA)/(maxA-minA)*(w-pad*2), y=b=>h-pad-(b-minB)/(maxB-minB)*(h-pad*2);
+      ctx.beginPath(); ctx.moveTo(x(0),pad); ctx.lineTo(x(0),h-pad); ctx.moveTo(pad,y(0)); ctx.lineTo(w-pad,y(0)); ctx.stroke();
+      ctx.fillText("a*",w-pad+13,y(0)+7); ctx.fillText("b*",x(0)+8,pad-14);
+      model.prototype_colors.forEach(proto=>{ const r=8+38*Math.sqrt(proto.support); ctx.beginPath(); ctx.arc(x(proto.lab[1]),y(proto.lab[2]),r,0,Math.PI*2); ctx.fillStyle=proto.hex; ctx.fill(); ctx.strokeStyle="rgba(240,234,223,.65)"; ctx.lineWidth=2; ctx.stroke(); });
+    }
+    function drawCalibration() {
+      const canvas=$("#calibrationCanvas"),ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height,pad=58,curve=model.calibration.curve;
+      ctx.clearRect(0,0,w,h); const maxX=Math.max(...curve.map(d=>d.delta_e))*1.06;
+      const x=v=>pad+v/maxX*(w-pad*2), y=p=>h-pad-p/100*(h-pad*2);
+      ctx.strokeStyle="rgba(240,234,223,.13)"; ctx.lineWidth=1; [0,25,50,75,100].forEach(p=>{ctx.beginPath();ctx.moveTo(pad,y(p));ctx.lineTo(w-pad,y(p));ctx.stroke();ctx.fillStyle="#99a49f";ctx.font="18px system-ui";ctx.fillText(`${p}`,15,y(p)+6);});
+      ctx.strokeStyle="#9bc5b4";ctx.lineWidth=4;ctx.beginPath();curve.forEach((d,i)=>i?ctx.lineTo(x(d.delta_e),y(d.percentile)):ctx.moveTo(x(d.delta_e),y(d.percentile)));ctx.stroke();
+      const q95=model.calibration.q95_delta_e;ctx.strokeStyle="#e9bc69";ctx.setLineDash([8,7]);ctx.beginPath();ctx.moveTo(x(q95),pad);ctx.lineTo(x(q95),h-pad);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#e9bc69";ctx.fillText(`Q95 ${q95.toFixed(1)}`,Math.min(x(q95)+8,w-150),pad+20);
+      ctx.fillStyle="#99a49f";ctx.fillText("ΔE00",w-pad+5,h-pad+6);ctx.fillText("%",pad-7,pad-16);
+    }
+    function renderBoundaries() {
+      const boundaryItems=model.evidence_boundaries?.[language] || model.evidence_boundaries?.en || [];
+      const nextItems=model.recommended_next_evidence?.[language] || model.recommended_next_evidence?.en || [];
+      const grid=$("#boundaryGrid");grid.replaceChildren();boundaryItems.forEach(text=>{const item=document.createElement("div");item.className="boundary";item.textContent=text;grid.append(item);});
+      const list=$("#nextList");list.replaceChildren();nextItems.forEach(text=>{const item=document.createElement("li");item.textContent=text;list.append(item);});
+    }
+    function renderModel() {
+      $("#modelStatus").textContent=t("modelStatus"); $("#referenceCount").textContent=model.reference_count; $("#regionCount").textContent=model.training_region_count; $("#prototypeCount").textContent=model.prototype_count; $("#referenceWeight").textContent=`${(model.reference_weight*100).toFixed(0)}%`; $("#fingerprint").textContent=`Model fingerprint ${model.fingerprint}`;
+      $("#calibrationCaption").textContent=t("q95",{value:model.calibration.q95_delta_e.toFixed(1)}); $("#formula").textContent=t("formula",{w:model.reference_weight.toFixed(2)});
+      renderReferences();renderPrototypeStrip();drawPrototypeCanvas();drawCalibration();renderBoundaries();inspectColor();
+    }
+    async function init() {
+      try { model=await fetch("/api/reference-model").then(response=>{if(!response.ok)throw new Error(response.status);return response.json();});renderModel(); }
+      catch(error){console.error(error);$("#referenceGrid").innerHTML=`<div class="loading">${t("loadError")}</div>`;}
+    }
+    $$('[data-language]').forEach(button=>button.addEventListener("click",()=>applyLanguage(button.dataset.language)));
+    $("#colorPicker").addEventListener("input",inspectColor);
+    let preferred="zh-CN";try{const stored=localStorage.getItem("jinxi-color-lens-language");if(stored==="en")preferred="en";}catch(_){}
+    applyLanguage(preferred);init();
+  </script>
+</body>
+</html>

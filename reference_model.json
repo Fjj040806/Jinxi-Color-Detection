@@ -1,0 +1,911 @@
+{
+  "model_version": "0.3.0",
+  "model_type": "balanced-superpixel-color-memory",
+  "trained_on": "2026-09-27",
+  "fingerprint": "9757bc4dfd13b0f2",
+  "status": "prototype evidence",
+  "reference_count": 3,
+  "training_region_count": 506,
+  "prototype_count": 28,
+  "reference_weight": 0.35,
+  "feature_space": "CIELAB median region color with CIEDE2000 matching",
+  "training_method": [
+    "SLIC superpixel extraction",
+    "equal contribution from each reference image",
+    "area-capped region weighting",
+    "MiniBatchKMeans prototype compression",
+    "leave-one-image-out novelty calibration"
+  ],
+  "prototype_colors": [
+    {
+      "rank": 1,
+      "lab": [
+        36.48721,
+        -1.23024,
+        -0.8364
+      ],
+      "rgb": [
+        83,
+        86,
+        87
+      ],
+      "hex": "#535657",
+      "support": 0.0757514
+    },
+    {
+      "rank": 2,
+      "lab": [
+        76.49211,
+        -3.14715,
+        -9.57904
+      ],
+      "rgb": [
+        173,
+        191,
+        206
+      ],
+      "hex": "#ADBFCE",
+      "support": 0.0723302
+    },
+    {
+      "rank": 3,
+      "lab": [
+        81.75103,
+        -1.93141,
+        -6.07837
+      ],
+      "rgb": [
+        194,
+        205,
+        214
+      ],
+      "hex": "#C2CDD6",
+      "support": 0.0716348
+    },
+    {
+      "rank": 4,
+      "lab": [
+        29.26048,
+        -1.39487,
+        -3.16194
+      ],
+      "rgb": [
+        64,
+        70,
+        74
+      ],
+      "hex": "#40464A",
+      "support": 0.067103
+    },
+    {
+      "rank": 5,
+      "lab": [
+        23.08373,
+        -0.40928,
+        -1.11332
+      ],
+      "rgb": [
+        54,
+        55,
+        57
+      ],
+      "hex": "#363739",
+      "support": 0.0525106
+    },
+    {
+      "rank": 6,
+      "lab": [
+        87.08986,
+        -1.3335,
+        -4.75764
+      ],
+      "rgb": [
+        211,
+        219,
+        227
+      ],
+      "hex": "#D3DBE3",
+      "support": 0.0505339
+    },
+    {
+      "rank": 7,
+      "lab": [
+        70.29686,
+        -2.08143,
+        -5.95129
+      ],
+      "rgb": [
+        162,
+        173,
+        182
+      ],
+      "hex": "#A2ADB6",
+      "support": 0.0499249
+    },
+    {
+      "rank": 8,
+      "lab": [
+        44.55243,
+        -2.51805,
+        -0.75072
+      ],
+      "rgb": [
+        100,
+        107,
+        107
+      ],
+      "hex": "#646B6B",
+      "support": 0.044498
+    },
+    {
+      "rank": 9,
+      "lab": [
+        58.95129,
+        -1.87014,
+        -3.04441
+      ],
+      "rgb": [
+        136,
+        143,
+        147
+      ],
+      "hex": "#888F93",
+      "support": 0.0416935
+    },
+    {
+      "rank": 10,
+      "lab": [
+        4.7199,
+        -0.07729,
+        -2.44272
+      ],
+      "rgb": [
+        14,
+        16,
+        20
+      ],
+      "hex": "#0E1014",
+      "support": 0.0392971
+    },
+    {
+      "rank": 11,
+      "lab": [
+        85.2424,
+        -0.2192,
+        -1.06944
+      ],
+      "rgb": [
+        212,
+        213,
+        215
+      ],
+      "hex": "#D4D5D7",
+      "support": 0.0368792
+    },
+    {
+      "rank": 12,
+      "lab": [
+        76.49651,
+        -1.11961,
+        -3.65959
+      ],
+      "rgb": [
+        183,
+        190,
+        195
+      ],
+      "hex": "#B7BEC3",
+      "support": 0.0362543
+    },
+    {
+      "rank": 13,
+      "lab": [
+        16.72033,
+        -0.3404,
+        -3.67752
+      ],
+      "rgb": [
+        38,
+        42,
+        46
+      ],
+      "hex": "#262A2E",
+      "support": 0.03617
+    },
+    {
+      "rank": 14,
+      "lab": [
+        68.46527,
+        -4.06449,
+        -13.25267
+      ],
+      "rgb": [
+        145,
+        170,
+        191
+      ],
+      "hex": "#91AABF",
+      "support": 0.0356288
+    },
+    {
+      "rank": 15,
+      "lab": [
+        29.81263,
+        -11.09356,
+        14.32777
+      ],
+      "rgb": [
+        61,
+        74,
+        48
+      ],
+      "hex": "#3D4A30",
+      "support": 0.0312038
+    },
+    {
+      "rank": 16,
+      "lab": [
+        10.91857,
+        0.7931,
+        -3.04019
+      ],
+      "rgb": [
+        28,
+        29,
+        33
+      ],
+      "hex": "#1C1D21",
+      "support": 0.0308386
+    },
+    {
+      "rank": 17,
+      "lab": [
+        17.43004,
+        -9.53124,
+        8.89452
+      ],
+      "rgb": [
+        33,
+        46,
+        30
+      ],
+      "hex": "#212E1E",
+      "support": 0.028158
+    },
+    {
+      "rank": 18,
+      "lab": [
+        40.23945,
+        -3.47433,
+        -7.61762
+      ],
+      "rgb": [
+        82,
+        97,
+        107
+      ],
+      "hex": "#52616B",
+      "support": 0.0271052
+    },
+    {
+      "rank": 19,
+      "lab": [
+        91.5688,
+        -0.97335,
+        -3.33068
+      ],
+      "rgb": [
+        226,
+        232,
+        237
+      ],
+      "hex": "#E2E8ED",
+      "support": 0.0253975
+    },
+    {
+      "rank": 20,
+      "lab": [
+        52.27656,
+        -3.52116,
+        -4.19173
+      ],
+      "rgb": [
+        114,
+        127,
+        132
+      ],
+      "hex": "#727F84",
+      "support": 0.0219989
+    },
+    {
+      "rank": 21,
+      "lab": [
+        10.87671,
+        -3.56166,
+        1.46128
+      ],
+      "rgb": [
+        25,
+        31,
+        27
+      ],
+      "hex": "#191F1B",
+      "support": 0.0218056
+    },
+    {
+      "rank": 22,
+      "lab": [
+        30.84535,
+        0.65083,
+        2.37335
+      ],
+      "rgb": [
+        75,
+        72,
+        69
+      ],
+      "hex": "#4B4845",
+      "support": 0.0202049
+    },
+    {
+      "rank": 23,
+      "lab": [
+        21.87126,
+        -5.3511,
+        5.51464
+      ],
+      "rgb": [
+        48,
+        54,
+        44
+      ],
+      "hex": "#30362C",
+      "support": 0.0197796
+    },
+    {
+      "rank": 24,
+      "lab": [
+        55.82022,
+        -3.5557,
+        -12.51988
+      ],
+      "rgb": [
+        114,
+        137,
+        155
+      ],
+      "hex": "#72899B",
+      "support": 0.0169088
+    },
+    {
+      "rank": 25,
+      "lab": [
+        29.11943,
+        -9.76255,
+        4.21382
+      ],
+      "rgb": [
+        55,
+        73,
+        62
+      ],
+      "hex": "#37493E",
+      "support": 0.0145071
+    },
+    {
+      "rank": 26,
+      "lab": [
+        70.31186,
+        -4.42265,
+        -23.96222
+      ],
+      "rgb": [
+        135,
+        176,
+        215
+      ],
+      "hex": "#87B0D7",
+      "support": 0.0126499
+    },
+    {
+      "rank": 27,
+      "lab": [
+        41.56455,
+        -14.43802,
+        21.64215
+      ],
+      "rgb": [
+        87,
+        104,
+        62
+      ],
+      "hex": "#57683E",
+      "support": 0.0123568
+    },
+    {
+      "rank": 28,
+      "lab": [
+        65.9234,
+        4.1055,
+        10.37835
+      ],
+      "rgb": [
+        175,
+        157,
+        142
+      ],
+      "hex": "#AF9D8E",
+      "support": 0.0068754
+    }
+  ],
+  "calibration": {
+    "method": "leave-one-reference-out nearest-prototype CIEDE2000",
+    "curve": [
+      {
+        "percentile": 0,
+        "delta_e": 0.35113
+      },
+      {
+        "percentile": 2,
+        "delta_e": 0.85939
+      },
+      {
+        "percentile": 4,
+        "delta_e": 1.29308
+      },
+      {
+        "percentile": 6,
+        "delta_e": 1.48485
+      },
+      {
+        "percentile": 8,
+        "delta_e": 1.58473
+      },
+      {
+        "percentile": 10,
+        "delta_e": 1.72569
+      },
+      {
+        "percentile": 12,
+        "delta_e": 1.9567
+      },
+      {
+        "percentile": 14,
+        "delta_e": 2.07637
+      },
+      {
+        "percentile": 16,
+        "delta_e": 2.17642
+      },
+      {
+        "percentile": 18,
+        "delta_e": 2.31763
+      },
+      {
+        "percentile": 20,
+        "delta_e": 2.40603
+      },
+      {
+        "percentile": 22,
+        "delta_e": 2.47149
+      },
+      {
+        "percentile": 24,
+        "delta_e": 2.52413
+      },
+      {
+        "percentile": 26,
+        "delta_e": 2.63459
+      },
+      {
+        "percentile": 28,
+        "delta_e": 2.67619
+      },
+      {
+        "percentile": 30,
+        "delta_e": 2.80476
+      },
+      {
+        "percentile": 32,
+        "delta_e": 2.86032
+      },
+      {
+        "percentile": 34,
+        "delta_e": 2.9335
+      },
+      {
+        "percentile": 36,
+        "delta_e": 3.02914
+      },
+      {
+        "percentile": 38,
+        "delta_e": 3.16513
+      },
+      {
+        "percentile": 40,
+        "delta_e": 3.23187
+      },
+      {
+        "percentile": 42,
+        "delta_e": 3.35776
+      },
+      {
+        "percentile": 44,
+        "delta_e": 3.44498
+      },
+      {
+        "percentile": 46,
+        "delta_e": 3.53166
+      },
+      {
+        "percentile": 48,
+        "delta_e": 3.64347
+      },
+      {
+        "percentile": 50,
+        "delta_e": 3.68926
+      },
+      {
+        "percentile": 52,
+        "delta_e": 3.82069
+      },
+      {
+        "percentile": 54,
+        "delta_e": 3.94765
+      },
+      {
+        "percentile": 56,
+        "delta_e": 4.02205
+      },
+      {
+        "percentile": 58,
+        "delta_e": 4.07636
+      },
+      {
+        "percentile": 60,
+        "delta_e": 4.18666
+      },
+      {
+        "percentile": 62,
+        "delta_e": 4.22853
+      },
+      {
+        "percentile": 64,
+        "delta_e": 4.37675
+      },
+      {
+        "percentile": 66,
+        "delta_e": 4.48444
+      },
+      {
+        "percentile": 68,
+        "delta_e": 4.6186
+      },
+      {
+        "percentile": 70,
+        "delta_e": 4.76937
+      },
+      {
+        "percentile": 72,
+        "delta_e": 5.05546
+      },
+      {
+        "percentile": 74,
+        "delta_e": 5.21419
+      },
+      {
+        "percentile": 76,
+        "delta_e": 5.41351
+      },
+      {
+        "percentile": 78,
+        "delta_e": 5.59799
+      },
+      {
+        "percentile": 80,
+        "delta_e": 5.94903
+      },
+      {
+        "percentile": 82,
+        "delta_e": 6.19752
+      },
+      {
+        "percentile": 84,
+        "delta_e": 6.38665
+      },
+      {
+        "percentile": 86,
+        "delta_e": 6.6005
+      },
+      {
+        "percentile": 88,
+        "delta_e": 6.96026
+      },
+      {
+        "percentile": 90,
+        "delta_e": 7.17069
+      },
+      {
+        "percentile": 92,
+        "delta_e": 7.64321
+      },
+      {
+        "percentile": 94,
+        "delta_e": 7.93071
+      },
+      {
+        "percentile": 96,
+        "delta_e": 8.41043
+      },
+      {
+        "percentile": 98,
+        "delta_e": 9.8862
+      },
+      {
+        "percentile": 100,
+        "delta_e": 16.31845
+      }
+    ],
+    "q50_delta_e": 3.6893,
+    "q90_delta_e": 7.1707,
+    "q95_delta_e": 8.1258
+  },
+  "references": [
+    {
+      "id": "ref-01",
+      "label": "Positive reference 1",
+      "sha256": "bedde4dd5dbef25218c2b8340a25f3b011ffdb9c787aea780a8341ea85401f4a",
+      "dimensions": {
+        "width": 675,
+        "height": 900
+      },
+      "retained_regions": 173,
+      "median_chroma": 5.369,
+      "p90_chroma": 14.38,
+      "palette": [
+        {
+          "hex": "#A4B7C4",
+          "weight": 0.245524,
+          "lab": [
+            73.2891,
+            -3.6408,
+            -8.741
+          ]
+        },
+        {
+          "hex": "#4E5454",
+          "weight": 0.239937,
+          "lab": [
+            35.1294,
+            -2.2074,
+            -0.6483
+          ]
+        },
+        {
+          "hex": "#778387",
+          "weight": 0.177107,
+          "lab": [
+            54.0706,
+            -3.5852,
+            -3.4923
+          ]
+        },
+        {
+          "hex": "#CCD6DC",
+          "weight": 0.153208,
+          "lab": [
+            85.1546,
+            -2.43,
+            -4.019
+          ]
+        },
+        {
+          "hex": "#2A302C",
+          "weight": 0.101772,
+          "lab": [
+            19.3225,
+            -3.724,
+            1.8227
+          ]
+        },
+        {
+          "hex": "#37482C",
+          "weight": 0.082452,
+          "lab": [
+            28.6223,
+            -13.0725,
+            15.0129
+          ]
+        }
+      ],
+      "derived_mosaic": "/static/reference-derived/ref-01-mosaic.png",
+      "derived_palette": "/static/reference-derived/ref-01-palette.png",
+      "provenance": "user-supplied positive reference",
+      "license": "not provided",
+      "redistribution": "raw image excluded from project package",
+      "watermark_handling": "bottom-right provenance zone excluded from fitting"
+    },
+    {
+      "id": "ref-02",
+      "label": "Positive reference 2",
+      "sha256": "986f4465cbcdc02829dda07f1c3672895813861e21fe802fb4a9f5561058232f",
+      "dimensions": {
+        "width": 600,
+        "height": 900
+      },
+      "retained_regions": 175,
+      "median_chroma": 5.614,
+      "p90_chroma": 14.579,
+      "palette": [
+        {
+          "hex": "#CDD6DF",
+          "weight": 0.25618,
+          "lab": [
+            85.2488,
+            -1.4301,
+            -5.171
+          ]
+        },
+        {
+          "hex": "#424648",
+          "weight": 0.207633,
+          "lab": [
+            29.3673,
+            -1.1392,
+            -1.8128
+          ]
+        },
+        {
+          "hex": "#262C25",
+          "weight": 0.15796,
+          "lab": [
+            17.4184,
+            -4.481,
+            3.6316
+          ]
+        },
+        {
+          "hex": "#ACBBC8",
+          "weight": 0.15744,
+          "lab": [
+            75.2069,
+            -2.7729,
+            -8.325
+          ]
+        },
+        {
+          "hex": "#849EB6",
+          "weight": 0.131034,
+          "lab": [
+            63.9078,
+            -3.4928,
+            -15.1919
+          ]
+        },
+        {
+          "hex": "#556067",
+          "weight": 0.089752,
+          "lab": [
+            40.105,
+            -2.6428,
+            -5.1718
+          ]
+        }
+      ],
+      "derived_mosaic": "/static/reference-derived/ref-02-mosaic.png",
+      "derived_palette": "/static/reference-derived/ref-02-palette.png",
+      "provenance": "user-supplied positive reference",
+      "license": "not provided",
+      "redistribution": "raw image excluded from project package",
+      "watermark_handling": "bottom-right provenance zone excluded from fitting"
+    },
+    {
+      "id": "ref-03",
+      "label": "Positive reference 3",
+      "sha256": "1267fa27c4739612199cb9e8cf392c692d76b8d432009532b01104ac76207a96",
+      "dimensions": {
+        "width": 675,
+        "height": 900
+      },
+      "retained_regions": 158,
+      "median_chroma": 3.865,
+      "p90_chroma": 10.901,
+      "palette": [
+        {
+          "hex": "#191C1F",
+          "weight": 0.295738,
+          "lab": [
+            9.9552,
+            0.0665,
+            -2.9604
+          ]
+        },
+        {
+          "hex": "#3E4240",
+          "weight": 0.191522,
+          "lab": [
+            27.5473,
+            -1.8704,
+            0.4994
+          ]
+        },
+        {
+          "hex": "#CBCFD5",
+          "weight": 0.174454,
+          "lab": [
+            82.9748,
+            0.0191,
+            -3.6089
+          ]
+        },
+        {
+          "hex": "#A7ABB2",
+          "weight": 0.142006,
+          "lab": [
+            69.9461,
+            -0.0642,
+            -3.9807
+          ]
+        },
+        {
+          "hex": "#666C70",
+          "weight": 0.131736,
+          "lab": [
+            45.332,
+            -1.3669,
+            -3.1448
+          ]
+        },
+        {
+          "hex": "#505B42",
+          "weight": 0.064543,
+          "lab": [
+            36.9986,
+            -9.3587,
+            12.8074
+          ]
+        }
+      ],
+      "derived_mosaic": "/static/reference-derived/ref-03-mosaic.png",
+      "derived_palette": "/static/reference-derived/ref-03-palette.png",
+      "provenance": "user-supplied positive reference",
+      "license": "not provided",
+      "redistribution": "raw image excluded from project package",
+      "watermark_handling": "bottom-right provenance zone excluded from fitting"
+    }
+  ],
+  "evidence_boundaries": {
+    "en": [
+      "The model learns only the supplied color distributions; it does not learn beauty or cultural value.",
+      "Three reference images are insufficient to represent Chinese historic towns, seasons, or communities.",
+      "Weather, time of day, exposure, white balance, haze, and editing can shift measured colors.",
+      "Composition and object frequency in the references affect which colors appear normal.",
+      "The model does not recognize objects, materials, authenticity, safety, or historical significance.",
+      "Candidates require review by residents, planners, designers, and other affected stakeholders.",
+      "Source licenses were not provided; raw reference images are not redistributed."
+    ],
+    "zh-CN": [
+      "模型只学习所提供图片的色彩分布；它不学习美感或文化价值。",
+      "三张参考图不足以代表中国古镇、不同季节或不同社区。",
+      "天气、时间、曝光、白平衡、雾霾和后期处理都会改变测得的颜色。",
+      "参考图的构图和物体出现频率会影响哪些颜色被模型视为常见。",
+      "模型无法识别物体、材料、真实性、安全性或历史意义。",
+      "候选区域仍需居民、规划者、设计者和其他受影响群体共同审查。",
+      "参考图未提供使用许可，因此项目不分发原始图片。"
+    ]
+  },
+  "recommended_next_evidence": {
+    "en": [
+      "Collect licensed images across seasons, weather, time of day, and camera devices.",
+      "Record location, date, exposure, white balance, photographer, and permission metadata.",
+      "Add stakeholder labels and task-based evaluation before making design recommendations.",
+      "Compare this interpretable baseline with PatchCore or DINOv2 only after the dataset expands."
+    ],
+    "zh-CN": [
+      "收集覆盖不同季节、天气、时间和拍摄设备的授权图片。",
+      "记录地点、日期、曝光、白平衡、摄影者和许可信息。",
+      "在提出规划建议前加入利益相关者标注和基于任务的评估。",
+      "数据扩展后，再将这一可解释基线与 PatchCore 或 DINOv2 做对照实验。"
+    ]
+  }
+}

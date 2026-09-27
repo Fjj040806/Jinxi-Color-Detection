@@ -128,7 +128,41 @@
       gap: 8px;
       pointer-events: auto;
     }
+    .language-switch {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(12, 22, 20, .5);
+      backdrop-filter: blur(16px) saturate(1.2);
+    }
+    .language-button {
+      min-width: 42px;
+      height: 32px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(239, 233, 220, .58);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      cursor: pointer;
+      transition: color .2s ease, background .2s ease, transform .2s ease;
+    }
+    .language-button:hover { color: var(--paper); }
+    .language-button.active {
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .16);
+    }
     .glass-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
       min-height: 40px;
       padding: 0 15px;
       border: 1px solid var(--line);
@@ -136,6 +170,8 @@
       background: rgba(12, 22, 20, .5);
       backdrop-filter: blur(16px) saturate(1.2);
       cursor: pointer;
+      color: inherit;
+      text-decoration: none;
       transition: transform .25s ease, background .25s ease, border-color .25s ease;
     }
     .glass-button:hover {
@@ -656,7 +692,7 @@
       font-weight: 750;
     }
     .candidate-main strong { display: block; font-size: 12px; }
-    .candidate-main span { color: rgba(239, 233, 220, .48); font-size: 9px; }
+    .candidate-main span { display: block; color: rgba(239, 233, 220, .48); font-size: 9px; }
     .candidate-swatch {
       width: 32px;
       height: 32px;
@@ -784,9 +820,14 @@
 
     @media (max-width: 780px) {
       .topbar { padding: max(17px, env(safe-area-inset-top)) 18px 12px; }
-      .brand h1 { font-size: 25px; }
+      .brand { max-width: 135px; }
+      .brand-line { font-size: 8px; letter-spacing: .1em; }
+      .brand h1 { font-size: 19px; }
       .brand h1 span { display: none; }
+      .top-actions { gap: 4px; }
       .top-actions .label { display: none; }
+      .top-actions .glass-button { min-width: 36px; padding: 0 9px; }
+      .language-button { min-width: 30px; padding: 0 6px; }
       .bearing { top: 92px; }
       .scene-card { left: 18px; top: 132px; width: 228px; }
       .scene-card p, .scene-meta { display: none; }
@@ -804,36 +845,41 @@
   </style>
 </head>
 <body>
-  <canvas id="scene" tabindex="0" aria-label="锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。"></canvas>
+  <canvas id="scene" tabindex="0" aria-label="锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。" data-i18n-aria="sceneAria"></canvas>
   <div class="vignette"></div>
   <div class="grain"></div>
 
   <header class="topbar">
     <div class="brand">
       <div class="brand-line"><span class="brand-mark"></span> JINXI / COLOR LENS</div>
-      <h1>锦溪取景实验室 <span>Field prototype 01</span></h1>
+      <h1><span data-i18n="mainTitle">锦溪取景实验室</span> <span>Field prototype 03</span></h1>
     </div>
     <div class="top-actions">
-      <button class="glass-button" id="autoButton" aria-pressed="false" title="自动环视">◌ <span class="label">自动环视</span></button>
-      <button class="glass-button" id="fullscreenButton" title="进入全屏">⛶ <span class="label">全屏</span></button>
-      <button class="glass-button" id="helpButton" title="查看说明">? <span class="label">说明</span></button>
+      <div class="language-switch" role="group" aria-label="语言 / Language" data-i18n-aria="languageAria">
+        <button class="language-button active" data-language="zh-CN" aria-pressed="true">简中</button>
+        <button class="language-button" data-language="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="glass-button" href="/learning" title="查看学习过程与证据边界" data-i18n-title="evidenceTitle">◇ <span class="label" data-i18n="evidence">学习证据</span></a>
+      <button class="glass-button" id="autoButton" aria-pressed="false" title="自动环视" data-i18n-title="autoTitle">◌ <span class="label" data-i18n="auto">自动环视</span></button>
+      <button class="glass-button" id="fullscreenButton" title="进入全屏" data-i18n-title="fullscreenTitle">⛶ <span class="label" data-i18n="fullscreen">全屏</span></button>
+      <button class="glass-button" id="helpButton" title="查看说明" data-i18n-title="helpTitle">? <span class="label" data-i18n="help">说明</span></button>
     </div>
   </header>
 
-  <aside class="scene-card" aria-label="场景信息">
-    <div class="scene-kicker"><span class="live-dot"></span> Fixed camera · Online</div>
-    <h2>水岸观察点 A</h2>
-    <p>从固定位置选择视角。快门只记录全景画面，不包含界面元素。</p>
+  <aside class="scene-card" aria-label="场景信息" data-i18n-aria="sceneInfoAria">
+    <div class="scene-kicker"><span class="live-dot"></span> <span data-i18n="fixedCamera">固定机位 · 在线</span></div>
+    <h2 data-i18n="viewpoint">水岸观察点 A</h2>
+    <p data-i18n="sceneDescription">从固定位置选择视角。快门只记录全景画面，不包含界面元素。</p>
     <div class="scene-meta">
-      <div><span class="meta-label">方向</span><span class="meta-value" id="angleValue">000°</span></div>
-      <div><span class="meta-label">视野</span><span class="meta-value" id="fovValue">75°</span></div>
+      <div><span class="meta-label" data-i18n="direction">方向</span><span class="meta-value" id="angleValue">000°</span></div>
+      <div><span class="meta-label" data-i18n="fieldOfView">视野</span><span class="meta-value" id="fovValue">75°</span></div>
     </div>
   </aside>
 
   <div class="bearing" aria-hidden="true">
     <strong id="bearingValue">000°</strong>
     <div class="bearing-track"></div>
-    <small>relative view · not geographic north</small>
+    <small data-i18n="relativeView">相对视角 · 非地理方位</small>
   </div>
 
   <div class="viewfinder" aria-hidden="true">
@@ -842,81 +888,81 @@
   </div>
 
   <div class="capture-peek" id="capturePeek" aria-hidden="true">
-    <img id="peekImage" alt="最近一次取景缩略图">
-    <span>Latest frame · ready for analysis</span>
+    <img id="peekImage" alt="最近一次取景缩略图" data-i18n-alt="peekAlt">
+    <span data-i18n="latestFrame">最近取景 · 已准备分析</span>
   </div>
 
-  <div class="bottom-deck" role="group" aria-label="相机控制">
-    <div class="deck-copy"><strong>拖动选择画面</strong><span>滚轮缩放 · 空格拍摄</span></div>
+  <div class="bottom-deck" role="group" aria-label="相机控制" data-i18n-aria="cameraControlsAria">
+    <div class="deck-copy"><strong data-i18n="dragFrame">拖动选择画面</strong><span data-i18n="controlHint">滚轮缩放 · 空格拍摄</span></div>
     <div class="mini-controls">
-      <button class="icon-button" id="zoomOut" aria-label="缩小视野">−</button>
-      <button class="icon-button" id="resetButton" aria-label="回到初始视角">↺</button>
-      <button class="icon-button" id="zoomIn" aria-label="放大视野">＋</button>
+      <button class="icon-button" id="zoomOut" aria-label="缩小视野" data-i18n-aria="zoomOutAria">−</button>
+      <button class="icon-button" id="resetButton" aria-label="回到初始视角" data-i18n-aria="resetAria">↺</button>
+      <button class="icon-button" id="zoomIn" aria-label="放大视野" data-i18n-aria="zoomInAria">＋</button>
     </div>
     <div class="shutter-wrap">
-      <button id="captureButton" aria-label="拍摄当前画面并分析"></button>
+      <button id="captureButton" aria-label="拍摄当前画面并分析" data-i18n-aria="captureAria"></button>
     </div>
   </div>
 
-  <aside class="analysis-drawer" id="analysisDrawer" aria-label="色彩分析结果" aria-hidden="true">
+  <aside class="analysis-drawer" id="analysisDrawer" aria-label="色彩分析结果" data-i18n-aria="analysisAria" aria-hidden="true">
     <div class="drawer-scroll">
       <header class="drawer-head">
-        <div class="drawer-title"><small>Contextual color evidence</small><h2>画面色彩分析</h2></div>
-        <button class="close-button" id="closeDrawer" aria-label="关闭分析结果">×</button>
+        <div class="drawer-title"><small>Contextual color evidence</small><h2 data-i18n="analysisTitle">画面色彩分析</h2></div>
+        <button class="close-button" id="closeDrawer" aria-label="关闭分析结果" data-i18n-aria="closeAnalysisAria">×</button>
       </header>
       <div class="analysis-content">
         <section class="pipeline" id="pipeline" aria-live="polite">
           <div>
             <div class="scan-orbit"></div>
-            <h3 id="pipelineTitle">正在读取你的取景</h3>
-            <p id="pipelineCopy">系统只计算色彩差异，不判断美丑。</p>
+            <h3 id="pipelineTitle" data-i18n="pipeline0Title">正在读取你的取景</h3>
+            <p id="pipelineCopy" data-i18n="pipeline0Copy">系统读取局部差异与正面参考色彩，不判断美丑。</p>
             <div class="pipeline-steps">
-              <div class="pipeline-step active">01 · 固化当前取景</div>
-              <div class="pipeline-step">02 · 划分局部颜色区域</div>
-              <div class="pipeline-step">03 · 比较区域与周围语境</div>
-              <div class="pipeline-step">04 · 排列潜在突出区域</div>
+              <div class="pipeline-step active" data-i18n="pipelineStep1">01 · 固化当前取景</div>
+              <div class="pipeline-step" data-i18n="pipelineStep2">02 · 划分局部颜色区域</div>
+              <div class="pipeline-step" data-i18n="pipelineStep3">03 · 对照局部语境与参考记忆</div>
+              <div class="pipeline-step" data-i18n="pipelineStep4">04 · 排列潜在突出区域</div>
             </div>
           </div>
         </section>
 
         <section class="results" id="results">
           <p class="summary" id="summary"></p>
-          <div class="view-tabs" role="tablist" aria-label="分析视图">
-            <button class="tab-button active" data-view="overlay" role="tab">检测叠图</button>
-            <button class="tab-button" data-view="original" role="tab">原始取景</button>
-            <button class="tab-button" data-view="mosaic" role="tab">空间色谱</button>
-            <button class="tab-button" data-view="palette" role="tab">主色卡</button>
-            <button class="tab-button" data-view="diagnostics" role="tab">诊断视图</button>
+          <div class="view-tabs" role="tablist" aria-label="分析视图" data-i18n-aria="analysisViewsAria">
+            <button class="tab-button active" data-view="overlay" role="tab" data-i18n="tabOverlay">检测叠图</button>
+            <button class="tab-button" data-view="original" role="tab" data-i18n="tabOriginal">原始取景</button>
+            <button class="tab-button" data-view="mosaic" role="tab" data-i18n="tabMosaic">空间色谱</button>
+            <button class="tab-button" data-view="palette" role="tab" data-i18n="tabPalette">主色卡</button>
+            <button class="tab-button" data-view="diagnostics" role="tab" data-i18n="tabDiagnostics">诊断视图</button>
           </div>
           <div class="result-frame">
-            <img id="resultImage" alt="色彩分析结果">
+            <img id="resultImage" alt="色彩分析结果" data-i18n-alt="resultAlt">
           </div>
           <div class="result-caption">
-            <span id="resultCaption">热力与轮廓显示相对色彩突出区域</span>
-            <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png">下载当前视图 ↓</a>
+            <span id="resultCaption" data-i18n="captionOverlay">热力与轮廓显示相对色彩突出区域</span>
+            <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png" data-i18n="downloadView">下载当前视图 ↓</a>
           </div>
 
-          <h3 class="section-label">Ranked candidates · 同一画面内比较</h3>
+          <h3 class="section-label" data-i18n="rankedCandidates">候选区域排名 · 同一画面内比较</h3>
           <div class="candidate-list" id="candidateList"></div>
 
           <div class="boundary-note">
-            <strong>解释边界</strong><br>
-            高分只表示某区域的颜色与局部环境差异更突出。它不表示该对象丑陋、缺乏文化价值或应当被移除。阴影、反光和相机白平衡都可能影响结果。
+            <strong data-i18n="boundaryTitle">解释边界</strong><br>
+            <span data-i18n="boundaryCopy">高分表示某区域同时获得局部色差与有限参考集的支持。它不表示该对象丑陋、缺乏文化价值或应当被移除。天气、阴影、反光和相机白平衡都可能影响结果。</span>
           </div>
 
           <details class="settings">
-            <summary>调整分析参数并重新拍摄</summary>
+            <summary data-i18n="settingsSummary">调整分析参数并重新拍摄</summary>
             <div class="settings-grid">
               <div class="range-row">
-                <label for="sensitivity">检测灵敏度 <small>越高越只保留极端区域</small></label><output id="sensitivityOutput">84</output>
+                <label for="sensitivity"><span data-i18n="sensitivity">检测灵敏度</span> <small data-i18n="sensitivityHelp">越高越只保留极端区域</small></label><output id="sensitivityOutput">84</output>
                 <input id="sensitivity" type="range" min="60" max="96" value="84" step="1">
               </div>
               <div class="range-row">
-                <label for="detail">分区细节 <small>越高越容易发现小装饰</small></label><output id="detailOutput">260</output>
+                <label for="detail"><span data-i18n="detail">分区细节</span> <small data-i18n="detailHelp">越高越容易发现小装饰</small></label><output id="detailOutput">260</output>
                 <input id="detail" type="range" min="80" max="520" value="260" step="20">
               </div>
               <div class="range-row">
-                <label for="topK">候选区域数</label><output id="topKOutput">5</output>
+                <label for="topK" data-i18n="candidateCount">候选区域数</label><output id="topKOutput">5</output>
                 <input id="topK" type="range" min="1" max="8" value="5" step="1">
               </div>
             </div>
@@ -924,16 +970,16 @@
         </section>
 
         <section class="error-state" id="errorState">
-          <strong>本次分析没有完成</strong>
+          <strong data-i18n="errorTitle">本次分析没有完成</strong>
           <p id="errorMessage"></p>
-          <button class="glass-button" id="retryButton">重新拍摄</button>
+          <button class="glass-button" id="retryButton" data-i18n="retry">重新拍摄</button>
         </section>
       </div>
     </div>
   </aside>
 
   <div id="loading" role="status">
-    <div class="loader-copy"><div class="loader-ring"></div><strong>正在展开锦溪水岸</strong><small>Preparing fixed-position panorama</small></div>
+    <div class="loader-copy"><div class="loader-ring"></div><strong data-i18n="loadingTitle">正在展开锦溪水岸</strong><small data-i18n="loadingCopy">正在准备固定机位全景</small></div>
   </div>
   <div class="flash" id="flash"></div>
   <div class="toast" id="toast" role="status"></div>
@@ -941,15 +987,15 @@
   <dialog id="helpDialog">
     <div class="dialog-inner">
       <div class="dialog-head">
-        <div><div class="scene-kicker">Prototype guide</div><h2>如何使用这个版本</h2></div>
-        <button class="close-button" id="closeHelp" aria-label="关闭说明">×</button>
+        <div><div class="scene-kicker">Prototype guide</div><h2 data-i18n="guideTitle">如何使用这个版本</h2></div>
+        <button class="close-button" id="closeHelp" aria-label="关闭说明" data-i18n-aria="closeHelpAria">×</button>
       </div>
       <div class="dialog-body">
         <ul>
-          <li>拖动画面或使用方向键改变拍摄方向，滚轮或加减按钮改变视野。</li>
-          <li>按下圆形快门或空格键。系统会截取无界面的全景画面，并自动运行色彩语境分析。</li>
-          <li>这是固定机位360°原型。用户可以改变角度，但暂时不能在空间中自由移动。</li>
-          <li>场景由有限实拍素材辅助重建。缺失方向与建筑细节可能不等同于现场测量。</li>
+          <li data-i18n="guide1">拖动画面或使用方向键改变拍摄方向，滚轮或加减按钮改变视野。</li>
+          <li data-i18n="guide2">按下圆形快门或空格键。系统会截取无界面的全景画面，并自动运行色彩语境分析。</li>
+          <li data-i18n="guide3">这是固定机位360°原型。用户可以改变角度，但暂时不能在空间中自由移动。</li>
+          <li data-i18n="guide4">场景由有限实拍素材辅助重建。缺失方向与建筑细节可能不等同于现场测量。</li>
         </ul>
       </div>
     </div>
@@ -984,10 +1030,248 @@
     let capturedUrl = "";
     let resultImages = {};
     let activeView = "overlay";
+    let currentLanguage = "zh-CN";
+    let currentPipelineIndex = 0;
+    let lastPayload = null;
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
     const el = (selector) => document.querySelector(selector);
     const els = (selector) => [...document.querySelectorAll(selector)];
+
+    const translations = {
+      "zh-CN": {
+        documentTitle: "锦溪 Color Lens · 360° 田野原型",
+        metaDescription: "固定机位360度锦溪场景取景与客观色彩语境分析原型。",
+        languageAria: "语言选项",
+        sceneAria: "锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。",
+        mainTitle: "锦溪取景实验室",
+        evidence: "学习证据",
+        evidenceTitle: "查看参考学习过程与证据边界",
+        auto: "自动环视",
+        pauseAuto: "暂停环视",
+        autoTitle: "自动环视",
+        fullscreen: "全屏",
+        fullscreenTitle: "进入全屏",
+        help: "说明",
+        helpTitle: "查看说明",
+        sceneInfoAria: "场景信息",
+        fixedCamera: "固定机位 · 在线",
+        viewpoint: "水岸观察点 A",
+        sceneDescription: "从固定位置选择视角。快门只记录全景画面，不包含界面元素。",
+        direction: "方向",
+        fieldOfView: "视野",
+        relativeView: "相对视角 · 非地理方位",
+        peekAlt: "最近一次取景缩略图",
+        latestFrame: "最近取景 · 已准备分析",
+        cameraControlsAria: "相机控制",
+        dragFrame: "拖动选择画面",
+        controlHint: "滚轮缩放 · 空格拍摄",
+        zoomOutAria: "缩小视野",
+        resetAria: "回到初始视角",
+        zoomInAria: "放大视野",
+        captureAria: "拍摄当前画面并分析",
+        analysisAria: "色彩分析结果",
+        analysisTitle: "画面色彩分析",
+        closeAnalysisAria: "关闭分析结果",
+        pipeline0Title: "正在读取你的取景",
+        pipeline0Copy: "系统读取局部差异与正面参考色彩，不判断美丑。",
+        pipeline1Title: "正在划分颜色区域",
+        pipeline1Copy: "保留画面空间结构，而不是只计算平均色。",
+        pipeline2Title: "正在比较局部色彩语境",
+        pipeline2Copy: "计算色相、彩度、明度、局部稀有度与参考新颖度。",
+        pipeline3Title: "正在整理候选区域",
+        pipeline3Copy: "高分表示相对突出，不表示审美结论。",
+        pipelineStep1: "01 · 固化当前取景",
+        pipelineStep2: "02 · 划分局部颜色区域",
+        pipelineStep3: "03 · 对照局部语境与参考记忆",
+        pipelineStep4: "04 · 排列潜在突出区域",
+        analysisViewsAria: "分析视图",
+        tabOverlay: "检测叠图",
+        tabOriginal: "原始取景",
+        tabMosaic: "空间色谱",
+        tabPalette: "主色卡",
+        tabDiagnostics: "诊断视图",
+        resultAlt: "色彩分析结果",
+        captionOverlay: "热力与编号轮廓显示相对色彩突出区域",
+        captionOriginal: "你从固定观察点选择并拍摄的原始画面",
+        captionMosaic: "空间色谱保留颜色在画面中的相对位置",
+        captionPalette: "主色块宽度对应其在画面中的像素比例",
+        captionDiagnostics: "CIELAB 分布与候选区域特征百分位",
+        downloadView: "下载当前视图 ↓",
+        rankedCandidates: "候选区域排名 · 局部证据 × 参考证据",
+        boundaryTitle: "解释边界",
+        boundaryCopy: "高分表示某区域同时获得局部色差与有限参考集的支持。它不表示该对象丑陋、缺乏文化价值或应当被移除。天气、阴影、反光和相机白平衡都可能影响结果。",
+        settingsSummary: "调整分析参数并重新拍摄",
+        sensitivity: "检测灵敏度",
+        sensitivityHelp: "越高越只保留极端区域",
+        detail: "分区细节",
+        detailHelp: "越高越容易发现小装饰",
+        candidateCount: "候选区域数",
+        errorTitle: "本次分析没有完成",
+        retry: "重新拍摄",
+        loadingTitle: "正在展开锦溪水岸",
+        loadingCopy: "正在准备固定机位全景",
+        guideTitle: "如何使用这个版本",
+        closeHelpAria: "关闭说明",
+        guide1: "拖动画面或使用方向键改变拍摄方向，滚轮或加减按钮改变视野。",
+        guide2: "按下圆形快门或空格键。系统会截取无界面的全景画面，并自动运行色彩语境分析。",
+        guide3: "这是固定机位360°原型。用户可以改变角度，但暂时不能在空间中自由移动。",
+        guide4: "场景由有限实拍素材辅助重建。缺失方向与建筑细节可能不等同于现场测量。",
+        loadingFailureHelp: "请刷新页面或确认浏览器已启用 WebGL",
+        noWebgl: "当前浏览器不支持 WebGL",
+        panoramaLoadError: "全景素材未能载入",
+        panoramaInitError: "全景初始化失败",
+        captureError: "无法从全景画布生成截图。",
+        serverError: "服务器返回 {status}",
+        unknownError: "未知错误。请确认 Python 服务仍在运行。",
+        candidateMain: "突出度 {score} · ΔE00 {delta}",
+        candidateMeta: "面积 {area}% · 彩度提升 {chroma} · {hex}",
+        candidateReference: "参考新颖度 P{percentile} · 最近参考色 {reference}",
+        analysisComplete: "色彩语境分析完成",
+        retryHint: "请重新选择取景并按下快门",
+        resetDone: "已回到初始取景",
+        fullscreenUnavailable: "当前浏览器不允许全屏",
+        summary: "检测到 {count} 个候选区域。区域 #1 占画面 {area}%，局部 CIEDE2000 色差为 {delta}；相对于 {references} 张正面参考图，它处于第 {percentile} 百分位的新颖度。当前灵敏度为 {sensitivity}。结果不表示美丑、文化价值或应当移除。",
+        summaryEmpty: "没有保留候选区域。请降低灵敏度或提高分区细节。本结果只测量色彩差异。"
+      },
+      en: {
+        documentTitle: "Jinxi Color Lens · 360° Field Prototype",
+        metaDescription: "A fixed-position 360° Jinxi scene for virtual framing and objective contextual color analysis.",
+        languageAria: "Language options",
+        sceneAria: "Fixed-position 360-degree Jinxi panorama. Drag or use arrow keys to look around, and scroll to zoom.",
+        mainTitle: "Jinxi Color Lens",
+        evidence: "Evidence",
+        evidenceTitle: "View reference learning and evidence boundaries",
+        auto: "Auto rotate",
+        pauseAuto: "Pause rotation",
+        autoTitle: "Start automatic rotation",
+        fullscreen: "Fullscreen",
+        fullscreenTitle: "Enter fullscreen",
+        help: "Guide",
+        helpTitle: "Open guide",
+        sceneInfoAria: "Scene information",
+        fixedCamera: "Fixed camera · Online",
+        viewpoint: "Waterside Viewpoint A",
+        sceneDescription: "Frame a view from this fixed position. The shutter records only the panorama, without interface elements.",
+        direction: "Direction",
+        fieldOfView: "Field of view",
+        relativeView: "Relative view · not geographic north",
+        peekAlt: "Thumbnail of the latest captured view",
+        latestFrame: "Latest frame · ready for analysis",
+        cameraControlsAria: "Camera controls",
+        dragFrame: "Drag to frame the scene",
+        controlHint: "Scroll to zoom · Space to capture",
+        zoomOutAria: "Zoom out",
+        resetAria: "Return to the initial view",
+        zoomInAria: "Zoom in",
+        captureAria: "Capture and analyze the current view",
+        analysisAria: "Color-analysis results",
+        analysisTitle: "Contextual Color Analysis",
+        closeAnalysisAria: "Close analysis results",
+        pipeline0Title: "Reading your captured view",
+        pipeline0Copy: "The system reads local differences and positive-reference colors. It does not judge beauty.",
+        pipeline1Title: "Dividing the image into color regions",
+        pipeline1Copy: "The spatial structure is preserved instead of reducing the image to one average color.",
+        pipeline2Title: "Comparing local color context",
+        pipeline2Copy: "Measuring hue, chroma, lightness, local rarity, and reference novelty.",
+        pipeline3Title: "Ranking candidate regions",
+        pipeline3Copy: "A high value means relatively distinctive color, not an aesthetic verdict.",
+        pipelineStep1: "01 · Freeze the current frame",
+        pipelineStep2: "02 · Segment local color regions",
+        pipelineStep3: "03 · Compare local context with reference memory",
+        pipelineStep4: "04 · Rank potentially distinctive regions",
+        analysisViewsAria: "Analysis views",
+        tabOverlay: "Detection overlay",
+        tabOriginal: "Captured view",
+        tabMosaic: "Spatial mosaic",
+        tabPalette: "Color palette",
+        tabDiagnostics: "Diagnostics",
+        resultAlt: "Color-analysis result",
+        captionOverlay: "Heat and numbered outlines show regions with relatively distinctive colors",
+        captionOriginal: "The frame you selected and captured from the fixed viewpoint",
+        captionMosaic: "The spatial mosaic preserves where colors appear in the frame",
+        captionPalette: "Each block's width represents its approximate pixel share",
+        captionDiagnostics: "CIELAB distribution and feature percentiles for candidate regions",
+        downloadView: "Download current view ↓",
+        rankedCandidates: "Ranked candidates · local × reference evidence",
+        boundaryTitle: "Interpretation boundary",
+        boundaryCopy: "A high value means that both local color contrast and the limited reference set support the candidate. It does not mean the object is ugly, lacks cultural value, or should be removed. Weather, shadows, reflections, and white balance may affect the result.",
+        settingsSummary: "Adjust analysis settings and capture again",
+        sensitivity: "Detection sensitivity",
+        sensitivityHelp: "Higher values retain only more extreme regions",
+        detail: "Segmentation detail",
+        detailHelp: "Higher values can reveal smaller decorations",
+        candidateCount: "Number of candidates",
+        errorTitle: "The analysis did not finish",
+        retry: "Capture again",
+        loadingTitle: "Opening the Jinxi waterside scene",
+        loadingCopy: "Preparing the fixed-position panorama",
+        guideTitle: "How to use this prototype",
+        closeHelpAria: "Close the guide",
+        guide1: "Drag the panorama or use the arrow keys to change direction. Use the wheel or plus/minus buttons to change the field of view.",
+        guide2: "Press the round shutter or the Space key. The system captures a clean panorama frame and automatically runs contextual color analysis.",
+        guide3: "This is a fixed-position 360° prototype. You can change the viewing angle, but you cannot yet move freely through the scene.",
+        guide4: "The scene was reconstructed with limited field material. Unseen directions and architectural details should not be treated as an on-site survey.",
+        loadingFailureHelp: "Refresh the page or confirm that WebGL is enabled in your browser",
+        noWebgl: "This browser does not support WebGL",
+        panoramaLoadError: "The panorama could not be loaded",
+        panoramaInitError: "The panorama could not be initialized",
+        captureError: "The panorama canvas could not be captured.",
+        serverError: "The server returned status {status}",
+        unknownError: "Unknown error. Confirm that the Python service is still running.",
+        candidateMain: "Distinctiveness {score} · ΔE00 {delta}",
+        candidateMeta: "Area {area}% · Chroma lift {chroma} · {hex}",
+        candidateReference: "Reference novelty P{percentile} · nearest reference {reference}",
+        analysisComplete: "Contextual color analysis complete",
+        retryHint: "Choose another frame and press the shutter",
+        resetDone: "Returned to the initial view",
+        fullscreenUnavailable: "Fullscreen is not available in this browser",
+        summary: "The detector retained {count} candidate regions. Candidate #1 covers {area}% of the frame and has a local CIEDE2000 difference of {delta}; relative to {references} positive references, it is at the {percentile}th novelty percentile. Sensitivity is {sensitivity}. The result does not judge beauty, cultural value, or whether anything should be removed.",
+        summaryEmpty: "No candidate regions were retained. Lower the sensitivity or increase the segmentation detail. This output measures color difference only."
+      }
+    };
+
+    function t(key, values = {}) {
+      const dictionary = translations[currentLanguage] || translations["zh-CN"];
+      let text = dictionary[key] ?? translations["zh-CN"][key] ?? key;
+      Object.entries(values).forEach(([name, value]) => {
+        text = text.replaceAll(`{${name}}`, String(value));
+      });
+      return text;
+    }
+
+    function preferredLanguage() {
+      try {
+        const stored = localStorage.getItem("jinxi-color-lens-language");
+        if (stored === "en" || stored === "zh-CN") return stored;
+      } catch (_) {}
+      return "zh-CN";
+    }
+
+    function applyLanguage(language) {
+      currentLanguage = language === "en" ? "en" : "zh-CN";
+      document.documentElement.lang = currentLanguage;
+      document.title = t("documentTitle");
+      const description = document.querySelector('meta[name="description"]');
+      if (description) description.content = t("metaDescription");
+      els("[data-i18n]").forEach(node => node.textContent = t(node.dataset.i18n));
+      els("[data-i18n-aria]").forEach(node => node.setAttribute("aria-label", t(node.dataset.i18nAria)));
+      els("[data-i18n-title]").forEach(node => node.setAttribute("title", t(node.dataset.i18nTitle)));
+      els("[data-i18n-alt]").forEach(node => node.setAttribute("alt", t(node.dataset.i18nAlt)));
+      els(".language-button").forEach(button => {
+        const active = button.dataset.language === currentLanguage;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      el("#autoButton .label").textContent = rotating ? t("pauseAuto") : t("auto");
+      setPipelineStep(currentPipelineIndex);
+      if (lastPayload) {
+        el("#summary").textContent = localizedSummary(lastPayload);
+        renderCandidates(lastPayload.candidates);
+        selectView(activeView);
+      }
+      try { localStorage.setItem("jinxi-color-lens-language", currentLanguage); } catch (_) {}
+    }
 
     function showToast(message) {
       toast.textContent = message;
@@ -996,9 +1280,9 @@
       showToast.timer = setTimeout(() => toast.classList.remove("visible"), 1800);
     }
 
-    function failLoading(message) {
-      loading.querySelector("strong").textContent = message;
-      loading.querySelector("small").textContent = "请刷新页面或确认浏览器已启用 WebGL";
+    function failLoading(messageKey) {
+      loading.querySelector("strong").textContent = t(messageKey);
+      loading.querySelector("small").textContent = t("loadingFailureHelp");
     }
 
     function compileShader(type, source) {
@@ -1015,7 +1299,7 @@
     let uniforms;
     function initPanorama() {
       if (!gl) {
-        failLoading("当前浏览器不支持 WebGL");
+        failLoading("noWebgl");
         return;
       }
 
@@ -1090,11 +1374,11 @@
           loading.classList.add("hidden");
           setTimeout(() => canvas.focus({ preventScroll: true }), 700);
         };
-        image.onerror = () => failLoading("全景素材未能载入");
+        image.onerror = () => failLoading("panoramaLoadError");
         image.src = "/static/panorama.png";
       } catch (error) {
         console.error(error);
-        failLoading("全景初始化失败");
+        failLoading("panoramaInitError");
       }
     }
 
@@ -1176,20 +1460,29 @@
       canvas.focus({ preventScroll: true });
     }
 
-    function setPipelineStep(index, title, copy) {
+    const pipelineStates = [
+      ["pipeline0Title", "pipeline0Copy"],
+      ["pipeline1Title", "pipeline1Copy"],
+      ["pipeline2Title", "pipeline2Copy"],
+      ["pipeline3Title", "pipeline3Copy"]
+    ];
+
+    function setPipelineStep(index) {
+      currentPipelineIndex = clamp(index, 0, pipelineStates.length - 1);
       els(".pipeline-step").forEach((step, i) => {
-        step.classList.toggle("active", i === index);
-        step.classList.toggle("done", i < index);
+        step.classList.toggle("active", i === currentPipelineIndex);
+        step.classList.toggle("done", i < currentPipelineIndex);
       });
-      el("#pipelineTitle").textContent = title;
-      el("#pipelineCopy").textContent = copy;
+      const [titleKey, copyKey] = pipelineStates[currentPipelineIndex];
+      el("#pipelineTitle").textContent = t(titleKey);
+      el("#pipelineCopy").textContent = t(copyKey);
     }
 
     function resetAnalysisUi() {
       el("#pipeline").style.display = "grid";
       el("#results").classList.remove("ready");
       el("#errorState").classList.remove("visible");
-      setPipelineStep(0, "正在读取你的取景", "系统只计算色彩差异，不判断美丑。");
+      setPipelineStep(0);
     }
 
     function fireShutter() {
@@ -1201,7 +1494,7 @@
     function canvasBlob() {
       return new Promise((resolve, reject) => {
         drawScene();
-        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("无法从全景画布生成截图。")), "image/png");
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error(t("captureError"))), "image/png");
       });
     }
 
@@ -1217,6 +1510,7 @@
       analyzing = true;
       rotating = false;
       el("#autoButton").setAttribute("aria-pressed", "false");
+      el("#autoButton .label").textContent = t("auto");
       el("#captureButton").disabled = true;
       fireShutter();
       resetAnalysisUi();
@@ -1225,7 +1519,7 @@
       try {
         capturedBlob = await canvasBlob();
         updatePreview(capturedBlob);
-        setPipelineStep(1, "正在划分颜色区域", "保留画面空间结构，而不是只计算平均色。 ");
+        setPipelineStep(1);
 
         const form = new FormData();
         form.append("image", capturedBlob, "jinxi-view.png");
@@ -1233,12 +1527,13 @@
         form.append("detail", el("#detail").value);
         form.append("top_k", el("#topK").value);
         form.append("mosaic_cells", "18");
+        form.append("language", currentLanguage);
 
         const stepTimer = setTimeout(() => {
-          setPipelineStep(2, "正在比较局部色彩语境", "计算色相、彩度、明度和局部稀有度。 ");
+          setPipelineStep(2);
         }, 700);
         const rankTimer = setTimeout(() => {
-          setPipelineStep(3, "正在整理候选区域", "高分表示相对突出，不表示审美结论。 ");
+          setPipelineStep(3);
         }, 1700);
 
         const response = await fetch("/api/analyze", { method: "POST", body: form });
@@ -1246,14 +1541,14 @@
         clearTimeout(rankTimer);
         if (!response.ok) {
           const payload = await response.json().catch(() => ({}));
-          throw new Error(payload.detail || `服务器返回 ${response.status}`);
+          throw new Error(payload.detail || t("serverError", { status: response.status }));
         }
         const payload = await response.json();
         showResults(payload);
       } catch (error) {
         console.error(error);
         el("#pipeline").style.display = "none";
-        el("#errorMessage").textContent = error.message || "未知错误。请确认 Python 服务仍在运行。";
+        el("#errorMessage").textContent = error.message || t("unknownError");
         el("#errorState").classList.add("visible");
       } finally {
         analyzing = false;
@@ -1261,12 +1556,12 @@
       }
     }
 
-    const captions = {
-      overlay: "热力与编号轮廓显示相对色彩突出区域",
-      original: "你从固定观察点选择并拍摄的原始画面",
-      mosaic: "空间色谱保留颜色在画面中的相对位置",
-      palette: "主色块宽度对应其在画面中的像素比例",
-      diagnostics: "CIELAB 分布与候选区域特征百分位"
+    const captionKeys = {
+      overlay: "captionOverlay",
+      original: "captionOriginal",
+      mosaic: "captionMosaic",
+      palette: "captionPalette",
+      diagnostics: "captionDiagnostics"
     };
 
     function selectView(view) {
@@ -1274,9 +1569,23 @@
       els(".tab-button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
       const source = view === "original" ? capturedUrl : resultImages[view];
       el("#resultImage").src = source;
-      el("#resultCaption").textContent = captions[view];
+      el("#resultCaption").textContent = t(captionKeys[view]);
       el("#downloadResult").href = source;
       el("#downloadResult").download = view === "original" ? "jinxi-captured-view.png" : `jinxi-${view}.png`;
+    }
+
+    function localizedSummary(payload) {
+      const candidates = payload?.candidates || [];
+      if (!candidates.length) return t("summaryEmpty");
+      const first = candidates[0];
+      return t("summary", {
+        count: candidates.length,
+        area: first.area.toFixed(2),
+        delta: first.delta_e.toFixed(1),
+        references: payload.reference_model?.reference_count ?? 0,
+        percentile: first.reference_percentile?.toFixed(0) ?? "0",
+        sensitivity: payload.method?.sensitivity ?? el("#sensitivity").value
+      });
     }
 
     function renderCandidates(candidates) {
@@ -1288,8 +1597,9 @@
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
-            <strong>突出度 ${candidate.score.toFixed(1)} · ΔE00 ${candidate.delta_e.toFixed(1)}</strong>
-            <span>面积 ${candidate.area.toFixed(2)}% · 彩度提升 ${candidate.chroma_lift.toFixed(1)} · ${candidate.hex}</span>
+            <strong>${t("candidateMain", { score: candidate.score.toFixed(1), delta: candidate.delta_e.toFixed(1) })}</strong>
+            <span>${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
+            <span>${t("candidateReference", { percentile: candidate.reference_percentile.toFixed(0), reference: candidate.closest_reference_hex })}</span>
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
@@ -1298,36 +1608,40 @@
     }
 
     function showResults(payload) {
+      lastPayload = payload;
       resultImages = payload.images;
-      el("#summary").textContent = payload.summary;
+      el("#summary").textContent = localizedSummary(payload);
       renderCandidates(payload.candidates);
       el("#pipeline").style.display = "none";
       el("#errorState").classList.remove("visible");
       el("#results").classList.add("ready");
       selectView("overlay");
-      showToast("色彩语境分析完成");
+      showToast(t("analysisComplete"));
     }
 
     el("#captureButton").addEventListener("click", captureAndAnalyze);
     el("#closeDrawer").addEventListener("click", closeDrawer);
-    el("#retryButton").addEventListener("click", () => { closeDrawer(); showToast("请重新选择取景并按下快门"); });
+    el("#retryButton").addEventListener("click", () => { closeDrawer(); showToast(t("retryHint")); });
+    els(".language-button").forEach(button => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.language));
+    });
     els(".tab-button").forEach(button => button.addEventListener("click", () => selectView(button.dataset.view)));
 
     el("#zoomIn").addEventListener("click", () => fov = clamp(fov - 8, 34, 100));
     el("#zoomOut").addEventListener("click", () => fov = clamp(fov + 8, 34, 100));
     el("#resetButton").addEventListener("click", () => {
-      yaw = 0; pitch = 0; fov = 75; showToast("已回到初始取景");
+      yaw = 0; pitch = 0; fov = 75; showToast(t("resetDone"));
     });
     el("#autoButton").addEventListener("click", event => {
       rotating = !rotating;
       event.currentTarget.setAttribute("aria-pressed", String(rotating));
-      event.currentTarget.querySelector(".label").textContent = rotating ? "暂停环视" : "自动环视";
+      event.currentTarget.querySelector(".label").textContent = rotating ? t("pauseAuto") : t("auto");
     });
     el("#fullscreenButton").addEventListener("click", async () => {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
         else await document.documentElement.requestFullscreen();
-      } catch { showToast("当前浏览器不允许全屏"); }
+      } catch { showToast(t("fullscreenUnavailable")); }
     });
 
     const helpDialog = el("#helpDialog");
@@ -1355,7 +1669,8 @@
       if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
     });
 
-    window.panoramaState = () => ({ yaw, pitch, fov, ready, rotating, analyzing });
+    window.panoramaState = () => ({ yaw, pitch, fov, ready, rotating, analyzing, language: currentLanguage });
+    applyLanguage(preferredLanguage());
     initPanorama();
   </script>
 </body>

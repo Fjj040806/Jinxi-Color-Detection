@@ -22,6 +22,8 @@ from PIL import Image, ImageDraw, ImageOps
 from sklearn.cluster import MiniBatchKMeans
 from skimage import color, morphology, segmentation
 
+from reference_model import score_reference_colors
+
 
 @dataclass
 class AnalysisResult:
@@ -33,6 +35,7 @@ class AnalysisResult:
     summary: str
     score_map: np.ndarray
     segment_labels: np.ndarray
+    model_info: dict[str, Any]
 
 
 def _prepare_rgb(image: Any, max_side: int = 1100) -> np.ndarray:
@@ -219,6 +222,40 @@ def _analyze_segments(rgb: np.ndarray, requested_segments: int) -> dict[str, Any
     }
 
 
+def _attach_reference_evidence(
+    analysis: dict[str, Any], reference_model: dict[str, Any] | None
+) -> None:
+    """Fuse within-image contrast with positive-reference color novelty.
+
+    The reference contribution is intentionally capped. With the current
+    three-image demonstration set, local evidence still has the larger role.
+    """
+
+    local_scores = np.asarray(analysis["scores"], dtype=float).copy()
+    analysis["local_scores"] = local_scores
+    analysis["reference_model"] = reference_model
+
+    evidence = score_reference_colors(analysis["median_lab"], reference_model)
+    analysis["reference_distance"] = evidence["distance"]
+    analysis["reference_percentile"] = evidence["percentile"]
+    analysis["reference_scores"] = evidence["score"]
+    analysis["reference_nearest_index"] = evidence["nearest_index"]
+
+    if not reference_model:
+        analysis["reference_weight"] = 0.0
+        return
+
+    reference_weight = float(np.clip(reference_model.get("reference_weight", 0.0), 0.0, 0.45))
+    reference_scores = np.asarray(evidence["score"], dtype=float)
+    combined = (1.0 - reference_weight) * local_scores + reference_weight * reference_scores
+    # A small agreement term rewards regions that are unusual both within the
+    # current image and relative to the positive-reference memory.
+    combined += 0.08 * np.minimum(local_scores, reference_scores)
+    analysis["reference_weight"] = reference_weight
+    analysis["scores"] = np.clip(combined, 0.0, 100.0)
+    analysis["score_map"] = analysis["scores"][analysis["labels"]]
+
+
 def _candidate_masks(
     analysis: dict[str, Any], sensitivity: float, top_k: int
 ) -> list[np.ndarray]:
@@ -303,6 +340,7 @@ def _candidate_metrics(
         segment_ids = np.unique(labels[mask])
         weights = analysis["areas"][segment_ids]
         segment_scores = analysis["scores"][segment_ids]
+        local_segment_scores = analysis["local_scores"][segment_ids]
         score = 0.62 * float(np.max(segment_scores)) + 0.38 * float(
             np.average(segment_scores, weights=weights)
         )
@@ -323,6 +361,17 @@ def _candidate_metrics(
         chromatic_delta = float(np.linalg.norm(region_lab[1:] - context_lab[1:]))
         rarity = float(np.average(analysis["rarity"][segment_ids], weights=weights))
         region_rgb = np.mean(rgb[mask], axis=0)
+        reference = score_reference_colors(
+            region_lab.reshape(1, 3), analysis.get("reference_model")
+        )
+        reference_distance = float(reference["distance"][0])
+        reference_percentile = float(reference["percentile"][0])
+        reference_score = float(reference["score"][0])
+        nearest_reference_index = int(reference["nearest_index"][0])
+        reference_model = analysis.get("reference_model")
+        closest_reference_hex = None
+        if reference_model and reference_model.get("prototype_colors"):
+            closest_reference_hex = reference_model["prototype_colors"][nearest_reference_index]["hex"]
         coords = np.argwhere(mask)
         centroid_y, centroid_x = np.mean(coords, axis=0)
 
@@ -331,6 +380,9 @@ def _candidate_metrics(
                 "rank": rank,
                 "mask": mask,
                 "score": float(np.clip(score, 0, 100)),
+                "local_evidence_score": float(
+                    np.average(local_segment_scores, weights=weights)
+                ),
                 "area_percent": float(100 * mask.mean()),
                 "local_delta_e": local_delta_e,
                 "lightness_gap": lightness_gap,
@@ -338,6 +390,10 @@ def _candidate_metrics(
                 "chroma_lift": chroma_lift,
                 "chromatic_delta": chromatic_delta,
                 "rarity": rarity,
+                "reference_delta_e": reference_distance,
+                "reference_percentile": reference_percentile,
+                "reference_evidence_score": reference_score,
+                "closest_reference_hex": closest_reference_hex,
                 "mean_rgb": region_rgb,
                 "hex": _hex(region_rgb),
                 "centroid": (float(centroid_x), float(centroid_y)),
@@ -352,6 +408,7 @@ def _candidate_metrics(
                         analysis["chroma_lift"], chroma_lift
                     ),
                     "Color rarity": _percentile_rank(analysis["rarity"], rarity),
+                    "Reference novelty": reference_percentile,
                 },
             }
         )
@@ -385,16 +442,29 @@ def _rerank_candidates(
         np.asarray([item["rarity"] for item in candidates]), 0.0, 100.0
     )
     proposal = np.asarray([item["score"] for item in candidates]) / 100.0
+    reference = np.asarray(
+        [item.get("reference_evidence_score", 0.0) for item in candidates]
+    ) / 100.0
     areas = np.asarray([item["area_percent"] for item in candidates])
     area_support = np.clip(np.sqrt(areas / 0.30), 0.58, 1.0)
 
-    final = (
-        0.42 * chromatic
-        + 0.25 * lift
-        + 0.13 * delta_e
-        + 0.12 * rarity
-        + 0.08 * proposal
-    ) * area_support
+    if np.any(reference > 0):
+        final = (
+            0.31 * chromatic
+            + 0.18 * lift
+            + 0.10 * delta_e
+            + 0.08 * rarity
+            + 0.08 * proposal
+            + 0.25 * reference
+        ) * area_support
+    else:
+        final = (
+            0.42 * chromatic
+            + 0.25 * lift
+            + 0.13 * delta_e
+            + 0.12 * rarity
+            + 0.08 * proposal
+        ) * area_support
     final = 100.0 * _robust_unit(final, 0.0, 100.0)
 
     for item, score in zip(candidates, final):
@@ -465,7 +535,7 @@ def _overlay_image(
         footer.line(
             (margin + offset, bar_top, margin + offset, bar_bottom), fill=fill
         )
-    low_label = "lower relative color contrast"
+    low_label = "lower combined color evidence"
     high_label = "higher"
     footer.text((margin, bar_bottom + 6), low_label, fill=(55, 58, 62))
     high_box = footer.textbbox((0, 0), high_label)
@@ -575,6 +645,25 @@ def _diagnostics_figure(
         edgecolors="#FFFFFF",
         linewidths=0.45,
     )
+    reference_model = analysis.get("reference_model")
+    if reference_model and reference_model.get("prototype_colors"):
+        reference_lab = np.asarray(
+            [item["lab"] for item in reference_model["prototype_colors"]], dtype=float
+        )
+        reference_rgb = np.asarray(
+            [item["rgb"] for item in reference_model["prototype_colors"]], dtype=float
+        ) / 255.0
+        axes[0].scatter(
+            reference_lab[:, 1],
+            reference_lab[:, 2],
+            s=58,
+            marker="X",
+            c=reference_rgb,
+            edgecolors="#16191D",
+            linewidths=0.6,
+            alpha=0.9,
+            label="Reference prototypes",
+        )
     marker_colors = ["#D6A700", "#00A67A", "#087FA8", "#D62C5E", "#7A42C1"]
     for index, candidate in enumerate(candidates):
         candidate_lab = color.rgb2lab(
@@ -612,13 +701,15 @@ def _diagnostics_figure(
         "Chroma lift",
         "Color rarity",
     ]
+    if reference_model:
+        feature_names.append("Reference novelty")
     if candidates:
         candidate_count = len(candidates)
         y_positions = np.arange(candidate_count)
         total_height = 0.72
         bar_height = total_height / len(feature_names)
-        bar_colors = ["#E4572E", "#2E86AB", "#55A868", "#8172B2"]
-        offsets = (np.arange(len(feature_names)) - 1.5) * bar_height
+        bar_colors = ["#E4572E", "#2E86AB", "#55A868", "#8172B2", "#C65D8B"]
+        offsets = (np.arange(len(feature_names)) - (len(feature_names) - 1) / 2) * bar_height
         for feature_index, feature_name in enumerate(feature_names):
             values = [
                 candidate["feature_percentiles"][feature_name] for candidate in candidates
@@ -664,24 +755,58 @@ def _results_table(candidates: list[dict[str, Any]]) -> pd.DataFrame:
                 "色度距离 Δab": round(candidate["chromatic_delta"], 1),
                 "明度差": round(candidate["lightness_gap"], 1),
                 "彩度提升": round(candidate["chroma_lift"], 1),
+                "参考新颖度百分位": round(candidate.get("reference_percentile", 0.0), 1),
+                "距参考色 ΔE00": round(candidate.get("reference_delta_e", 0.0), 1),
+                "最近参考色": candidate.get("closest_reference_hex") or "—",
                 "代表色": candidate["hex"],
             }
         )
     return pd.DataFrame(rows)
 
 
-def _summary(candidates: list[dict[str, Any]], sensitivity: float, segment_count: int) -> str:
+def _summary(
+    candidates: list[dict[str, Any]],
+    sensitivity: float,
+    segment_count: int,
+    language: str = "zh-CN",
+    reference_model: dict[str, Any] | None = None,
+) -> str:
+    english = language.lower().startswith("en")
     if not candidates:
-        return (
-            "No candidate regions were retained. Lower the sensitivity or increase the "
-            "segmentation detail. This output measures color difference only."
-        )
+        if english:
+            return (
+                "No candidate regions were retained. Lower the sensitivity or increase the "
+                "segmentation detail. This output measures color difference only."
+            )
+        return "没有保留候选区域。请降低灵敏度或提高分区细节。本结果只测量色彩差异。"
     first = candidates[0]
+    reference_count = int(reference_model.get("reference_count", 0)) if reference_model else 0
+    reference_percentile = float(first.get("reference_percentile", 0.0))
+    if english:
+        reference_sentence = (
+            f" Relative to {reference_count} positive reference images, its color is at the "
+            f"{reference_percentile:.0f}th novelty percentile."
+            if reference_count
+            else ""
+        )
+        return (
+            f"The detector retained {len(candidates)} candidate regions. Candidate #1 covers "
+            f"{first['area_percent']:.2f}% of the frame and has a local CIEDE2000 difference "
+            f"of {first['local_delta_e']:.1f}.{reference_sentence} Sensitivity is {sensitivity:.0f}, and the image "
+            f"was divided into approximately {segment_count} color regions. These results "
+            "describe color evidence from this frame and a limited reference set. They do not "
+            "judge beauty, cultural value, or whether anything should be removed."
+        )
+    reference_sentence = (
+        f"相对于 {reference_count} 张正面参考图，它的颜色处于第 {reference_percentile:.0f} 百分位的新颖度。"
+        if reference_count
+        else ""
+    )
     return (
         f"检测到 {len(candidates)} 个候选区域。区域 #1 占画面 {first['area_percent']:.2f}%，"
-        f"它与局部环境的 CIEDE2000 色差为 {first['local_delta_e']:.1f}。"
+        f"它与局部环境的 CIEDE2000 色差为 {first['local_delta_e']:.1f}。{reference_sentence}"
         f"当前灵敏度为 {sensitivity:.0f}，图像被划分为约 {segment_count} 个颜色区域。"
-        "这些结果只表示同一张图片中的相对色彩异常，不表示美丑、文化价值或应当移除。"
+        "这些结果只表示当前画面与有限参考集中的色彩证据，不表示美丑、文化价值或应当移除。"
     )
 
 
@@ -691,11 +816,14 @@ def analyze_color_context(
     segment_detail: int = 260,
     top_candidates: int = 5,
     mosaic_cells: int = 18,
+    language: str = "zh-CN",
+    reference_model: dict[str, Any] | None = None,
 ) -> AnalysisResult:
-    """Run color-only contextual anomaly analysis on one image."""
+    """Run local and positive-reference color anomaly analysis on one image."""
 
     rgb = _prepare_rgb(image)
     analysis = _analyze_segments(rgb, int(segment_detail))
+    _attach_reference_evidence(analysis, reference_model)
     pool_size = max(int(top_candidates) * 3, 12)
     masks = _candidate_masks(analysis, float(sensitivity), pool_size)
     candidates = _candidate_metrics(analysis, masks)
@@ -707,7 +835,20 @@ def analyze_color_context(
         palette=_dominant_palette(rgb),
         diagnostics=_diagnostics_figure(analysis, candidates),
         table=_results_table(candidates),
-        summary=_summary(candidates, float(sensitivity), analysis["count"]),
+        summary=_summary(
+            candidates,
+            float(sensitivity),
+            analysis["count"],
+            language=language,
+            reference_model=reference_model,
+        ),
         score_map=analysis["score_map"],
         segment_labels=analysis["labels"],
+        model_info={
+            "enabled": bool(reference_model),
+            "fingerprint": reference_model.get("fingerprint") if reference_model else None,
+            "reference_count": reference_model.get("reference_count", 0) if reference_model else 0,
+            "reference_weight": analysis.get("reference_weight", 0.0),
+            "status": reference_model.get("status") if reference_model else "local-only",
+        },
     )

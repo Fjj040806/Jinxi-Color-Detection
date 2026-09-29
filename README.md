@@ -21,6 +21,14 @@ photograph, and receives two coordinated forms of evidence:
 The system proposes regions for review. It does **not** classify objects as
 beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 
+## Demo
+
+> **Temporary workflow test.** This short clip verifies the repository video pattern. It will be replaced with a narrated or captioned final project walkthrough.
+
+[![Short animated preview of the Jinxi Color Lens visualization](media/demo.gif)](media/demo.mp4)
+
+[Watch the full demo video](media/demo.mp4)
+
 ## What this version supports
 
 - fixed-position 360° navigation with drag, touch, keyboard, wheel, zoom,

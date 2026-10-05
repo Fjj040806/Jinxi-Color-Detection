@@ -36,6 +36,7 @@ class AnalysisResult:
     score_map: np.ndarray
     segment_labels: np.ndarray
     model_info: dict[str, Any]
+    network: dict[str, Any]
 
 
 def _prepare_rgb(image: Any, max_side: int = 1100) -> np.ndarray:
@@ -476,6 +477,165 @@ def _rerank_candidates(
     return candidates
 
 
+def _network_evidence(
+    analysis: dict[str, Any],
+    candidates: list[dict[str, Any]],
+    max_nodes: int = 14,
+) -> dict[str, Any]:
+    """Build a compact, linked region network for visual explanation.
+
+    Candidate regions become nodes together with nearby context segments. An
+    edge is retained only when two nodes touch in the image and their
+    CIEDE2000 color difference clears an adaptive, explicitly reported
+    threshold. The graph is explanatory evidence, not an object classifier.
+    """
+
+    labels = analysis["labels"]
+    height, width = labels.shape
+    adjacency = analysis["adjacency"]
+    median_lab = analysis["median_lab"]
+    areas = analysis["areas"]
+    mean_rgb = analysis["mean_rgb"]
+
+    candidate_specs: list[dict[str, Any]] = []
+    claimed_segments: set[int] = set()
+    for candidate in candidates:
+        segment_ids = {int(value) for value in np.unique(labels[candidate["mask"]])}
+        claimed_segments.update(segment_ids)
+        candidate_specs.append(
+            {
+                "id": f"candidate-{candidate['rank']}",
+                "kind": "candidate",
+                "rank": int(candidate["rank"]),
+                "segment_ids": segment_ids,
+                "mask": candidate["mask"],
+                "score": float(candidate["score"]),
+                "area_percent": float(candidate["area_percent"]),
+                "mean_rgb": np.asarray(candidate["mean_rgb"], dtype=float),
+                "lab": color.rgb2lab(
+                    np.asarray(candidate["mean_rgb"], dtype=float).reshape(1, 1, 3)
+                    / 255.0
+                ).reshape(3),
+                "centroid": candidate["centroid"],
+            }
+        )
+
+    # Nearby context segments make the local comparison visible. Contrast is
+    # the main selection signal; segment area only breaks near-ties.
+    context_priority: dict[int, float] = {}
+    for spec in candidate_specs:
+        for segment_id in spec["segment_ids"]:
+            for neighbor in adjacency[segment_id]:
+                if neighbor in claimed_segments:
+                    continue
+                delta = float(color.deltaE_ciede2000(spec["lab"], median_lab[neighbor]))
+                priority = delta + 2.5 * np.sqrt(float(areas[neighbor]) / labels.size)
+                context_priority[neighbor] = max(context_priority.get(neighbor, 0.0), priority)
+
+    context_limit = max(0, int(max_nodes) - len(candidate_specs))
+    context_ids = sorted(
+        context_priority,
+        key=lambda index: (context_priority[index], areas[index]),
+        reverse=True,
+    )[:context_limit]
+
+    context_specs: list[dict[str, Any]] = []
+    for segment_id in context_ids:
+        mask = labels == segment_id
+        coords = np.argwhere(mask)
+        centroid_y, centroid_x = np.mean(coords, axis=0)
+        context_specs.append(
+            {
+                "id": f"context-{segment_id}",
+                "kind": "context",
+                "rank": None,
+                "segment_ids": {int(segment_id)},
+                "mask": mask,
+                "score": float(analysis["scores"][segment_id]),
+                "area_percent": float(100.0 * mask.mean()),
+                "mean_rgb": np.asarray(mean_rgb[segment_id], dtype=float),
+                "lab": np.asarray(median_lab[segment_id], dtype=float),
+                "centroid": (float(centroid_x), float(centroid_y)),
+            }
+        )
+
+    specs = candidate_specs + context_specs
+    potential_edges: list[dict[str, Any]] = []
+    for left_index, left in enumerate(specs):
+        left_segments = left["segment_ids"]
+        for right in specs[left_index + 1 :]:
+            touches = any(
+                bool(adjacency[segment_id] & right["segment_ids"])
+                for segment_id in left_segments
+            )
+            if not touches:
+                continue
+            delta_e = float(color.deltaE_ciede2000(left["lab"], right["lab"]))
+            potential_edges.append(
+                {"source": left["id"], "target": right["id"], "delta_e": delta_e}
+            )
+
+    if potential_edges:
+        edge_values = np.asarray([edge["delta_e"] for edge in potential_edges])
+        threshold = float(np.clip(np.percentile(edge_values, 55), 16.0, 24.0))
+    else:
+        threshold = 18.0
+
+    edges = [edge for edge in potential_edges if edge["delta_e"] >= threshold]
+    degree = {spec["id"]: 0 for spec in specs}
+    weighted_degree = {spec["id"]: 0.0 for spec in specs}
+    for edge in edges:
+        edge["strength"] = float(edge["delta_e"] / max(threshold, 1e-6))
+        for node_id in (edge["source"], edge["target"]):
+            degree[node_id] += 1
+            weighted_degree[node_id] += float(edge["delta_e"])
+
+    hub_id = None
+    if specs:
+        hub_id = max(
+            specs,
+            key=lambda spec: (
+                degree[spec["id"]],
+                weighted_degree[spec["id"]],
+                spec["kind"] == "candidate",
+                spec["score"],
+            ),
+        )["id"]
+
+    nodes: list[dict[str, Any]] = []
+    for spec in specs:
+        centroid_x, centroid_y = spec["centroid"]
+        nodes.append(
+            {
+                "id": spec["id"],
+                "kind": spec["kind"],
+                "rank": spec["rank"],
+                "label": f"#{spec['rank']}" if spec["rank"] else "CTX",
+                "hex": _hex(spec["mean_rgb"]),
+                "score": float(spec["score"]),
+                "area_percent": float(spec["area_percent"]),
+                "x": float(centroid_x / max(width - 1, 1)),
+                "y": float(centroid_y / max(height - 1, 1)),
+                "degree": int(degree[spec["id"]]),
+                "weighted_degree": float(weighted_degree[spec["id"]]),
+                "is_hub": spec["id"] == hub_id,
+                "mask": spec["mask"],
+            }
+        )
+
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "hub_id": hub_id,
+        "threshold_delta_e": threshold,
+        "potential_edge_count": len(potential_edges),
+        "claim_boundary": (
+            "The hub has the most retained high-contrast local relationships; "
+            "it is not an aesthetic verdict or object identity."
+        ),
+    }
+
+
 def _overlay_image(
     rgb: np.ndarray, score_map: np.ndarray, candidates: list[dict[str, Any]]
 ) -> np.ndarray:
@@ -828,6 +988,7 @@ def analyze_color_context(
     masks = _candidate_masks(analysis, float(sensitivity), pool_size)
     candidates = _candidate_metrics(analysis, masks)
     candidates = _rerank_candidates(candidates, int(top_candidates))
+    network = _network_evidence(analysis, candidates)
 
     return AnalysisResult(
         overlay=_overlay_image(rgb, analysis["score_map"], candidates),
@@ -851,4 +1012,5 @@ def analyze_color_context(
             "reference_weight": analysis.get("reference_weight", 0.0),
             "status": reference_model.get("status") if reference_model else "local-only",
         },
+        network=network,
     )

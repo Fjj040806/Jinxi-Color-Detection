@@ -1,4 +1,18 @@
-# Validation record · Prototype 0.3
+# Validation record · Prototype 0.4
+
+## Added visualization idioms
+
+- **Network:** candidate masks and their neighboring color regions are nodes.
+  An edge is retained only when the two regions touch in the captured image
+  and their CIEDE2000 difference exceeds the reported adaptive threshold
+  (bounded to ΔE00 16–24). Hovering or focusing a node displays its exact mask
+  over the captured photograph. The highest-degree node is labeled a
+  color-contrast hub, not an aesthetic problem.
+- **Spatial-temporal:** a top-down site schematic shows one fixed camera point,
+  a live view-direction cone, and field of view. Each shutter action adds a
+  browser-session timestamp and orientation. Selecting a history entry restores
+  its view and analysis. The diagram is explicitly marked as non-surveyed and
+  non-georeferenced.
 
 ## Reference model
 
@@ -39,7 +53,8 @@ not establish accuracy, cultural validity, or generalization.
 - FastAPI health, home, Learning & Evidence, and reference-model endpoints:
   passed.
 - End-to-end analysis request: HTTP 200 with overlay, mosaic, palette,
-  diagnostics, ranked candidates, reference metrics, and claim boundary.
+  diagnostics, ranked candidates, linked network data and masks, reference
+  metrics, and claim boundary.
 
 ## Manual checks still recommended
 

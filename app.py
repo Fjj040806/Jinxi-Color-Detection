@@ -6,6 +6,7 @@ import base64
 import io
 from pathlib import Path
 
+import numpy as np
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -28,7 +29,7 @@ app = FastAPI(
         "A fixed-position 360-degree field prototype that captures a user-framed "
         "view and measures contextual color differences."
     ),
-    version="0.3.0",
+    version="0.4.0",
 )
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
@@ -63,6 +64,24 @@ def _candidate_records(table) -> list[dict[str, object]]:
     return records
 
 
+def _network_record(network: dict[str, object]) -> dict[str, object]:
+    """Convert internal node masks to compact transparent PNG overlays."""
+
+    nodes = []
+    for node in network.get("nodes", []):
+        record = {key: value for key, value in node.items() if key != "mask"}
+        mask = np.asarray(node["mask"], dtype=bool)
+        rgba = np.zeros((*mask.shape, 4), dtype=np.uint8)
+        rgba[mask, :3] = (244, 190, 82) if node.get("is_hub") else (113, 216, 196)
+        rgba[mask, 3] = 190
+        record["mask"] = _data_url(rgba)
+        nodes.append(record)
+    return {
+        **{key: value for key, value in network.items() if key != "nodes"},
+        "nodes": nodes,
+    }
+
+
 @app.get("/", include_in_schema=False)
 def home() -> FileResponse:
     return FileResponse(STATIC / "index.html")
@@ -77,7 +96,7 @@ def learning() -> FileResponse:
 def health() -> dict[str, str]:
     return {
         "status": "ok",
-        "version": "0.3.0",
+        "version": "0.4.0",
         "reference_model": "ready" if REFERENCE_MODEL else "missing",
     }
 
@@ -141,6 +160,7 @@ async def analyze(
             "diagnostics": _data_url(result.diagnostics),
         },
         "candidates": _candidate_records(result.table),
+        "network": _network_record(result.network),
         "reference_model": result.model_info,
         "method": {
             "sensitivity": float(sensitivity),
@@ -152,6 +172,14 @@ async def analyze(
                 "Positive-reference color memory with leave-one-image-out calibration"
                 if REFERENCE_MODEL
                 else "Disabled"
+            ),
+            "network_definition": (
+                "Nodes are candidate and adjacent context regions. Edges require image-space "
+                "adjacency and CIEDE2000 difference above the reported adaptive threshold."
+            ),
+            "spatial_temporal_boundary": (
+                "The two-dimensional site view is a schematic of one fixed camera point, not "
+                "a surveyed or georeferenced map. Capture times are browser-session records."
             ),
             "claim_boundary": (
                 "Results combine within-frame color contrast with a limited positive-reference "

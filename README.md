@@ -8,7 +8,7 @@ pinned: false
 license: mit
 ---
 
-# Jinxi 360 Color Lens · Prototype 0.3
+# Jinxi 360 Color Lens · Prototype 0.4
 
 This version adds a small-sample positive-reference color model to the existing
 360-degree field experience. A visitor frames a view, takes a virtual
@@ -18,16 +18,19 @@ photograph, and receives two coordinated forms of evidence:
 2. **reference evidence** — which region colors are uncommon among the supplied
    positive reference images.
 
+The new interface adds two linked visualization idioms. A **network view**
+shows high-color-difference relationships among touching candidate and context
+regions. A **spatial-temporal companion view** shows the fixed camera point,
+current view direction, and a session timeline of captured frames.
+
 The system proposes regions for review. It does **not** classify objects as
 beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 
 ## Demo
 
-> **Temporary workflow test.** This short clip verifies the repository video pattern. It will be replaced with a narrated or captioned final project walkthrough.
+![Jinxi Color Lens demo](media/demo.gif)
 
-[![Short animated preview of the Jinxi Color Lens visualization](media/demo.gif)](media/demo.mp4)
-
-[Watch the full demo video](media/demo.mp4)
+[Download the short MP4 demo](media/demo.mp4)
 
 ## What this version supports
 
@@ -43,6 +46,14 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 - leave-one-reference-out calibration of the reference-novelty percentile;
 - coordinated overlay, spatial mosaic, dominant palette, diagnostics, and
   ranked candidate views;
+- a linked color-contrast network in which nodes are exact image regions and
+  edges require both spatial adjacency and CIEDE2000 difference above the
+  reported adaptive threshold;
+- hover/click coordination between every network node and its precise region
+  mask in the captured photograph;
+- a fixed-point 2D site schematic with a live field-of-view cone and a
+  clickable capture timeline that restores direction, field of view, frame,
+  and analysis results;
 - a bilingual **Learning & Evidence** page at `/learning` showing the reference
   cases, learned prototypes, calibration curve, interactive color inspector,
   evidence boundaries, and next-data requirements;
@@ -123,6 +134,10 @@ prototype uses a transparent color memory rather than a deep model.
 - The model learns color distribution only. It does not identify objects,
   materials, provenance, cultural meaning, or stakeholder preference.
 - A high percentile means “rare in this reference set,” not “unattractive.”
+- The network “hub” is the node with the most retained high-contrast local
+  relationships. It is not an aesthetic verdict or an identified object.
+- The companion site view is deliberately schematic. It is not surveyed,
+  georeferenced, or evidence of an exact location.
 - The supplied reference images did not include usage-license metadata. Their
   bottom-right provenance marks were excluded from model fitting, and the raw
   files are not redistributed in this package.

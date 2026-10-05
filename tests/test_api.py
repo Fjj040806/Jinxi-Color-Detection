@@ -1,4 +1,8 @@
+import io
+
+import numpy as np
 from fastapi.testclient import TestClient
+from PIL import Image
 
 from app import app
 
@@ -7,7 +11,7 @@ def test_health():
     response = TestClient(app).get("/api/health")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
-    assert response.json()["version"] == "0.3.0"
+    assert response.json()["version"] == "0.4.0"
     assert response.json()["reference_model"] == "ready"
 
 
@@ -20,6 +24,9 @@ def test_home_contains_camera_interface():
     assert 'data-language="en"' in response.text
     assert "translations" in response.text
     assert "/learning" in response.text
+    assert 'id="networkGraph"' in response.text
+    assert 'id="captureTimeline"' in response.text
+    assert 'id="mapViewCone"' in response.text
 
 
 def test_learning_page_and_reference_model_are_available():
@@ -36,3 +43,23 @@ def test_learning_page_and_reference_model_are_available():
     assert model["prototype_count"] == 28
     assert len(model["prototype_colors"]) == 28
     assert model["calibration"]["q95_delta_e"] > 0
+
+
+def test_analysis_returns_linked_network_masks():
+    image = np.full((150, 220, 3), [108, 121, 106], dtype=np.uint8)
+    image[45:110, 80:145] = [235, 55, 157]
+    buffer = io.BytesIO()
+    Image.fromarray(image).save(buffer, format="PNG")
+
+    response = TestClient(app).post(
+        "/api/analyze",
+        files={"image": ("synthetic.png", buffer.getvalue(), "image/png")},
+        data={"sensitivity": "80", "detail": "120", "top_k": "3", "language": "en"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["network"]["nodes"]
+    assert payload["network"]["edges"]
+    assert payload["network"]["hub_id"]
+    assert payload["network"]["nodes"][0]["mask"].startswith("data:image/png;base64,")
+    assert "adjacency" in payload["method"]["network_definition"]

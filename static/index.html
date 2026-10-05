@@ -235,6 +235,72 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
+    .spacetime-panel {
+      position: fixed;
+      z-index: 8;
+      top: 118px;
+      right: 32px;
+      width: 250px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(11, 20, 18, .58);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .16);
+      backdrop-filter: blur(18px) saturate(1.12);
+      animation: rise .8s .2s both cubic-bezier(.2, .7, .2, 1);
+    }
+    .spacetime-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+    .spacetime-head strong { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+    .spacetime-head span { color: rgba(239, 233, 220, .42); font-size: 8px; }
+    .site-map {
+      display: block;
+      width: 100%;
+      height: 112px;
+      border: 1px solid rgba(239, 233, 220, .1);
+      border-radius: 12px;
+      background: rgba(4, 10, 9, .36);
+    }
+    #mapViewCone { transform-origin: 82px 66px; transition: transform .18s ease-out; }
+    .map-caption {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 2px 0;
+      color: rgba(239, 233, 220, .46);
+      font-size: 8px;
+    }
+    .capture-timeline {
+      display: grid;
+      gap: 5px;
+      max-height: 116px;
+      margin-top: 9px;
+      overflow-y: auto;
+    }
+    .timeline-empty { color: rgba(239, 233, 220, .4); font-size: 9px; line-height: 1.5; }
+    .timeline-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 8px 1fr auto;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 8px;
+      border: 1px solid rgba(239, 233, 220, .09);
+      border-radius: 9px;
+      background: rgba(239, 233, 220, .035);
+      text-align: left;
+      cursor: pointer;
+    }
+    .timeline-item:hover { border-color: rgba(155, 197, 180, .34); background: rgba(155, 197, 180, .07); }
+    .timeline-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); }
+    .timeline-item strong { display: block; font-size: 9px; font-weight: 650; }
+    .timeline-item small { display: block; color: rgba(239, 233, 220, .42); font-size: 8px; }
+    .timeline-score { color: var(--amber); font-size: 9px; font-variant-numeric: tabular-nums; }
     .meta-label {
       display: block;
       margin-bottom: 3px;
@@ -636,6 +702,46 @@
       max-height: 470px;
       object-fit: contain;
     }
+    .network-view { display: none; }
+    .network-view.active { display: block; animation: softIn .35s ease both; }
+    .network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .network-photo, .network-graph {
+      position: relative;
+      min-height: 205px;
+      overflow: hidden;
+      border: 1px solid rgba(239, 233, 220, .11);
+      border-radius: 14px;
+      background: #070c0b;
+    }
+    .network-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    #networkMask { opacity: 0; transition: opacity .2s ease; }
+    #networkMask.visible { opacity: 1; }
+    #networkGraph { display: block; width: 100%; height: 100%; min-height: 205px; }
+    .network-edge { stroke: rgba(239, 233, 220, .22); transition: opacity .18s ease, stroke .18s ease; }
+    .network-edge.related { stroke: var(--amber); }
+    .network-edge.dimmed { opacity: .08; }
+    .network-node { cursor: pointer; transition: opacity .18s ease; }
+    .network-node circle { stroke: rgba(255,255,255,.65); stroke-width: 1.5; transition: stroke-width .18s ease, filter .18s ease; }
+    .network-node.candidate circle { stroke: var(--paper); stroke-width: 2.2; }
+    .network-node.hub circle { stroke: var(--amber); stroke-width: 4; filter: drop-shadow(0 0 6px rgba(233,188,105,.72)); }
+    .network-node.active circle { stroke: #fff; stroke-width: 4; filter: drop-shadow(0 0 7px rgba(255,255,255,.55)); }
+    .network-node.dimmed { opacity: .2; }
+    .network-node text { fill: #fff; font-size: 9px; font-weight: 750; text-anchor: middle; pointer-events: none; paint-order: stroke; stroke: rgba(0,0,0,.7); stroke-width: 2px; }
+    .network-readout {
+      min-height: 48px;
+      margin-top: 9px;
+      padding: 10px 12px;
+      border: 1px solid rgba(155, 197, 180, .16);
+      border-radius: 11px;
+      background: rgba(155, 197, 180, .055);
+      color: rgba(239, 233, 220, .67);
+      font-size: 10px;
+      line-height: 1.55;
+    }
+    .network-readout strong { color: var(--amber); }
+    .network-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 7px; color: rgba(239, 233, 220, .42); font-size: 8px; }
+    .network-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; vertical-align: -1px; background: var(--jade); }
+    .network-legend span:first-child::before { background: var(--amber); }
     .result-caption {
       display: flex;
       align-items: center;
@@ -831,12 +937,16 @@
       .bearing { top: 92px; }
       .scene-card { left: 18px; top: 132px; width: 228px; }
       .scene-card p, .scene-meta { display: none; }
+      .spacetime-panel { top: auto; left: 18px; right: auto; bottom: 100px; width: 190px; padding: 9px; }
+      .spacetime-panel .capture-timeline, .spacetime-head span { display: none; }
+      .site-map { height: 82px; }
       .viewfinder { inset: 18% 7%; }
       .deck-copy { display: none; }
       .bottom-deck { bottom: max(16px, env(safe-area-inset-bottom)); padding-left: 11px; }
       .capture-peek { display: none; }
       .analysis-drawer { top: 7vh; right: 7px; bottom: 7px; width: calc(100vw - 14px); border-radius: 20px; }
       .analysis-content { padding-left: 16px; padding-right: 16px; }
+      .network-grid { grid-template-columns: 1fr; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -874,6 +984,21 @@
       <div><span class="meta-label" data-i18n="direction">方向</span><span class="meta-value" id="angleValue">000°</span></div>
       <div><span class="meta-label" data-i18n="fieldOfView">视野</span><span class="meta-value" id="fovValue">75°</span></div>
     </div>
+  </aside>
+
+  <aside class="spacetime-panel" aria-label="二维位置与取景时间" data-i18n-aria="spacetimeAria">
+    <div class="spacetime-head"><strong data-i18n="spacetimeTitle">位置 × 时间</strong><span data-i18n="schematicMap">场地示意 · 非测绘地图</span></div>
+    <svg class="site-map" viewBox="0 0 220 112" role="img" aria-label="固定观察点与当前拍摄方向示意" data-i18n-aria="mapAria">
+      <defs><linearGradient id="water" x1="0" x2="1"><stop stop-color="#315f66"/><stop offset="1" stop-color="#183b42"/></linearGradient></defs>
+      <path d="M-10 82 C38 54 62 104 114 76 C156 53 178 65 230 36 L230 118 L-10 118Z" fill="url(#water)" opacity=".78"/>
+      <path d="M-8 71 C36 45 66 92 111 67 C153 44 179 54 228 26" fill="none" stroke="#b9d6cf" stroke-opacity=".32" stroke-width="3"/>
+      <g fill="#809185" opacity=".42"><rect x="12" y="13" width="49" height="24" rx="3"/><rect x="145" y="8" width="58" height="22" rx="3"/><rect x="151" y="72" width="48" height="22" rx="3"/></g>
+      <g id="mapViewCone"><path d="M82 66 L57 14 Q82 2 107 14 Z" fill="#e9bc69" opacity=".2" stroke="#e9bc69" stroke-opacity=".7"/></g>
+      <circle cx="82" cy="66" r="7" fill="#efe9dc"/><circle cx="82" cy="66" r="2.5" fill="#e9bc69"/>
+      <text x="93" y="69" fill="#efe9dc" font-size="8">A</text>
+    </svg>
+    <div class="map-caption"><span id="mapDirection">000° · FOV 75°</span><span data-i18n="fixedPoint">固定观察点 A</span></div>
+    <div class="capture-timeline" id="captureTimeline"><span class="timeline-empty" data-i18n="timelineEmpty">拍摄后，这里会记录取景方向与时间。</span></div>
   </aside>
 
   <div class="bearing" aria-hidden="true">
@@ -933,11 +1058,20 @@
             <button class="tab-button" data-view="mosaic" role="tab" data-i18n="tabMosaic">空间色谱</button>
             <button class="tab-button" data-view="palette" role="tab" data-i18n="tabPalette">主色卡</button>
             <button class="tab-button" data-view="diagnostics" role="tab" data-i18n="tabDiagnostics">诊断视图</button>
+            <button class="tab-button" data-view="network" role="tab" data-i18n="tabNetwork">色彩关系网</button>
           </div>
-          <div class="result-frame">
+          <div class="result-frame" id="resultFrame">
             <img id="resultImage" alt="色彩分析结果" data-i18n-alt="resultAlt">
           </div>
-          <div class="result-caption">
+          <div class="network-view" id="networkView">
+            <div class="network-grid">
+              <div class="network-photo"><img id="networkPhoto" alt="原始取景"><img id="networkMask" alt="当前网络节点对应区域"></div>
+              <div class="network-graph"><svg id="networkGraph" viewBox="0 0 360 260" role="img" aria-label="局部色彩对比网络" data-i18n-aria="networkAria"></svg></div>
+            </div>
+            <div class="network-readout" id="networkReadout"></div>
+            <div class="network-legend"><span data-i18n="networkHubLegend">对比枢纽</span><span data-i18n="networkNodeLegend">候选/语境区域</span><em data-i18n="networkEdgeLegend">连线 = 相邻且色差超过阈值</em></div>
+          </div>
+          <div class="result-caption" id="resultCaptionRow">
             <span id="resultCaption" data-i18n="captionOverlay">热力与轮廓显示相对色彩突出区域</span>
             <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png" data-i18n="downloadView">下载当前视图 ↓</a>
           </div>
@@ -1033,6 +1167,8 @@
     let currentLanguage = "zh-CN";
     let currentPipelineIndex = 0;
     let lastPayload = null;
+    let captureHistory = [];
+    let activeNetworkNode = null;
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
     const el = (selector) => document.querySelector(selector);
@@ -1058,6 +1194,15 @@
         fixedCamera: "固定机位 · 在线",
         viewpoint: "水岸观察点 A",
         sceneDescription: "从固定位置选择视角。快门只记录全景画面，不包含界面元素。",
+        spacetimeAria: "二维位置与取景时间",
+        spacetimeTitle: "位置 × 时间",
+        schematicMap: "场地示意 · 非测绘地图",
+        mapAria: "固定观察点与当前拍摄方向示意",
+        fixedPoint: "固定观察点 A",
+        timelineEmpty: "拍摄后，这里会记录取景方向与时间。",
+        timelineCapture: "取景 {number} · {degrees}° / {fov}°",
+        timelinePending: "分析中",
+        timelineScore: "枢纽 {degree} 条边",
         direction: "方向",
         fieldOfView: "视野",
         relativeView: "相对视角 · 非地理方位",
@@ -1091,12 +1236,22 @@
         tabMosaic: "空间色谱",
         tabPalette: "主色卡",
         tabDiagnostics: "诊断视图",
+        tabNetwork: "色彩关系网",
         resultAlt: "色彩分析结果",
         captionOverlay: "热力与编号轮廓显示相对色彩突出区域",
         captionOriginal: "你从固定观察点选择并拍摄的原始画面",
         captionMosaic: "空间色谱保留颜色在画面中的相对位置",
         captionPalette: "主色块宽度对应其在画面中的像素比例",
         captionDiagnostics: "CIELAB 分布与候选区域特征百分位",
+        networkAria: "相邻颜色区域的高色差关系网络",
+        networkHubLegend: "对比枢纽",
+        networkNodeLegend: "候选/语境区域",
+        networkEdgeLegend: "连线 = 相邻且色差超过阈值",
+        networkHubReadout: "节点 {label} 是当前网络的局部色彩对比枢纽。它有 {degree} 条高色差连接；保留阈值为 ΔE00 ≥ {threshold}。悬停其他节点可同步查看照片区域。这里的‘枢纽’不是美丑判断。",
+        networkNodeReadout: "节点 {label}（{kind}）与 {degree} 个相邻区域存在高色差关系。代表色为 {hex}，面积约 {area}%。",
+        networkCandidate: "候选区域",
+        networkContext: "局部语境",
+        networkEmpty: "当前取景没有形成超过阈值的局部色差关系。节点仍显示分区，但不会强行生成连线。",
         downloadView: "下载当前视图 ↓",
         rankedCandidates: "候选区域排名 · 局部证据 × 参考证据",
         boundaryTitle: "解释边界",
@@ -1153,6 +1308,15 @@
         fixedCamera: "Fixed camera · Online",
         viewpoint: "Waterside Viewpoint A",
         sceneDescription: "Frame a view from this fixed position. The shutter records only the panorama, without interface elements.",
+        spacetimeAria: "Two-dimensional position and capture time",
+        spacetimeTitle: "Position × time",
+        schematicMap: "Site schematic · not a survey map",
+        mapAria: "Schematic of the fixed viewpoint and current viewing direction",
+        fixedPoint: "Fixed viewpoint A",
+        timelineEmpty: "Captured directions and times will appear here.",
+        timelineCapture: "Frame {number} · {degrees}° / {fov}°",
+        timelinePending: "Analyzing",
+        timelineScore: "Hub {degree} edges",
         direction: "Direction",
         fieldOfView: "Field of view",
         relativeView: "Relative view · not geographic north",
@@ -1186,12 +1350,22 @@
         tabMosaic: "Spatial mosaic",
         tabPalette: "Color palette",
         tabDiagnostics: "Diagnostics",
+        tabNetwork: "Color network",
         resultAlt: "Color-analysis result",
         captionOverlay: "Heat and numbered outlines show regions with relatively distinctive colors",
         captionOriginal: "The frame you selected and captured from the fixed viewpoint",
         captionMosaic: "The spatial mosaic preserves where colors appear in the frame",
         captionPalette: "Each block's width represents its approximate pixel share",
         captionDiagnostics: "CIELAB distribution and feature percentiles for candidate regions",
+        networkAria: "Network of high color-difference relationships between adjacent regions",
+        networkHubLegend: "Contrast hub",
+        networkNodeLegend: "Candidate/context region",
+        networkEdgeLegend: "Edge = adjacent and above the color-difference threshold",
+        networkHubReadout: "Node {label} is the local color-contrast hub in this network. It has {degree} retained high-difference edges; the threshold is ΔE00 ≥ {threshold}. Hover another node to reveal its photo region. ‘Hub’ is not an aesthetic judgment.",
+        networkNodeReadout: "Node {label} ({kind}) has high color-difference relationships with {degree} adjacent regions. Its representative color is {hex}, and it covers about {area}% of the frame.",
+        networkCandidate: "candidate",
+        networkContext: "local context",
+        networkEmpty: "This frame has no local color relationships above the threshold. The regions remain visible, but the system does not invent edges.",
         downloadView: "Download current view ↓",
         rankedCandidates: "Ranked candidates · local × reference evidence",
         boundaryTitle: "Interpretation boundary",
@@ -1268,8 +1442,10 @@
       if (lastPayload) {
         el("#summary").textContent = localizedSummary(lastPayload);
         renderCandidates(lastPayload.candidates);
+        renderNetwork(lastPayload.network);
         selectView(activeView);
       }
+      renderTimeline();
       try { localStorage.setItem("jinxi-color-lens-language", currentLanguage); } catch (_) {}
     }
 
@@ -1404,6 +1580,8 @@
       el("#bearingValue").textContent = label;
       el("#angleValue").textContent = label;
       el("#fovValue").textContent = `${Math.round(fov)}°`;
+      el("#mapDirection").textContent = `${label} · FOV ${Math.round(fov)}°`;
+      el("#mapViewCone").style.transform = `rotate(${degrees}deg)`;
     }
 
     function drawScene() {
@@ -1498,11 +1676,67 @@
       });
     }
 
-    function updatePreview(blob) {
-      if (capturedUrl) URL.revokeObjectURL(capturedUrl);
-      capturedUrl = URL.createObjectURL(blob);
+    function blobToDataUrl(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error(t("captureError")));
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function updatePreview(blob) {
+      capturedUrl = await blobToDataUrl(blob);
       el("#peekImage").src = capturedUrl;
       el("#capturePeek").classList.add("visible");
+      return capturedUrl;
+    }
+
+    function directionDegrees(value) {
+      return Math.round((value * 180 / Math.PI % 360 + 360) % 360);
+    }
+
+    function renderTimeline() {
+      const container = el("#captureTimeline");
+      container.replaceChildren();
+      if (!captureHistory.length) {
+        const empty = document.createElement("span");
+        empty.className = "timeline-empty";
+        empty.textContent = t("timelineEmpty");
+        container.append(empty);
+        return;
+      }
+      captureHistory.forEach((record, index) => {
+        const button = document.createElement("button");
+        button.className = "timeline-item";
+        button.type = "button";
+        const time = new Intl.DateTimeFormat(currentLanguage === "en" ? "en" : "zh-CN", {
+          hour: "2-digit", minute: "2-digit", second: "2-digit"
+        }).format(record.time);
+        const hub = record.payload?.network?.nodes?.find(node => node.id === record.payload.network.hub_id);
+        button.innerHTML = `
+          <span class="timeline-dot"></span>
+          <span><strong>${t("timelineCapture", { number: captureHistory.length - index, degrees: String(directionDegrees(record.yaw)).padStart(3, "0"), fov: Math.round(record.fov) })}</strong><small>${time}</small></span>
+          <span class="timeline-score">${hub ? t("timelineScore", { degree: hub.degree }) : t("timelinePending")}</span>
+        `;
+        button.addEventListener("click", () => restoreCapture(record));
+        container.append(button);
+      });
+    }
+
+    function restoreCapture(record) {
+      yaw = record.yaw;
+      pitch = record.pitch;
+      fov = record.fov;
+      if (record.imageUrl) {
+        capturedUrl = record.imageUrl;
+        el("#peekImage").src = capturedUrl;
+        el("#capturePeek").classList.add("visible");
+      }
+      if (record.payload) {
+        showResults(record.payload);
+        openDrawer();
+      }
     }
 
     async function captureAndAnalyze() {
@@ -1516,9 +1750,23 @@
       resetAnalysisUi();
       openDrawer();
 
+      const captureRecord = {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        time: new Date(),
+        yaw,
+        pitch,
+        fov,
+        imageUrl: "",
+        payload: null,
+        failed: false
+      };
+
       try {
         capturedBlob = await canvasBlob();
-        updatePreview(capturedBlob);
+        captureRecord.imageUrl = await updatePreview(capturedBlob);
+        captureHistory.unshift(captureRecord);
+        captureHistory = captureHistory.slice(0, 6);
+        renderTimeline();
         setPipelineStep(1);
 
         const form = new FormData();
@@ -1544,9 +1792,13 @@
           throw new Error(payload.detail || t("serverError", { status: response.status }));
         }
         const payload = await response.json();
+        captureRecord.payload = payload;
+        renderTimeline();
         showResults(payload);
       } catch (error) {
         console.error(error);
+        captureRecord.failed = true;
+        renderTimeline();
         el("#pipeline").style.display = "none";
         el("#errorMessage").textContent = error.message || t("unknownError");
         el("#errorState").classList.add("visible");
@@ -1567,6 +1819,14 @@
     function selectView(view) {
       activeView = view;
       els(".tab-button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+      const networkMode = view === "network";
+      el("#resultFrame").hidden = networkMode;
+      el("#resultCaptionRow").hidden = networkMode;
+      el("#networkView").classList.toggle("active", networkMode);
+      if (networkMode) {
+        renderNetwork(lastPayload?.network);
+        return;
+      }
       const source = view === "original" ? capturedUrl : resultImages[view];
       el("#resultImage").src = source;
       el("#resultCaption").textContent = t(captionKeys[view]);
@@ -1594,6 +1854,7 @@
       candidates.forEach(candidate => {
         const item = document.createElement("article");
         item.className = "candidate";
+        item.tabIndex = 0;
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
@@ -1603,8 +1864,122 @@
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
+        const networkId = `candidate-${candidate.rank.replace("#", "")}`;
+        item.addEventListener("mouseenter", () => {
+          if (activeView === "network") activateNetworkNode(networkId);
+        });
+        item.addEventListener("focus", () => {
+          if (activeView === "network") activateNetworkNode(networkId);
+        });
+        item.addEventListener("click", () => {
+          selectView("network");
+          activateNetworkNode(networkId);
+        });
         container.append(item);
       });
+    }
+
+    function networkPositions(network) {
+      const nodes = network?.nodes || [];
+      const hubId = network?.hub_id;
+      const related = new Set();
+      (network?.edges || []).forEach(edge => {
+        if (edge.source === hubId) related.add(edge.target);
+        if (edge.target === hubId) related.add(edge.source);
+      });
+      const inner = nodes.filter(node => node.id !== hubId && related.has(node.id));
+      const outer = nodes.filter(node => node.id !== hubId && !related.has(node.id));
+      const positions = new Map([[hubId, { x: 180, y: 130 }]]);
+      inner.forEach((node, index) => {
+        const angle = -Math.PI / 2 + 2 * Math.PI * index / Math.max(1, inner.length);
+        positions.set(node.id, { x: 180 + 78 * Math.cos(angle), y: 130 + 78 * Math.sin(angle) });
+      });
+      outer.forEach((node, index) => {
+        const angle = -Math.PI / 2 + 2 * Math.PI * (index + .35) / Math.max(1, outer.length);
+        positions.set(node.id, { x: 180 + 145 * Math.cos(angle), y: 130 + 105 * Math.sin(angle) });
+      });
+      return positions;
+    }
+
+    function activateNetworkNode(nodeId) {
+      const network = lastPayload?.network;
+      if (!network) return;
+      const node = network.nodes.find(item => item.id === nodeId) || network.nodes.find(item => item.id === network.hub_id);
+      if (!node) return;
+      activeNetworkNode = node.id;
+      const related = new Set([node.id]);
+      network.edges.forEach(edge => {
+        if (edge.source === node.id) related.add(edge.target);
+        if (edge.target === node.id) related.add(edge.source);
+      });
+      els(".network-node").forEach(element => {
+        element.classList.toggle("active", element.dataset.id === node.id);
+        element.classList.toggle("dimmed", !related.has(element.dataset.id));
+      });
+      els(".network-edge").forEach(element => {
+        const touches = element.dataset.source === node.id || element.dataset.target === node.id;
+        element.classList.toggle("related", touches);
+        element.classList.toggle("dimmed", !touches);
+      });
+      el("#networkMask").src = node.mask;
+      el("#networkMask").classList.add("visible");
+      const kind = t(node.kind === "candidate" ? "networkCandidate" : "networkContext");
+      const displayLabel = node.displayLabel || node.label;
+      el("#networkReadout").textContent = node.is_hub
+        ? t("networkHubReadout", { label: displayLabel, degree: node.degree, threshold: network.threshold_delta_e.toFixed(1) })
+        : t("networkNodeReadout", { label: displayLabel, kind, degree: node.degree, hex: node.hex, area: node.area_percent.toFixed(2) });
+    }
+
+    function renderNetwork(network) {
+      const svg = el("#networkGraph");
+      svg.replaceChildren();
+      el("#networkPhoto").src = capturedUrl;
+      if (!network?.nodes?.length) {
+        el("#networkReadout").textContent = t("networkEmpty");
+        return;
+      }
+      const namespace = "http://www.w3.org/2000/svg";
+      const positions = networkPositions(network);
+      network.edges.forEach(edge => {
+        const left = positions.get(edge.source);
+        const right = positions.get(edge.target);
+        if (!left || !right) return;
+        const line = document.createElementNS(namespace, "line");
+        line.setAttribute("x1", left.x); line.setAttribute("y1", left.y);
+        line.setAttribute("x2", right.x); line.setAttribute("y2", right.y);
+        line.setAttribute("stroke-width", String(clamp(edge.strength * 1.4, 1.2, 4)));
+        line.classList.add("network-edge");
+        line.dataset.source = edge.source; line.dataset.target = edge.target;
+        svg.append(line);
+      });
+      let contextIndex = 0;
+      network.nodes.forEach(node => {
+        const position = positions.get(node.id) || { x: 180, y: 130 };
+        const group = document.createElementNS(namespace, "g");
+        group.classList.add("network-node", node.kind);
+        if (node.is_hub) group.classList.add("hub");
+        group.dataset.id = node.id;
+        group.setAttribute("tabindex", "0");
+        group.setAttribute("role", "button");
+        const circle = document.createElementNS(namespace, "circle");
+        circle.setAttribute("cx", position.x); circle.setAttribute("cy", position.y);
+        circle.setAttribute("r", node.kind === "candidate" ? "14" : "10");
+        circle.setAttribute("fill", node.hex);
+        const text = document.createElementNS(namespace, "text");
+        text.setAttribute("x", position.x); text.setAttribute("y", position.y + 3);
+        node.displayLabel = node.kind === "candidate" ? node.label : `C${++contextIndex}`;
+        text.textContent = node.displayLabel;
+        group.append(circle, text);
+        ["mouseenter", "focus", "click"].forEach(type => group.addEventListener(type, () => activateNetworkNode(node.id)));
+        svg.append(group);
+      });
+      const initial = activeNetworkNode && network.nodes.some(node => node.id === activeNetworkNode)
+        ? activeNetworkNode : network.hub_id;
+      if (network.edges.length) activateNetworkNode(initial);
+      else {
+        el("#networkMask").classList.remove("visible");
+        el("#networkReadout").textContent = t("networkEmpty");
+      }
     }
 
     function showResults(payload) {
@@ -1612,6 +1987,8 @@
       resultImages = payload.images;
       el("#summary").textContent = localizedSummary(payload);
       renderCandidates(payload.candidates);
+      activeNetworkNode = payload.network?.hub_id || null;
+      renderNetwork(payload.network);
       el("#pipeline").style.display = "none";
       el("#errorState").classList.remove("visible");
       el("#results").classList.add("ready");

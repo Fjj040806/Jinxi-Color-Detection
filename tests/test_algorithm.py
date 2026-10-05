@@ -24,6 +24,11 @@ def test_magenta_patch_is_returned_as_candidate():
     assert result.mosaic.ndim == 3
     assert result.palette.ndim == 3
     assert result.diagnostics.ndim == 3
+    assert result.network["nodes"]
+    assert result.network["hub_id"] in {node["id"] for node in result.network["nodes"]}
+    assert result.network["threshold_delta_e"] >= 16
+    assert result.network["edges"]
+    assert all("mask" in node for node in result.network["nodes"])
 
 
 def test_english_summary_is_available():

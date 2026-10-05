@@ -8,7 +8,7 @@ pinned: false
 license: mit
 ---
 
-# Jinxi 360 Color Lens · Prototype 0.4
+# Jinxi 360 Color Lens · Prototype 0.5
 
 This version adds a small-sample positive-reference color model to the existing
 360-degree field experience. A visitor frames a view, takes a virtual
@@ -18,7 +18,7 @@ photograph, and receives two coordinated forms of evidence:
 2. **reference evidence** — which region colors are uncommon among the supplied
    positive reference images.
 
-The new interface adds two linked visualization idioms. A **network view**
+The interface includes two linked visualization idioms. A **network view**
 shows high-color-difference relationships among touching candidate and context
 regions. A **spatial-temporal companion view** shows the fixed camera point,
 current view direction, and a session timeline of captured frames.
@@ -57,8 +57,13 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 - a bilingual **Learning & Evidence** page at `/learning` showing the reference
   cases, learned prototypes, calibration curve, interactive color inspector,
   evidence boundaries, and next-data requirements;
-- persistent Simplified Chinese / English switching, responsive layout, and
-  reduced-motion support.
+- a two-step session welcome that asks users to choose Simplified Chinese or
+  English, then read and acknowledge the evidence boundary before entering;
+- a persistent language preference plus a top-level control that reopens the
+  product notice and links to the complete Learning & Evidence page;
+- a cinematic motion mode with slow panorama movement, ambient light, animated
+  reticle/network cues, pointer-responsive depth, staged result reveals, and
+  automatic reduced-motion support.
 
 The reference contribution is deliberately capped at 35% because the current
 dataset contains only three images. The local detector remains the main source

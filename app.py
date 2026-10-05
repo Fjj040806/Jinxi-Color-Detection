@@ -29,7 +29,7 @@ app = FastAPI(
         "A fixed-position 360-degree field prototype that captures a user-framed "
         "view and measures contextual color differences."
     ),
-    version="0.4.0",
+    version="0.5.0",
 )
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
@@ -96,7 +96,7 @@ def learning() -> FileResponse:
 def health() -> dict[str, str]:
     return {
         "status": "ok",
-        "version": "0.4.0",
+        "version": "0.5.0",
         "reference_model": "ready" if REFERENCE_MODEL else "missing",
     }
 

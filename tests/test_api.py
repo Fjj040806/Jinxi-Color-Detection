@@ -11,7 +11,7 @@ def test_health():
     response = TestClient(app).get("/api/health")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
-    assert response.json()["version"] == "0.4.0"
+    assert response.json()["version"] == "0.5.0"
     assert response.json()["reference_model"] == "ready"
 
 
@@ -27,6 +27,10 @@ def test_home_contains_camera_interface():
     assert 'id="networkGraph"' in response.text
     assert 'id="captureTimeline"' in response.text
     assert 'id="mapViewCone"' in response.text
+    assert 'id="onboarding"' in response.text
+    assert 'id="boundaryAck"' in response.text
+    assert 'id="boundaryButton"' in response.text
+    assert "prefers-reduced-motion" in response.text
 
 
 def test_learning_page_and_reference_model_are_available():

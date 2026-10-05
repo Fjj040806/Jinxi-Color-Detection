@@ -19,6 +19,8 @@
       --glass-heavy: rgba(10, 17, 16, .92);
       --line: rgba(239, 233, 220, .2);
       --shadow: 0 24px 80px rgba(0, 0, 0, .38);
+      --motion-x: 0;
+      --motion-y: 0;
     }
 
     * { box-sizing: border-box; }
@@ -32,6 +34,18 @@
         "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       -webkit-font-smoothing: antialiased;
     }
+    body::before {
+      content: "";
+      position: fixed;
+      z-index: 4;
+      inset: -30%;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(108deg, transparent 39%, rgba(155, 197, 180, .08) 49%, rgba(233, 188, 105, .06) 52%, transparent 62%);
+      transform: translateX(-35%) rotate(2deg);
+      transition: opacity .8s ease;
+    }
+    body.motion-mode::before { opacity: 1; animation: ambientSweep 10s ease-in-out infinite; }
 
     button, input { font: inherit; }
     button { color: inherit; }
@@ -67,6 +81,7 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
       mix-blend-mode: soft-light;
     }
+    body.motion-mode .grain { animation: grainDrift 8s steps(8) infinite; }
 
     .topbar {
       position: fixed;
@@ -159,6 +174,8 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, .16);
     }
     .glass-button {
+      position: relative;
+      overflow: hidden;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -174,6 +191,16 @@
       text-decoration: none;
       transition: transform .25s ease, background .25s ease, border-color .25s ease;
     }
+    .glass-button::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(105deg, transparent 28%, rgba(255,255,255,.13) 48%, transparent 68%);
+      transform: translateX(-120%);
+      transition: transform .65s ease;
+      pointer-events: none;
+    }
+    .glass-button:hover::after { transform: translateX(120%); }
     .glass-button:hover {
       transform: translateY(-2px);
       border-color: rgba(239, 233, 220, .45);
@@ -197,7 +224,9 @@
       box-shadow: 0 12px 34px rgba(0, 0, 0, .12);
       backdrop-filter: blur(18px) saturate(1.12);
       animation: rise .8s .15s both cubic-bezier(.2, .7, .2, 1);
+      transition: transform .32s ease-out, border-color .25s ease, background .25s ease;
     }
+    body.experience-ready .scene-card { transform: translate3d(calc(var(--motion-x) * -5px), calc(var(--motion-y) * -4px), 0); }
     .scene-kicker {
       display: flex;
       align-items: center;
@@ -249,7 +278,9 @@
       box-shadow: 0 12px 34px rgba(0, 0, 0, .16);
       backdrop-filter: blur(18px) saturate(1.12);
       animation: rise .8s .2s both cubic-bezier(.2, .7, .2, 1);
+      transition: transform .32s ease-out, border-color .25s ease, background .25s ease;
     }
+    body.experience-ready .spacetime-panel { transform: translate3d(calc(var(--motion-x) * 5px), calc(var(--motion-y) * -3px), 0); }
     .spacetime-head {
       display: flex;
       align-items: baseline;
@@ -268,6 +299,7 @@
       background: rgba(4, 10, 9, .36);
     }
     #mapViewCone { transform-origin: 82px 66px; transition: transform .18s ease-out; }
+    .site-map circle:nth-of-type(2) { animation: mapPulse 2.6s ease-out infinite; transform-origin: 82px 66px; }
     .map-caption {
       display: flex;
       justify-content: space-between;
@@ -295,6 +327,7 @@
       background: rgba(239, 233, 220, .035);
       text-align: left;
       cursor: pointer;
+      animation: slideIn .38s both cubic-bezier(.2,.7,.2,1);
     }
     .timeline-item:hover { border-color: rgba(155, 197, 180, .34); background: rgba(155, 197, 180, .07); }
     .timeline-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); }
@@ -399,6 +432,7 @@
       border-radius: 50%;
       box-shadow: 0 0 0 1px rgba(0, 0, 0, .16);
     }
+    body.motion-mode .reticle { animation: reticlePulse 3.2s ease-in-out infinite; }
     .reticle::before, .reticle::after {
       content: "";
       position: absolute;
@@ -718,9 +752,11 @@
     #networkMask.visible { opacity: 1; }
     #networkGraph { display: block; width: 100%; height: 100%; min-height: 205px; }
     .network-edge { stroke: rgba(239, 233, 220, .22); transition: opacity .18s ease, stroke .18s ease; }
+    body.motion-mode .network-edge { stroke-dasharray: 5 7; animation: edgeFlow 2.8s linear infinite; }
     .network-edge.related { stroke: var(--amber); }
     .network-edge.dimmed { opacity: .08; }
     .network-node { cursor: pointer; transition: opacity .18s ease; }
+    .network-node { animation: nodeEnter .48s both cubic-bezier(.18,.78,.25,1.18); transform-box: fill-box; transform-origin: center; }
     .network-node circle { stroke: rgba(255,255,255,.65); stroke-width: 1.5; transition: stroke-width .18s ease, filter .18s ease; }
     .network-node.candidate circle { stroke: var(--paper); stroke-width: 2.2; }
     .network-node.hub circle { stroke: var(--amber); stroke-width: 4; filter: drop-shadow(0 0 6px rgba(233,188,105,.72)); }
@@ -780,6 +816,7 @@
       border-radius: 12px;
       background: rgba(239, 233, 220, .035);
       transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      animation: candidateIn .42s both cubic-bezier(.2,.7,.2,1);
     }
     .candidate:hover {
       transform: translateX(-2px);
@@ -872,6 +909,118 @@
     .loader-copy strong { display: block; font-family: Georgia, serif; font-size: 18px; font-weight: 400; }
     .loader-copy small { color: rgba(239, 233, 220, .45); }
 
+    .onboarding {
+      position: fixed;
+      z-index: 130;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      overflow: auto;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(95, 151, 132, .24), transparent 34%),
+        radial-gradient(circle at 84% 78%, rgba(182, 133, 66, .18), transparent 32%),
+        rgba(5, 11, 10, .88);
+      backdrop-filter: blur(24px) saturate(1.08);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .48s ease, visibility .48s ease;
+    }
+    .onboarding[hidden] { display: none; }
+    .onboarding.visible { opacity: 1; visibility: visible; }
+    .onboarding::before, .onboarding::after {
+      content: "";
+      position: absolute;
+      width: min(62vw, 760px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(239,233,220,.08);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: orbitFloat 13s ease-in-out infinite;
+    }
+    .onboarding::before { left: -24vw; top: -30vw; box-shadow: inset 0 0 100px rgba(155,197,180,.05); }
+    .onboarding::after { right: -27vw; bottom: -32vw; animation-delay: -6s; }
+    .onboarding-panel {
+      position: relative;
+      width: min(760px, 100%);
+      min-height: 520px;
+      overflow: hidden;
+      border: 1px solid rgba(239,233,220,.18);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(17,31,28,.96), rgba(8,16,15,.96));
+      box-shadow: 0 42px 120px rgba(0,0,0,.48);
+      animation: onboardingIn .65s cubic-bezier(.18,.78,.2,1) both;
+    }
+    .onboarding-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.035) 50%, transparent 65%);
+      animation: panelSheen 7s ease-in-out infinite;
+    }
+    .onboarding-head {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px 28px;
+      border-bottom: 1px solid rgba(239,233,220,.1);
+    }
+    .onboarding-brand { font-size: 10px; font-weight: 750; letter-spacing: .19em; text-transform: uppercase; }
+    .onboarding-progress { display: flex; align-items: center; gap: 7px; }
+    .progress-dot { width: 22px; height: 3px; border-radius: 99px; background: rgba(239,233,220,.14); transition: width .35s ease, background .35s ease; }
+    .progress-dot.active { width: 42px; background: var(--amber); }
+    .onboarding-step { display: none; position: relative; padding: 42px 48px 38px; }
+    .onboarding-step.active { display: block; animation: stepIn .46s cubic-bezier(.2,.72,.2,1) both; }
+    .step-kicker { color: var(--jade); font-size: 10px; font-weight: 750; letter-spacing: .18em; text-transform: uppercase; }
+    .onboarding-step h2 { max-width: 600px; margin: 10px 0 9px; font-family: Georgia, "Noto Serif SC", serif; font-size: clamp(30px, 5vw, 48px); font-weight: 400; line-height: 1.08; }
+    .onboarding-intro { max-width: 610px; margin: 0; color: rgba(239,233,220,.62); font-size: 13px; line-height: 1.72; }
+    .onboarding-languages { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; }
+    .onboarding-language {
+      position: relative;
+      min-height: 130px;
+      padding: 21px;
+      overflow: hidden;
+      border: 1px solid rgba(239,233,220,.13);
+      border-radius: 18px;
+      background: rgba(239,233,220,.035);
+      text-align: left;
+      cursor: pointer;
+      transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .onboarding-language:hover, .onboarding-language.selected { transform: translateY(-4px); border-color: rgba(233,188,105,.54); background: rgba(233,188,105,.075); }
+    .onboarding-language strong { display: block; font-family: Georgia, serif; font-size: 24px; font-weight: 400; }
+    .onboarding-language span { display: block; margin-top: 8px; color: rgba(239,233,220,.48); font-size: 11px; line-height: 1.55; }
+    .onboarding-language em { position: absolute; right: 18px; bottom: 14px; color: var(--amber); font-size: 18px; font-style: normal; opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease; }
+    .onboarding-language:hover em, .onboarding-language.selected em { opacity: 1; transform: none; }
+    .boundary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 24px 0 18px; }
+    .boundary-card { padding: 14px 15px; border: 1px solid rgba(239,233,220,.1); border-radius: 13px; background: rgba(239,233,220,.028); }
+    .boundary-card b { display: block; margin-bottom: 5px; color: var(--jade); font-size: 10px; letter-spacing: .08em; }
+    .boundary-card span { color: rgba(239,233,220,.58); font-size: 10px; line-height: 1.55; }
+    .acknowledgement { display: flex; align-items: flex-start; gap: 10px; padding: 12px 13px; border-radius: 11px; background: rgba(239,233,220,.04); color: rgba(239,233,220,.7); font-size: 11px; line-height: 1.5; }
+    .acknowledgement input { margin-top: 2px; accent-color: var(--amber); }
+    .onboarding-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
+    .onboarding-actions-right { display: flex; align-items: center; gap: 10px; }
+    .onboarding-primary { min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 11px; font-weight: 750; cursor: pointer; transition: transform .2s ease, opacity .2s ease; }
+    .onboarding-primary:hover:not(:disabled) { transform: translateY(-2px); }
+    .onboarding-primary:disabled { opacity: .32; cursor: not-allowed; }
+    .onboarding-secondary { border: 0; background: transparent; color: rgba(239,233,220,.52); font-size: 10px; cursor: pointer; text-decoration: none; }
+    .onboarding-secondary:hover { color: var(--paper); }
+
+    body.experience-reveal .topbar,
+    body.experience-reveal .scene-card,
+    body.experience-reveal .spacetime-panel,
+    body.experience-reveal .bearing,
+    body.experience-reveal .viewfinder,
+    body.experience-reveal .bottom-deck { animation: interfaceReveal .85s both cubic-bezier(.18,.78,.2,1); }
+    body.experience-reveal .scene-card { animation-delay: .08s; }
+    body.experience-reveal .spacetime-panel { animation-delay: .14s; }
+    body.experience-reveal .bearing { animation-delay: .2s; }
+    body.experience-reveal .viewfinder { animation-delay: .27s; }
+    body.experience-reveal .bottom-deck { animation-delay: .33s; }
+
     .flash {
       position: fixed;
       z-index: 90;
@@ -923,6 +1072,19 @@
     @keyframes breathe { 50% { transform: scale(.68); opacity: .72; } }
     @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(155, 213, 169, 0); } 100% { box-shadow: 0 0 0 0 rgba(155, 213, 169, 0); } }
     @keyframes flash { 0% { opacity: 0; } 15% { opacity: .9; } 100% { opacity: 0; } }
+    @keyframes onboardingIn { from { opacity: 0; transform: translateY(24px) scale(.975); } to { opacity: 1; transform: none; } }
+    @keyframes stepIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+    @keyframes interfaceReveal { from { opacity: 0; filter: blur(8px); transform: translateY(16px) scale(.985); } to { opacity: 1; filter: none; transform: none; } }
+    @keyframes orbitFloat { 50% { transform: translate(28px, 18px) scale(1.05); } }
+    @keyframes panelSheen { 0%, 25% { transform: translateX(-80%); } 65%, 100% { transform: translateX(80%); } }
+    @keyframes ambientSweep { 0%, 100% { transform: translateX(-38%) rotate(2deg); } 50% { transform: translateX(34%) rotate(2deg); } }
+    @keyframes grainDrift { 25% { transform: translate(1%, -1%); } 50% { transform: translate(-1%, 1%); } 75% { transform: translate(1%, 1%); } }
+    @keyframes mapPulse { 0% { transform: scale(1); opacity: 1; } 75%, 100% { transform: scale(3.4); opacity: 0; } }
+    @keyframes reticlePulse { 50% { transform: translate(-50%, -50%) scale(1.13); box-shadow: 0 0 0 9px rgba(233,188,105,0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+    @keyframes candidateIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
+    @keyframes nodeEnter { from { opacity: 0; transform: scale(.35); } to { opacity: 1; transform: scale(1); } }
+    @keyframes edgeFlow { to { stroke-dashoffset: -24; } }
 
     @media (max-width: 780px) {
       .topbar { padding: max(17px, env(safe-area-inset-top)) 18px 12px; }
@@ -947,6 +1109,14 @@
       .analysis-drawer { top: 7vh; right: 7px; bottom: 7px; width: calc(100vw - 14px); border-radius: 20px; }
       .analysis-content { padding-left: 16px; padding-right: 16px; }
       .network-grid { grid-template-columns: 1fr; }
+      .onboarding { padding: 10px; }
+      .onboarding-panel { min-height: 0; border-radius: 20px; }
+      .onboarding-head { padding: 17px 18px; }
+      .onboarding-step { padding: 28px 20px 22px; }
+      .onboarding-languages, .boundary-grid { grid-template-columns: 1fr; }
+      .onboarding-language { min-height: 105px; }
+      .onboarding-actions { align-items: flex-start; flex-direction: column; }
+      .onboarding-actions-right { width: 100%; justify-content: space-between; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -962,14 +1132,14 @@
   <header class="topbar">
     <div class="brand">
       <div class="brand-line"><span class="brand-mark"></span> JINXI / COLOR LENS</div>
-      <h1><span data-i18n="mainTitle">锦溪取景实验室</span> <span>Field prototype 03</span></h1>
+      <h1><span data-i18n="mainTitle">锦溪取景实验室</span> <span>Field prototype 05</span></h1>
     </div>
     <div class="top-actions">
       <div class="language-switch" role="group" aria-label="语言 / Language" data-i18n-aria="languageAria">
         <button class="language-button active" data-language="zh-CN" aria-pressed="true">简中</button>
         <button class="language-button" data-language="en" aria-pressed="false">EN</button>
       </div>
-      <a class="glass-button" href="/learning" title="查看学习过程与证据边界" data-i18n-title="evidenceTitle">◇ <span class="label" data-i18n="evidence">学习证据</span></a>
+      <button class="glass-button" id="boundaryButton" title="查看产品须知与证据边界" data-i18n-title="evidenceTitle">◇ <span class="label" data-i18n="evidence">产品须知</span></button>
       <button class="glass-button" id="autoButton" aria-pressed="false" title="自动环视" data-i18n-title="autoTitle">◌ <span class="label" data-i18n="auto">自动环视</span></button>
       <button class="glass-button" id="fullscreenButton" title="进入全屏" data-i18n-title="fullscreenTitle">⛶ <span class="label" data-i18n="fullscreen">全屏</span></button>
       <button class="glass-button" id="helpButton" title="查看说明" data-i18n-title="helpTitle">? <span class="label" data-i18n="help">说明</span></button>
@@ -1112,6 +1282,52 @@
     </div>
   </aside>
 
+  <section class="onboarding" id="onboarding" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle" aria-hidden="true" hidden>
+    <div class="onboarding-panel">
+      <header class="onboarding-head">
+        <div class="onboarding-brand">JINXI / COLOR LENS · 0.5</div>
+        <div class="onboarding-progress" aria-label="设置进度" data-i18n-aria="onboardingProgressAria">
+          <span class="progress-dot active" data-step-dot="1"></span>
+          <span class="progress-dot" data-step-dot="2"></span>
+        </div>
+      </header>
+
+      <div class="onboarding-step active" data-onboarding-step="1">
+        <div class="step-kicker">01 / Language</div>
+        <h2 id="onboardingTitle" data-i18n="chooseLanguageTitle">选择你的体验语言</h2>
+        <p class="onboarding-intro" data-i18n="chooseLanguageCopy">语言会应用于取景、分析结果、网络解释和产品须知。之后仍可随时切换。</p>
+        <div class="onboarding-languages" role="group" aria-label="选择语言" data-i18n-aria="chooseLanguageAria">
+          <button class="onboarding-language" data-onboarding-language="zh-CN">
+            <strong>简体中文</strong><span>进入中文界面并阅读中文证据边界</span><em>→</em>
+          </button>
+          <button class="onboarding-language" data-onboarding-language="en">
+            <strong>English</strong><span>Continue with the English interface and evidence boundary</span><em>→</em>
+          </button>
+        </div>
+      </div>
+
+      <div class="onboarding-step" data-onboarding-step="2">
+        <div class="step-kicker">02 / Evidence boundary</div>
+        <h2 data-i18n="boundaryWelcomeTitle">使用前，请先了解它能说明什么</h2>
+        <p class="onboarding-intro" data-i18n="boundaryWelcomeCopy">本原型帮助发现值得进一步检查的色彩关系。它提供证据线索，而不是审美裁决。</p>
+        <div class="boundary-grid">
+          <div class="boundary-card"><b data-i18n="boundaryCard1Title">测量对象</b><span data-i18n="boundaryCard1Copy">系统测量局部色差、颜色稀有度和有限正面参考集中的新颖度。</span></div>
+          <div class="boundary-card"><b data-i18n="boundaryCard2Title">不做判断</b><span data-i18n="boundaryCard2Copy">高分不代表丑陋、文化价值较低，也不表示某个装饰应当被移除。</span></div>
+          <div class="boundary-card"><b data-i18n="boundaryCard3Title">可能偏差</b><span data-i18n="boundaryCard3Copy">天气、光照、阴影、反射、白平衡和参考图规模都会影响结果。</span></div>
+          <div class="boundary-card"><b data-i18n="boundaryCard4Title">最终决定</b><span data-i18n="boundaryCard4Copy">结论需要居民、商户、规划者、维护人员和游客共同检验与修正。</span></div>
+        </div>
+        <label class="acknowledgement"><input id="boundaryAck" type="checkbox"><span data-i18n="boundaryAck">我理解：结果是可检查的色彩证据，不是对美丑或文化价值的自动判断。</span></label>
+        <div class="onboarding-actions">
+          <button class="onboarding-secondary" id="onboardingBack" type="button" data-i18n="onboardingBack">← 返回语言选择</button>
+          <div class="onboarding-actions-right">
+            <a class="onboarding-secondary" href="/learning" target="_blank" rel="noopener" data-i18n="fullEvidence">查看完整学习过程与证据 →</a>
+            <button class="onboarding-primary" id="enterExperience" type="button" disabled data-i18n="enterExperience">理解并进入体验</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div id="loading" role="status">
     <div class="loader-copy"><div class="loader-ring"></div><strong data-i18n="loadingTitle">正在展开锦溪水岸</strong><small data-i18n="loadingCopy">正在准备固定机位全景</small></div>
   </div>
@@ -1169,6 +1385,12 @@
     let lastPayload = null;
     let captureHistory = [];
     let activeNetworkNode = null;
+    let panoramaLoaded = false;
+    let onboardingStep = 1;
+    let lastOnboardingFocus = null;
+
+    const onboardingStorageKey = "jinxi-color-lens-onboarding-v2";
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
     const el = (selector) => document.querySelector(selector);
@@ -1179,13 +1401,31 @@
         documentTitle: "锦溪 Color Lens · 360° 田野原型",
         metaDescription: "固定机位360度锦溪场景取景与客观色彩语境分析原型。",
         languageAria: "语言选项",
+        onboardingProgressAria: "首次使用设置进度",
+        chooseLanguageAria: "选择界面语言",
+        chooseLanguageTitle: "选择你的体验语言",
+        chooseLanguageCopy: "语言会应用于取景、分析结果、网络解释和产品须知。之后仍可随时切换。",
+        boundaryWelcomeTitle: "使用前，请先了解它能说明什么",
+        boundaryWelcomeCopy: "本原型帮助发现值得进一步检查的色彩关系。它提供证据线索，而不是审美裁决。",
+        boundaryCard1Title: "测量对象",
+        boundaryCard1Copy: "系统测量局部色差、颜色稀有度和有限正面参考集中的新颖度。",
+        boundaryCard2Title: "不做判断",
+        boundaryCard2Copy: "高分不代表丑陋、文化价值较低，也不表示某个装饰应当被移除。",
+        boundaryCard3Title: "可能偏差",
+        boundaryCard3Copy: "天气、光照、阴影、反射、白平衡和参考图规模都会影响结果。",
+        boundaryCard4Title: "最终决定",
+        boundaryCard4Copy: "结论需要居民、商户、规划者、维护人员和游客共同检验与修正。",
+        boundaryAck: "我理解：结果是可检查的色彩证据，不是对美丑或文化价值的自动判断。",
+        onboardingBack: "← 返回语言选择",
+        fullEvidence: "查看完整学习过程与证据 →",
+        enterExperience: "理解并进入体验",
         sceneAria: "锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。",
         mainTitle: "锦溪取景实验室",
-        evidence: "学习证据",
-        evidenceTitle: "查看参考学习过程与证据边界",
-        auto: "自动环视",
-        pauseAuto: "暂停环视",
-        autoTitle: "自动环视",
+        evidence: "产品须知",
+        evidenceTitle: "重新查看产品须知与证据边界",
+        auto: "动态模式",
+        pauseAuto: "暂停动态",
+        autoTitle: "开启动态环视模式",
         fullscreen: "全屏",
         fullscreenTitle: "进入全屏",
         help: "说明",
@@ -1293,13 +1533,31 @@
         documentTitle: "Jinxi Color Lens · 360° Field Prototype",
         metaDescription: "A fixed-position 360° Jinxi scene for virtual framing and objective contextual color analysis.",
         languageAria: "Language options",
+        onboardingProgressAria: "First-use setup progress",
+        chooseLanguageAria: "Choose interface language",
+        chooseLanguageTitle: "Choose your experience language",
+        chooseLanguageCopy: "Your choice applies to framing, analysis, network explanations, and the evidence boundary. You can switch later.",
+        boundaryWelcomeTitle: "Before you begin, understand what this can show",
+        boundaryWelcomeCopy: "This prototype helps locate color relationships worth inspecting. It offers evidence cues, not an aesthetic verdict.",
+        boundaryCard1Title: "What it measures",
+        boundaryCard1Copy: "The system measures local color difference, color rarity, and novelty relative to a limited positive-reference set.",
+        boundaryCard2Title: "What it does not judge",
+        boundaryCard2Copy: "A high value does not mean ugly, culturally inferior, or suitable for removal.",
+        boundaryCard3Title: "Sources of variation",
+        boundaryCard3Copy: "Weather, illumination, shadows, reflections, white balance, and reference-set size can change the result.",
+        boundaryCard4Title: "Who decides",
+        boundaryCard4Copy: "Residents, businesses, planners, maintenance staff, and visitors should test and correct any interpretation.",
+        boundaryAck: "I understand that the result is inspectable color evidence, not an automatic judgment of beauty or cultural value.",
+        onboardingBack: "← Back to language",
+        fullEvidence: "View the complete learning and evidence record →",
+        enterExperience: "I understand · enter",
         sceneAria: "Fixed-position 360-degree Jinxi panorama. Drag or use arrow keys to look around, and scroll to zoom.",
         mainTitle: "Jinxi Color Lens",
-        evidence: "Evidence",
-        evidenceTitle: "View reference learning and evidence boundaries",
-        auto: "Auto rotate",
-        pauseAuto: "Pause rotation",
-        autoTitle: "Start automatic rotation",
+        evidence: "Before you begin",
+        evidenceTitle: "Reopen the product notice and evidence boundary",
+        auto: "Motion mode",
+        pauseAuto: "Pause motion",
+        autoTitle: "Start the cinematic motion mode",
         fullscreen: "Fullscreen",
         fullscreenTitle: "Enter fullscreen",
         help: "Guide",
@@ -1437,6 +1695,11 @@
         button.classList.toggle("active", active);
         button.setAttribute("aria-pressed", String(active));
       });
+      els(".onboarding-language").forEach(button => {
+        const active = button.dataset.onboardingLanguage === currentLanguage;
+        button.classList.toggle("selected", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
       el("#autoButton .label").textContent = rotating ? t("pauseAuto") : t("auto");
       setPipelineStep(currentPipelineIndex);
       if (lastPayload) {
@@ -1447,6 +1710,72 @@
       }
       renderTimeline();
       try { localStorage.setItem("jinxi-color-lens-language", currentLanguage); } catch (_) {}
+    }
+
+    function hasCompletedOnboarding() {
+      try { return sessionStorage.getItem(onboardingStorageKey) === "complete"; }
+      catch (_) { return false; }
+    }
+
+    function setOnboardingStep(step) {
+      onboardingStep = step === 2 ? 2 : 1;
+      els("[data-onboarding-step]").forEach(node => {
+        node.classList.toggle("active", Number(node.dataset.onboardingStep) === onboardingStep);
+      });
+      els("[data-step-dot]").forEach(node => {
+        node.classList.toggle("active", Number(node.dataset.stepDot) === onboardingStep);
+      });
+      if (onboardingStep === 1) {
+        const selected = el(`.onboarding-language[data-onboarding-language="${currentLanguage}"]`);
+        window.setTimeout(() => selected?.focus({ preventScroll: true }), 80);
+      } else {
+        window.setTimeout(() => el("#boundaryAck")?.focus({ preventScroll: true }), 80);
+      }
+    }
+
+    function openOnboarding(step = 1) {
+      const onboarding = el("#onboarding");
+      lastOnboardingFocus = document.activeElement;
+      rotating = false;
+      document.body.classList.remove("motion-mode");
+      el("#autoButton").setAttribute("aria-pressed", "false");
+      el("#autoButton .label").textContent = t("auto");
+      const alreadyComplete = hasCompletedOnboarding();
+      el("#boundaryAck").checked = alreadyComplete;
+      el("#enterExperience").disabled = !alreadyComplete;
+      onboarding.hidden = false;
+      onboarding.setAttribute("aria-hidden", "false");
+      document.body.classList.add("onboarding-open");
+      setOnboardingStep(step);
+      requestAnimationFrame(() => onboarding.classList.add("visible"));
+    }
+
+    function revealExperience() {
+      document.body.classList.add("experience-ready", "experience-reveal");
+      window.setTimeout(() => document.body.classList.remove("experience-reveal"), 1250);
+    }
+
+    function closeOnboarding({ remember = true } = {}) {
+      const onboarding = el("#onboarding");
+      if (remember) {
+        try { sessionStorage.setItem(onboardingStorageKey, "complete"); } catch (_) {}
+      }
+      onboarding.classList.remove("visible");
+      onboarding.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("onboarding-open");
+      revealExperience();
+      window.setTimeout(() => {
+        onboarding.hidden = true;
+        const target = lastOnboardingFocus instanceof HTMLElement && lastOnboardingFocus !== document.body
+          ? lastOnboardingFocus : canvas;
+        target.focus?.({ preventScroll: true });
+      }, reducedMotion.matches ? 0 : 320);
+    }
+
+    function beginExperience() {
+      if (!panoramaLoaded) return;
+      if (hasCompletedOnboarding()) revealExperience();
+      else openOnboarding(1);
     }
 
     function showToast(message) {
@@ -1546,9 +1875,10 @@
           gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
           ready = true;
+          panoramaLoaded = true;
           renderFrame(performance.now());
           loading.classList.add("hidden");
-          setTimeout(() => canvas.focus({ preventScroll: true }), 700);
+          setTimeout(beginExperience, reducedMotion.matches ? 120 : 520);
         };
         image.onerror = () => failLoading("panoramaLoadError");
         image.src = "/static/panorama.png";
@@ -1709,6 +2039,7 @@
       captureHistory.forEach((record, index) => {
         const button = document.createElement("button");
         button.className = "timeline-item";
+        button.style.animationDelay = `${Math.min(index * 55, 240)}ms`;
         button.type = "button";
         const time = new Intl.DateTimeFormat(currentLanguage === "en" ? "en" : "zh-CN", {
           hour: "2-digit", minute: "2-digit", second: "2-digit"
@@ -1743,6 +2074,7 @@
       if (!ready || analyzing) return;
       analyzing = true;
       rotating = false;
+      document.body.classList.remove("motion-mode");
       el("#autoButton").setAttribute("aria-pressed", "false");
       el("#autoButton .label").textContent = t("auto");
       el("#captureButton").disabled = true;
@@ -1851,9 +2183,10 @@
     function renderCandidates(candidates) {
       const container = el("#candidateList");
       container.replaceChildren();
-      candidates.forEach(candidate => {
+      candidates.forEach((candidate, index) => {
         const item = document.createElement("article");
         item.className = "candidate";
+        item.style.animationDelay = `${Math.min(index * 65, 260)}ms`;
         item.tabIndex = 0;
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
@@ -1953,10 +2286,11 @@
         svg.append(line);
       });
       let contextIndex = 0;
-      network.nodes.forEach(node => {
+      network.nodes.forEach((node, index) => {
         const position = positions.get(node.id) || { x: 180, y: 130 };
         const group = document.createElementNS(namespace, "g");
         group.classList.add("network-node", node.kind);
+        group.style.animationDelay = `${Math.min(index * 45, 315)}ms`;
         if (node.is_hub) group.classList.add("hub");
         group.dataset.id = node.id;
         group.setAttribute("tabindex", "0");
@@ -2002,6 +2336,20 @@
     els(".language-button").forEach(button => {
       button.addEventListener("click", () => applyLanguage(button.dataset.language));
     });
+    els(".onboarding-language").forEach(button => {
+      button.addEventListener("click", () => {
+        applyLanguage(button.dataset.onboardingLanguage);
+        window.setTimeout(() => setOnboardingStep(2), reducedMotion.matches ? 0 : 140);
+      });
+    });
+    el("#onboardingBack").addEventListener("click", () => setOnboardingStep(1));
+    el("#boundaryAck").addEventListener("change", event => {
+      el("#enterExperience").disabled = !event.currentTarget.checked;
+    });
+    el("#enterExperience").addEventListener("click", () => {
+      if (el("#boundaryAck").checked) closeOnboarding({ remember: true });
+    });
+    el("#boundaryButton").addEventListener("click", () => openOnboarding(2));
     els(".tab-button").forEach(button => button.addEventListener("click", () => selectView(button.dataset.view)));
 
     el("#zoomIn").addEventListener("click", () => fov = clamp(fov - 8, 34, 100));
@@ -2011,6 +2359,7 @@
     });
     el("#autoButton").addEventListener("click", event => {
       rotating = !rotating;
+      document.body.classList.toggle("motion-mode", rotating && !reducedMotion.matches);
       event.currentTarget.setAttribute("aria-pressed", String(rotating));
       event.currentTarget.querySelector(".label").textContent = rotating ? t("pauseAuto") : t("auto");
     });
@@ -2032,7 +2381,35 @@
       el(`#${id}`).addEventListener("input", event => el(`#${id}Output`).value = event.target.value);
     });
 
+    window.addEventListener("pointermove", event => {
+      if (reducedMotion.matches) return;
+      const x = clamp((event.clientX / Math.max(innerWidth, 1) - .5) * 2, -1, 1);
+      const y = clamp((event.clientY / Math.max(innerHeight, 1) - .5) * 2, -1, 1);
+      document.documentElement.style.setProperty("--motion-x", x.toFixed(3));
+      document.documentElement.style.setProperty("--motion-y", y.toFixed(3));
+    }, { passive: true });
+
+    reducedMotion.addEventListener?.("change", event => {
+      if (event.matches) document.body.classList.remove("motion-mode");
+      else if (rotating) document.body.classList.add("motion-mode");
+    });
+
     window.addEventListener("keydown", event => {
+      const onboarding = el("#onboarding");
+      if (!onboarding.hidden) {
+        if (event.key === "Escape" && hasCompletedOnboarding()) closeOnboarding({ remember: false });
+        if (event.key === "Tab") {
+          const focusable = els("#onboarding button:not(:disabled), #onboarding a[href], #onboarding input:not(:disabled)")
+            .filter(node => node.offsetParent !== null);
+          if (focusable.length) {
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+          }
+        }
+        return;
+      }
       if (event.target.matches("input, button, summary")) return;
       const controlled = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "-", " "];
       if (controlled.includes(event.key)) event.preventDefault();
@@ -2046,7 +2423,7 @@
       if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
     });
 
-    window.panoramaState = () => ({ yaw, pitch, fov, ready, rotating, analyzing, language: currentLanguage });
+    window.panoramaState = () => ({ yaw, pitch, fov, ready, rotating, analyzing, language: currentLanguage, onboardingStep, onboardingComplete: hasCompletedOnboarding() });
     applyLanguage(preferredLanguage());
     initPanorama();
   </script>

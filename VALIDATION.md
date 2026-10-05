@@ -1,4 +1,19 @@
-# Validation record · Prototype 0.4
+# Validation record · Prototype 0.5
+
+## First-use and motion experience
+
+- Each browser session begins with a two-step modal flow: language selection,
+  followed by the evidence boundary and an explicit acknowledgement.
+- The main interface becomes available only after acknowledgement. The product
+  notice can be reopened from the top bar at any time, and the full Learning &
+  Evidence record remains one click away.
+- Language preference persists locally. Evidence acknowledgement lasts for the
+  current browser session so a new session presents the notice again.
+- Motion mode coordinates slow panorama rotation, ambient light, reticle and
+  network motion. Pointer-responsive depth and staged result entrances provide
+  feedback without changing the underlying data.
+- `prefers-reduced-motion` disables decorative animation and removes the motion
+  layer while retaining all controls and analysis functions.
 
 ## Added visualization idioms
 
@@ -61,6 +76,11 @@ not establish accuracy, cultural validity, or generalization.
 - Open both `/` and `/learning` in Chrome or Edge on the presentation computer.
 - Confirm WebGL hardware acceleration and test one virtual capture.
 - Verify Chinese and English switching on both pages.
+- Open a new private/incognito session and complete both welcome steps. Confirm
+  that the acknowledgement is required, the keyboard focus stays inside the
+  modal, and the top-bar notice control can reopen it.
+- Turn on the operating system's reduced-motion setting and confirm that all
+  functions remain usable without ambient or staged motion.
 - Test the mobile layout if the prototype will be shown on a phone.
 - Replace the three-reference demonstration set with licensed, documented,
   seasonally and environmentally diverse evidence before interpreting results.

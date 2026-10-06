@@ -141,6 +141,7 @@ async def analyze(
             "diagnostics": _data_url(result.diagnostics),
         },
         "candidates": _candidate_records(result.table),
+        "diagnostic_data": result.diagnostic_data,
         "reference_model": result.model_info,
         "method": {
             "sensitivity": float(sensitivity),

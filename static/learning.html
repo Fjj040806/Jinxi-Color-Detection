@@ -247,7 +247,7 @@
       <div>
         <p class="eyebrow" data-i18n="eyebrow">Reference learning / evidence boundary</p>
         <h1 data-i18n="heroTitle">系统从什么证据中学习？</h1>
-        <p class="hero-copy" data-i18n="heroCopy">这个模型学习的是三张用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。</p>
+        <p class="hero-copy" data-i18n="heroCopy">这个模型学习的是用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。</p>
       </div>
       <aside class="status-card" aria-live="polite">
         <div class="status-line"><span data-i18n="status">模型状态</span><strong id="modelStatus">—</strong></div>
@@ -276,7 +276,7 @@
         <article class="stage"><span class="stage-index">02</span><h3 data-i18n="stage2Title">区域分割</h3><p data-i18n="stage2Copy">SLIC 将每张图片划分为保持空间连续性的颜色区域。</p></article>
         <article class="stage"><span class="stage-index">03</span><h3 data-i18n="stage3Title">感知色彩</h3><p data-i18n="stage3Copy">每个区域转换到 CIELAB，并计算中位颜色和面积。</p></article>
         <article class="stage"><span class="stage-index">04</span><h3 data-i18n="stage4Title">平衡记忆</h3><p data-i18n="stage4Copy">每张图贡献相同权重，减少天空或大墙面的支配。</p></article>
-        <article class="stage"><span class="stage-index">05</span><h3 data-i18n="stage5Title">留一校准</h3><p data-i18n="stage5Copy">每张参考图都与另外两张比较，建立新颖度基线。</p></article>
+        <article class="stage"><span class="stage-index">05</span><h3 data-i18n="stage5Title">留一校准</h3><p data-i18n="stage5Copy">每张参考图都与其余参考图比较，建立新颖度基线。</p></article>
         <article class="stage"><span class="stage-index">06</span><h3 data-i18n="stage6Title">证据融合</h3><p data-i18n="stage6Copy">参考新颖度与当前画面的局部色差共同决定候选排名。</p></article>
       </div>
     </section>
@@ -354,13 +354,13 @@
     const translations = {
       "zh-CN": {
         brandSub:"学习与证据页面", back:"返回取景器", eyebrow:"Reference learning / evidence boundary",
-        heroTitle:"系统从什么证据中学习？", heroCopy:"这个模型学习的是三张用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。",
+        heroTitle:"系统从什么证据中学习？", heroCopy:"这个模型学习的是用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。",
         status:"模型状态", references:"参考图数量", regions:"学习区域", prototypes:"颜色原型", weight:"参考证据权重",
         samplesTitle:"学习样本", samplesCopy:"页面只展示从参考图派生的低分辨率空间色谱和调色板。原始图片不会随项目分发，因为它们的使用许可尚未得到确认。", loading:"正在读取参考模型…",
         processTitle:"学习过程", processCopy:"每一步都可以被检查和复现。当前方法借鉴正常样本异常检测的“记忆库”逻辑，但使用可解释的颜色区域，而不是不可见的深度特征。",
-        stage1Title:"正面案例", stage1Copy:"输入经用户选择的古镇色彩参考图。", stage2Title:"区域分割", stage2Copy:"SLIC 将每张图片划分为保持空间连续性的颜色区域。", stage3Title:"感知色彩", stage3Copy:"每个区域转换到 CIELAB，并计算中位颜色和面积。", stage4Title:"平衡记忆", stage4Copy:"每张图贡献相同权重，减少天空或大墙面的支配。", stage5Title:"留一校准", stage5Copy:"每张参考图都与另外两张比较，建立新颖度基线。", stage6Title:"证据融合", stage6Copy:"参考新颖度与当前画面的局部色差共同决定候选排名。",
+        stage1Title:"正面案例", stage1Copy:"输入经用户选择的古镇色彩参考图。", stage2Title:"区域分割", stage2Copy:"SLIC 将每张图片划分为保持空间连续性的颜色区域。", stage3Title:"感知色彩", stage3Copy:"每个区域转换到 CIELAB，并计算中位颜色和面积。", stage4Title:"平衡记忆", stage4Copy:"每张图贡献相同权重，减少天空或大墙面的支配。", stage5Title:"留一校准", stage5Copy:"每张参考图都与其余参考图比较，建立新颖度基线。", stage6Title:"证据融合", stage6Copy:"参考新颖度与当前画面的局部色差共同决定候选排名。",
         memoryTitle:"模型学到的颜色记忆", memoryCopy:"色块宽度表示各原型在参考集中获得的支持度。散点图显示原型在 CIELAB 的 a*–b* 色度平面中的位置。", prototypeLabel:"参考颜色原型", calibrationLabel:"留一参考图校准", scatterCaption:"横轴为 a*（绿色—红色），纵轴为 b*（蓝色—黄色）。点越大，参考支持度越高。",
-        calibrationCaption:"曲线来自留一图片比较：每张正面案例只与另外两张学习到的记忆匹配。", inspectTitle:"亲自检查一种颜色", inspectCopy:"选择一种颜色，页面会在参考记忆中找到最接近的原型，并显示它相对于正面案例的新颖程度。这只是颜色证据，不是审美评分。", selectedColor:"选择的颜色", nearestColor:"最接近的参考色", distance:"CIEDE2000 距离", percentile:"参考新颖度百分位",
+        calibrationCaption:"曲线来自留一图片比较：每张正面案例只与其余参考图学习到的记忆匹配。", inspectTitle:"亲自检查一种颜色", inspectCopy:"选择一种颜色，页面会在参考记忆中找到最接近的原型，并显示它相对于正面案例的新颖程度。这只是颜色证据，不是审美评分。", selectedColor:"选择的颜色", nearestColor:"最接近的参考色", distance:"CIEDE2000 距离", percentile:"参考新颖度百分位",
         boundaryTitle:"证据边界", boundaryCopy:"这些限制不是附注，而是模型输出的一部分。候选区域必须由人进一步解释、验证和讨论。", nextTitle:"下一步需要什么证据？", nextCopy:"扩大参考图数量并不自动等于更可靠。数据还需要覆盖不同季节、天气、设备和利益相关者。",
         researchTitle:"开源研究路线", researchCopy:"我们采用了正常样本异常检测的核心思想，但当前先实现轻量、可解释的颜色记忆。当数据规模扩大后，可以用深度 patch 特征做对照实验。", patchcoreCopy:"以正常图像 patch 特征建立代表性记忆库，再用最近邻距离定位异常。", anomalibCopy:"集合 PatchCore、PaDiM 等视觉异常检测方法，适合未来统一基准测试。", dinov2Copy:"提供无需任务微调的通用视觉特征，可在更大数据集上补充物体与材质语义。",
         positiveReference:"正面参考", regionsUnit:"个区域", rawExcluded:"原图未分发；右下角水印区已从学习中排除", modelStatus:"原型证据", formula:"融合分数 = (1 − {w}) × 局部证据 + {w} × 参考证据 + 0.08 × 二者较小值", q95:"正面参考的第95百分位距离为 ΔE00 {value}。超过该范围表示“参考集中少见”，不是“不美观”。",
@@ -368,13 +368,13 @@
       },
       en: {
         brandSub:"Learning and evidence", back:"Back to viewfinder", eyebrow:"Reference learning / evidence boundary",
-        heroTitle:"What evidence does the system learn from?", heroCopy:"The model learns recurring color distributions from three user-supplied positive examples. It compresses them into an inspectable reference memory, then combines that evidence with local color contrast in the current frame.",
+        heroTitle:"What evidence does the system learn from?", heroCopy:"The model learns recurring color distributions from user-supplied positive examples. It compresses them into an inspectable reference memory, then combines that evidence with local color contrast in the current frame.",
         status:"Model status", references:"Reference images", regions:"Learning regions", prototypes:"Color prototypes", weight:"Reference weight",
         samplesTitle:"Learning samples", samplesCopy:"This page shows only low-resolution spatial mosaics and palettes derived from the references. Raw images are not distributed with the project because their usage licenses have not been verified.", loading:"Loading reference model…",
         processTitle:"Learning process", processCopy:"Every step is inspectable and reproducible. The method borrows the memory-bank logic of normal-only anomaly detection, but uses interpretable color regions rather than hidden deep features.",
-        stage1Title:"Positive examples", stage1Copy:"Input user-selected townscape color references.", stage2Title:"Region segmentation", stage2Copy:"SLIC divides each image into spatially continuous color regions.", stage3Title:"Perceptual color", stage3Copy:"Each region is converted to CIELAB and summarized by median color and area.", stage4Title:"Balanced memory", stage4Copy:"Each image contributes equal weight, limiting domination by sky or large walls.", stage5Title:"Held-out calibration", stage5Copy:"Each reference is compared with a memory learned from the other two.", stage6Title:"Evidence fusion", stage6Copy:"Reference novelty and within-frame contrast jointly rank candidate regions.",
+        stage1Title:"Positive examples", stage1Copy:"Input user-selected townscape color references.", stage2Title:"Region segmentation", stage2Copy:"SLIC divides each image into spatially continuous color regions.", stage3Title:"Perceptual color", stage3Copy:"Each region is converted to CIELAB and summarized by median color and area.", stage4Title:"Balanced memory", stage4Copy:"Each image contributes equal weight, limiting domination by sky or large walls.", stage5Title:"Held-out calibration", stage5Copy:"Each reference is compared with a memory learned from all remaining reference images.", stage6Title:"Evidence fusion", stage6Copy:"Reference novelty and within-frame contrast jointly rank candidate regions.",
         memoryTitle:"The learned color memory", memoryCopy:"Block width represents support for each prototype in the reference set. The scatter plot positions prototypes in the CIELAB a*–b* chromatic plane.", prototypeLabel:"Reference color prototypes", calibrationLabel:"Leave-one-reference-out calibration", scatterCaption:"The x-axis is a* (green–red); the y-axis is b* (blue–yellow). Larger points have more reference support.",
-        calibrationCaption:"The curve comes from held-out comparisons: each positive example is matched only against memory learned from the other two.", inspectTitle:"Inspect a color yourself", inspectCopy:"Choose a color to find its nearest reference prototype and its novelty relative to the positive examples. This is color evidence, not an aesthetic score.", selectedColor:"Selected color", nearestColor:"Nearest reference color", distance:"CIEDE2000 distance", percentile:"Reference novelty percentile",
+        calibrationCaption:"The curve comes from held-out comparisons: each positive example is matched only against memory learned from all remaining reference images.", inspectTitle:"Inspect a color yourself", inspectCopy:"Choose a color to find its nearest reference prototype and its novelty relative to the positive examples. This is color evidence, not an aesthetic score.", selectedColor:"Selected color", nearestColor:"Nearest reference color", distance:"CIEDE2000 distance", percentile:"Reference novelty percentile",
         boundaryTitle:"Evidence boundaries", boundaryCopy:"These limitations are part of the model output, not a footnote. Candidate regions still require human interpretation, validation, and discussion.", nextTitle:"What evidence is needed next?", nextCopy:"More images do not automatically make the system reliable. Data must also cover seasons, weather, devices, and stakeholders.",
         researchTitle:"Open-source research path", researchCopy:"We adopted the core idea of normal-only anomaly detection while implementing a lightweight, interpretable color memory first. Deep patch features can become a comparison model after the dataset expands.", patchcoreCopy:"Builds a representative memory bank of normal patch features and localizes anomalies through nearest-neighbor distance.", anomalibCopy:"Collects visual anomaly methods such as PatchCore and PaDiM for future standardized benchmarking.", dinov2Copy:"Provides general visual features without task-specific fine-tuning and could add object and material semantics with a larger dataset.",
         positiveReference:"Positive reference", regionsUnit:"regions", rawExcluded:"Raw image excluded; bottom-right watermark zone omitted from learning", modelStatus:"Prototype evidence", formula:"Fusion score = (1 − {w}) × local evidence + {w} × reference evidence + 0.08 × their minimum", q95:"The 95th-percentile positive-reference distance is ΔE00 {value}. Exceeding it means “rare in this reference set,” not “unattractive.”",
@@ -465,7 +465,7 @@
       const grid = $("#referenceGrid"); grid.replaceChildren();
       model.references.forEach((reference, index) => {
         const card = document.createElement("article"); card.className="reference-card";
-        card.innerHTML = `<img class="mosaic" src="${reference.derived_mosaic}" alt="${reference.label} derived spatial mosaic"><img class="palette" src="${reference.derived_palette}" alt="${reference.label} derived palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("rawExcluded")}</p></div>`;
+        card.innerHTML = `<img loading="lazy" class="mosaic" src="${reference.derived_mosaic}" alt="${reference.label} derived spatial mosaic"><img loading="lazy" class="palette" src="${reference.derived_palette}" alt="${reference.label} derived palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("rawExcluded")}</p></div>`;
         grid.append(card);
       });
     }

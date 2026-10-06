@@ -296,7 +296,7 @@ def train_reference_model(
     ]
 
     fingerprint = _fingerprint(image_hashes, prototypes)
-    reference_weight = float(min(0.45, 0.20 + 0.05 * len(paths)))
+    reference_weight = 0.35
     model = {
         "model_version": MODEL_VERSION,
         "model_type": "balanced-superpixel-color-memory",
@@ -338,7 +338,7 @@ def train_reference_model(
         "evidence_boundaries": {
             "en": [
                 "The model learns only the supplied color distributions; it does not learn beauty or cultural value.",
-                "Three reference images are insufficient to represent Chinese historic towns, seasons, or communities.",
+                f"{len(paths)} user-selected reference images do not establish representative coverage of historic towns, seasons, or communities.",
                 "Weather, time of day, exposure, white balance, haze, and editing can shift measured colors.",
                 "Composition and object frequency in the references affect which colors appear normal.",
                 "The model does not recognize objects, materials, authenticity, safety, or historical significance.",
@@ -347,7 +347,7 @@ def train_reference_model(
             ],
             "zh-CN": [
                 "模型只学习所提供图片的色彩分布；它不学习美感或文化价值。",
-                "三张参考图不足以代表中国古镇、不同季节或不同社区。",
+                f"{len(paths)} 张用户选择的参考图不等于覆盖中国古镇、不同季节或不同社区的代表性数据集。",
                 "天气、时间、曝光、白平衡、雾霾和后期处理都会改变测得的颜色。",
                 "参考图的构图和物体出现频率会影响哪些颜色被模型视为常见。",
                 "模型无法识别物体、材料、真实性、安全性或历史意义。",

@@ -44,7 +44,7 @@ def test_english_summary_is_available():
 def test_reference_model_prioritizes_a_magenta_patch():
     model = load_reference_model(ROOT / "reference_model.json")
     assert model is not None
-    assert model["reference_count"] == 3
+    assert model["reference_count"] == 13
     assert model["prototype_count"] == 28
 
     image = np.full((240, 320, 3), [105, 119, 107], dtype=np.uint8)

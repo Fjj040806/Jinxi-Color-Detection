@@ -36,7 +36,7 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 - automatic capture and analysis of the clean WebGL scene;
 - SLIC superpixels, CIELAB measurements, CIEDE2000 distance, local color
   context, chroma lift, lightness difference, and color rarity;
-- a learned memory of 28 reference-color prototypes from three supplied
+- a learned memory of 28 reference-color prototypes from 13 supplied
   positive cases;
 - equal contribution per reference image and capped region weights so broad
   sky, wall, or water areas do not dominate the memory;
@@ -50,7 +50,7 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
   reduced-motion support.
 
 The reference contribution is deliberately capped at 35% because the current
-dataset contains only three images. The local detector remains the main source
+dataset contains only 13 user-selected images. The local detector remains the main source
 of evidence.
 
 ## Review workflow
@@ -135,7 +135,7 @@ prototype uses a transparent color memory rather than a deep model.
 
 ## Evidence boundary
 
-- Three references cannot represent Chinese historic towns, different
+- These 13 references cannot represent Chinese historic towns, different
   communities, seasons, weather, times of day, or camera systems.
 - Exposure, white balance, haze, editing, and shadows can change measured
   colors.

@@ -92,6 +92,26 @@ Open:
 If an older interface remains visible, stop the old process with `Ctrl+C`,
 start this folder's `app.py`, and refresh with `Ctrl+F5`.
 
+### Windows proxy / `403 Forbidden` during installation
+
+If the terminal reports `Tunnel connection failed: 403 Forbidden`, the app has
+not failed: a proxy blocked pip before packages such as NumPy and FastAPI could
+be installed. The current `start_windows.bat` clears stale proxy settings for
+that run and automatically retries with the Tsinghua PyPI mirror.
+
+For a manual retry in PowerShell, from the project folder run:
+
+```powershell
+$env:HTTP_PROXY=""
+$env:HTTPS_PROXY=""
+$env:ALL_PROXY=""
+$env:PIP_CONFIG_FILE="NUL"
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+.\.venv\Scripts\python.exe app.py
+```
+
+Do not run `app.py` until the installation command finishes successfully.
+
 ## Run on macOS or Linux
 
 ```bash

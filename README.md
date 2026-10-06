@@ -105,6 +105,8 @@ For a manual retry in PowerShell, from the project folder run:
 $env:HTTP_PROXY=""
 $env:HTTPS_PROXY=""
 $env:ALL_PROXY=""
+$env:NO_PROXY="*"
+$env:PIP_PROXY=""
 $env:PIP_CONFIG_FILE="NUL"
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 .\.venv\Scripts\python.exe app.py

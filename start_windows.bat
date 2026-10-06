@@ -28,6 +28,9 @@ set "ALL_PROXY="
 set "http_proxy="
 set "https_proxy="
 set "all_proxy="
+set "NO_PROXY=*"
+set "no_proxy=*"
+set "PIP_PROXY="
 set "PIP_CONFIG_FILE=NUL"
 
 "%VENV_PY%" -m pip install --disable-pip-version-check -r requirements.txt

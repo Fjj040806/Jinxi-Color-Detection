@@ -1122,6 +1122,41 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
+
+    .evidence-network { width:100%; height:auto; border:1px solid #ffffff22; border-radius:12px; background:#101b18; }
+    .evidence-network text { fill:#efe9dc; font:12px sans-serif; }
+    .evidence-network line { stroke:#b5c8bc; stroke-width:1.5; }
+    .evidence-network circle { stroke:#efe9dc; stroke-width:1; }
+    .evidence-network a:focus circle { stroke:#ffdf91; stroke-width:4; }
+    .evidence-copy { color:#c5c8bc; font-size:12px; line-height:1.7; }
+    .candidate { scroll-margin-top:20px; }
+
+    .analysis-drawer { width:min(960px, calc(100vw - 24px)); }
+    .idiom-panel {
+      padding: 18px;
+      margin: 0 0 11px;
+      border: 1px solid rgba(239, 233, 220, .11);
+      border-radius: 15px;
+      background: #070c0b;
+    }
+    [hidden] { display:none !important; }
+    .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+    .chart-card { min-width:0; background:rgba(239,233,220,.035); padding:18px; border:1px solid var(--line); border-radius:13px; }
+    .chart-card h3 { font:600 16px system-ui; margin:0 0 8px; }
+    .chart-card svg { width:100%; height:auto; min-height:360px; overflow:visible; }
+    .chart-card text { fill:#bfc9c2; font:12px system-ui; }
+    .chart-card .grid { stroke:#ffffff12; }
+    .chart-tip { min-height:44px; font:13px system-ui; color:#bdcec1; padding:12px 0; }
+    .chart-mark { transform-box:fill-box; transform-origin:center; animation:mark-in .6s both; }
+    .chart-bar { transform-box:fill-box; transform-origin:left; animation:bar-in .75s both; }
+    .chart-mark:hover,.chart-mark:focus { stroke:#fff; stroke-width:3px; outline:none; }
+    .evidence-network { min-height:430px; max-height:650px; }
+    .evidence-network line { animation:edge-in .8s both; } .evidence-network circle { animation:mark-in .65s both; transform-box:fill-box; transform-origin:center; }
+    @keyframes mark-in { from { opacity:0; transform:scale(.2); } to { opacity:1; transform:scale(1); } }
+    @keyframes bar-in { from { transform:scaleX(0); opacity:0; } to { transform:scaleX(1); opacity:1; } }
+    @keyframes edge-in { from { opacity:0; } to { opacity:1; } }
+    @media(max-width:760px) { .chart-grid { grid-template-columns:1fr; } .idiom-panel { padding:14px; } }
+    @media(prefers-reduced-motion:reduce) { .chart-mark,.chart-bar,.evidence-network line,.evidence-network circle { animation:none !important; } }
   </style>
 </head>
 <body>
@@ -1229,6 +1264,7 @@
             <button class="tab-button" data-view="palette" role="tab" data-i18n="tabPalette">主色卡</button>
             <button class="tab-button" data-view="diagnostics" role="tab" data-i18n="tabDiagnostics">诊断视图</button>
             <button class="tab-button" data-view="network" role="tab" data-i18n="tabNetwork">色彩关系网</button>
+            <button class="tab-button" data-view="reference-network" role="tab" data-i18n="tabReferenceNetwork">参考关系网</button>
           </div>
           <div class="result-frame" id="resultFrame">
             <img id="resultImage" alt="色彩分析结果" data-i18n-alt="resultAlt">
@@ -1246,6 +1282,8 @@
             <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png" data-i18n="downloadView">下载当前视图 ↓</a>
           </div>
 
+          <section id="diagnosticPanel" class="idiom-panel" hidden></section>
+          <section id="referenceNetworkPanel" class="idiom-panel" hidden><h3 data-i18n="referenceNetworkTitle"></h3><p class="evidence-copy" data-i18n="referenceNetworkCopy"></p><div id="evidenceNetwork"></div></section>
           <h3 class="section-label" data-i18n="rankedCandidates">候选区域排名 · 同一画面内比较</h3>
           <div class="candidate-list" id="candidateList"></div>
 
@@ -1254,6 +1292,11 @@
             <span data-i18n="boundaryCopy">高分表示某区域同时获得局部色差与有限参考集的支持。它不表示该对象丑陋、缺乏文化价值或应当被移除。天气、阴影、反光和相机白平衡都可能影响结果。</span>
           </div>
 
+          <details class="settings"><summary data-i18n="whyTitle"></summary>
+            <p class="evidence-copy" data-i18n="whyCopy"></p>
+            <a class="text-link" href="/learning" data-i18n="evidence"></a>
+          </details>
+          <div class="boundary-note"><strong data-i18n="sdgTitle"></strong><br><span data-i18n="sdgCopy"></span></div>
           <details class="settings">
             <summary data-i18n="settingsSummary">调整分析参数并重新拍摄</summary>
             <div class="settings-grid">
@@ -1398,6 +1441,15 @@
 
     const translations = {
       "zh-CN": {
+        referenceNetworkTitle: "参考关系网 · 区域 → 最近参考色",
+        referenceNetworkCopy: "左侧为候选区域，右侧为最近的参考色原型。连线表示最近参考色关系，并标注 CIEDE2000 色差；布局和线长不编码距离。点击区域节点可跳转到对应证据。",
+        localLabel: "局部语境",
+        referenceLabel: "参考比较",
+        whyTitle: "为什么出现这个结果？",
+        whyCopy: "局部 ΔE00 衡量候选区域与周边颜色的差异；参考 ΔE00 衡量与最近参考色原型的差异。参考新颖度百分位来自留一参考图校准，较高表示在有限参考集中较少见。综合分数用于排序，不是美丑评分。",
+        sdgTitle: "社区讨论 · SDG 11.4",
+        sdgCopy: "这些色彩证据可为文化遗产保护讨论提供线索。保护决策仍需居民、商户和相关专业人员结合材料、历史与文化意义共同判断。",
+
         documentTitle: "锦溪 Color Lens · 360° 田野原型",
         metaDescription: "固定机位360度锦溪场景取景与客观色彩语境分析原型。",
         languageAria: "语言选项",
@@ -1477,6 +1529,7 @@
         tabPalette: "主色卡",
         tabDiagnostics: "诊断视图",
         tabNetwork: "色彩关系网",
+        tabReferenceNetwork: "参考关系网",
         resultAlt: "色彩分析结果",
         captionOverlay: "热力与编号轮廓显示相对色彩突出区域",
         captionOriginal: "你从固定观察点选择并拍摄的原始画面",
@@ -1530,6 +1583,15 @@
         summaryEmpty: "没有保留候选区域。请降低灵敏度或提高分区细节。本结果只测量色彩差异。"
       },
       en: {
+        referenceNetworkTitle: "Reference network · region → nearest reference color",
+        referenceNetworkCopy: "Candidates appear on the left and nearest reference-color prototypes on the right. Edges encode nearest-reference relationships and label CIEDE2000 distance; position and edge length do not encode distance. Select a candidate node to jump to its evidence.",
+        localLabel: "Local context",
+        referenceLabel: "Reference comparison",
+        whyTitle: "Why this result?",
+        whyCopy: "Local ΔE00 measures the color difference between a candidate and its surroundings; reference ΔE00 measures its difference from the nearest reference prototype. Novelty percentiles use leave-one-reference-out calibration: higher means rarer in this limited reference set. The combined score ranks review candidates; it is not a beauty score.",
+        sdgTitle: "Community discussion · SDG 11.4",
+        sdgCopy: "Color evidence can inform discussion about protecting cultural heritage. Preservation decisions require residents, businesses, and relevant professionals to consider materials, history, and cultural meaning.",
+
         documentTitle: "Jinxi Color Lens · 360° Field Prototype",
         metaDescription: "A fixed-position 360° Jinxi scene for virtual framing and objective contextual color analysis.",
         languageAria: "Language options",
@@ -1609,6 +1671,7 @@
         tabPalette: "Color palette",
         tabDiagnostics: "Diagnostics",
         tabNetwork: "Color network",
+        tabReferenceNetwork: "Reference network",
         resultAlt: "Color-analysis result",
         captionOverlay: "Heat and numbered outlines show regions with relatively distinctive colors",
         captionOriginal: "The frame you selected and captured from the fixed viewpoint",
@@ -2150,20 +2213,79 @@
 
     function selectView(view) {
       activeView = view;
-      els(".tab-button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+      els(".tab-button").forEach(button => {
+        const selected = button.dataset.view === view;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-selected", selected);
+        button.tabIndex = selected ? 0 : -1;
+      });
       const networkMode = view === "network";
-      el("#resultFrame").hidden = networkMode;
-      el("#resultCaptionRow").hidden = networkMode;
+      const diagnosticsMode = view === "diagnostics";
+      const referenceMode = view === "reference-network";
+      const custom = networkMode || diagnosticsMode || referenceMode;
+      el("#resultFrame").hidden = custom;
       el("#networkView").classList.toggle("active", networkMode);
+      el("#diagnosticPanel").hidden = view !== "diagnostics";
+      el("#referenceNetworkPanel").hidden = !referenceMode;
+      el("#resultCaptionRow").hidden = networkMode;
+      el("#downloadResult").hidden = custom;
       if (networkMode) {
         renderNetwork(lastPayload?.network);
         return;
       }
+      if (diagnosticsMode) {
+        renderDiagnostics();
+        el("#resultCaption").textContent = t("captionDiagnostics");
+        return;
+      }
+      if (referenceMode) {
+        renderReferenceNetwork(lastPayload?.candidates || []);
+        el("#resultCaption").textContent = t("referenceNetworkCopy");
+        return;
+      }
       const source = view === "original" ? capturedUrl : resultImages[view];
-      el("#resultImage").src = source;
+      el("#resultImage").src = source || "";
       el("#resultCaption").textContent = t(captionKeys[view]);
-      el("#downloadResult").href = source;
-      el("#downloadResult").download = view === "original" ? "jinxi-captured-view.png" : `jinxi-${view}.png`;
+      el("#downloadResult").href = source || "";
+      el("#downloadResult").download = `jinxi-${view}.png`;
+    }
+
+    function renderDiagnostics() {
+      const host = el("#diagnosticPanel"); host.replaceChildren();
+      const data = lastPayload?.diagnostic_data;
+      if (!data) { const img = document.createElement("img"); img.src = resultImages.diagnostics; img.style.width="100%"; host.append(img); return; }
+      const zh = currentLanguage === "zh-CN";
+      const grid = document.createElement("div"); grid.className="chart-grid"; host.append(grid);
+      const ns="http://www.w3.org/2000/svg";
+      function chart(title, subtitle, height=450) {
+        const card=document.createElement("div"); card.className="chart-card";
+        const h=document.createElement("h3"); h.textContent=title; card.append(h);
+        const p=document.createElement("p"); p.className="evidence-copy"; p.textContent=subtitle; card.append(p);
+        const svg=document.createElementNS(ns,"svg"); svg.setAttribute("viewBox",`0 0 460 ${height}`); svg.setAttribute("role","img"); svg.setAttribute("aria-label",title); card.append(svg);
+        const tip=document.createElement("div"); tip.className="chart-tip"; tip.setAttribute("aria-live","polite"); card.append(tip); grid.append(card);
+        return {svg,tip};
+      }
+      function draw(svg,tag,attrs,text) { const n=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v)); if(text!==undefined)n.textContent=text; svg.append(n); return n; }
+      const left=chart(zh?"CIELAB 色彩分布":"CIELAB color distribution",zh?"点代表分割区域；大小表示面积。悬停或聚焦查看数值。":"Points represent segmented regions; size encodes area. Hover or focus to inspect.");
+      const points=data.points;
+      const amin=Math.min(-15,...points.map(p=>p.a))-3, amax=Math.max(15,...points.map(p=>p.a))+3;
+      const bmin=Math.min(-20,...points.map(p=>p.b))-3, bmax=Math.max(30,...points.map(p=>p.b))+3;
+      const x=v=>60+(v-amin)/(amax-amin)*370,y=v=>390-(v-bmin)/(bmax-bmin)*350;
+      for(let i=0;i<=5;i++){ const av=amin+(amax-amin)*i/5,bv=bmin+(bmax-bmin)*i/5; draw(left.svg,"line",{x1:x(av),y1:40,x2:x(av),y2:390,class:"grid"}); draw(left.svg,"line",{x1:60,y1:y(bv),x2:430,y2:y(bv),class:"grid"}); draw(left.svg,"text",{x:x(av),y:413,"text-anchor":"middle"},av.toFixed(0)); draw(left.svg,"text",{x:48,y:y(bv)+4,"text-anchor":"end"},bv.toFixed(0)); }
+      draw(left.svg,"text",{x:240,y:442,"text-anchor":"middle"},"a* · green ← → red"); draw(left.svg,"text",{x:60,y:22},"b* · blue ↓ ↑ yellow");
+      points.forEach((p,i)=>{const label=`${p.hex} · a* ${p.a.toFixed(1)} · b* ${p.b.toFixed(1)} · ${zh?'面积':'area'} ${(p.area*100).toFixed(2)}%`;const n=draw(left.svg,"circle",{cx:x(p.a),cy:y(p.b),r:3+Math.sqrt(p.area)*45,fill:p.hex,stroke:"#ffffff55",class:"chart-mark",tabindex:0,"aria-label":label,style:`animation-delay:${Math.min(i*3,450)}ms`}); n.addEventListener("mouseenter",()=>left.tip.textContent=label); n.addEventListener("focus",()=>left.tip.textContent=label);});
+      data.candidates.forEach(c=>{
+        const n=draw(left.svg,"circle",{cx:x(c.a),cy:y(c.b),r:10,fill:c.hex,stroke:"#f7df9a","stroke-width":3,class:"chart-mark",tabindex:0,"aria-label":`Candidate #${c.rank}`});
+        draw(left.svg,"text",{x:x(c.a)+13,y:y(c.b)-10},`#${c.rank}`);
+        n.addEventListener("focus",()=>left.tip.textContent=`#${c.rank} · ${c.hex} · a* ${c.a.toFixed(1)} · b* ${c.b.toFixed(1)}`);
+      });
+      const right=chart(zh?"区域为何被标记":"Why regions were flagged",zh?"各特征在画面内的百分位；参考新颖度使用参考集校准。":"Within-frame feature percentiles; reference novelty uses reference-set calibration.",Math.max(450,data.candidates.length*125+110));
+      const colors=["#f28c65","#65b5dc","#83c7a0","#aa94df","#e598be"];
+      const labels=zh?["局部色差","色度距离","彩度提升","色彩稀有度","参考新颖度"]:["Local gap","Chromatic distance","Chroma lift","Color rarity","Reference novelty"];
+      const names=["Local color gap","Chromatic distance","Chroma lift","Color rarity","Reference novelty"];
+      for(let i=0;i<=4;i++){draw(right.svg,"line",{x1:65+i*90,y1:35,x2:65+i*90,y2:data.candidates.length*125+40,class:"grid"});draw(right.svg,"text",{x:65+i*90,y:23,"text-anchor":"middle"},i*25);}
+      data.candidates.forEach((c,i)=>{draw(right.svg,"text",{x:8,y:65+i*125},`#${c.rank}`);names.forEach((name,j)=>{if(c.features[name]===undefined)return;const v=c.features[name]; const label=`#${c.rank} · ${labels[j]} · ${v.toFixed(1)}%`; const bar=draw(right.svg,"rect",{x:65,y:43+i*125+j*18,width:v*3.6,height:12,rx:3,fill:colors[j],class:"chart-bar",tabindex:0,"aria-label":label,style:`animation-delay:${i*90+j*40}ms`});bar.addEventListener("mouseenter",()=>right.tip.textContent=label);bar.addEventListener("focus",()=>right.tip.textContent=label);});});
+      labels.forEach((label,j)=>{draw(right.svg,"rect",{x:20+(j%2)*220,y:data.candidates.length*125+55+Math.floor(j/2)*20,width:10,height:10,rx:2,fill:colors[j]});draw(right.svg,"text",{x:36+(j%2)*220,y:data.candidates.length*125+65+Math.floor(j/2)*20},label);});
     }
 
     function localizedSummary(payload) {
@@ -2180,20 +2302,60 @@
       });
     }
 
+    function renderReferenceNetwork(candidates) {
+      const host = el("#evidenceNetwork");
+      host.replaceChildren();
+      if (!candidates.length) { host.textContent = t("summaryEmpty"); return; }
+      const ns = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(ns, "svg");
+      const refs = [...new Set(candidates.map(c => c.closest_reference_hex).filter(h => /^#[0-9a-f]{6}$/i.test(h)))];
+      const height = Math.max(candidates.length, refs.length) * 70 + 35;
+      svg.setAttribute("viewBox", `0 0 440 ${height}`);
+      svg.setAttribute("class", "evidence-network");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", t("referenceNetworkCopy"));
+      function node(tag, attrs, text, parent = svg) {
+        const n = document.createElementNS(ns, tag);
+        Object.entries(attrs).forEach(([k,v]) => n.setAttribute(k,v));
+        if (text) n.textContent = text;
+        parent.append(n); return n;
+      }
+      candidates.forEach((c,i) => {
+        const y = 40 + i*70, j = refs.indexOf(c.closest_reference_hex);
+        if (j >= 0) {
+          const ry = 40 + j*70;
+          node("line", {x1:90,y1:y,x2:340,y2:ry});
+          node("text", {x:185,y:(y+ry)/2-8}, `ΔE00 ${c.reference_delta_e.toFixed(1)}`);
+        }
+      });
+      candidates.forEach((c,i) => {
+        const y = 40 + i*70;
+        const link = node("a", {href:`#candidate-${c.rank.replace("#", "")}`, "aria-label":`${t("localLabel")} ${c.rank}`});
+        node("circle", {cx:90,cy:y,r:15,fill:c.hex}, null,link);
+        node("text", {x:16,y:y+5},c.rank,link);
+      });
+      refs.forEach((h,i) => {
+        node("circle", {cx:340,cy:40+i*70,r:15,fill:h});
+        node("text", {x:362,y:45+i*70},h);
+      });
+      host.append(svg);
+    }
+
     function renderCandidates(candidates) {
       const container = el("#candidateList");
       container.replaceChildren();
       candidates.forEach((candidate, index) => {
         const item = document.createElement("article");
         item.className = "candidate";
+        item.id = `candidate-${candidate.rank.replace("#", "")}`;
         item.style.animationDelay = `${Math.min(index * 65, 260)}ms`;
         item.tabIndex = 0;
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
-            <strong>${t("candidateMain", { score: candidate.score.toFixed(1), delta: candidate.delta_e.toFixed(1) })}</strong>
+            <strong>${t("localLabel")} · ${t("candidateMain", { score: candidate.score.toFixed(1), delta: candidate.delta_e.toFixed(1) })}</strong>
             <span>${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
-            <span>${t("candidateReference", { percentile: candidate.reference_percentile.toFixed(0), reference: candidate.closest_reference_hex })}</span>
+            <span>${t("referenceLabel")} · ΔE00 ${candidate.reference_delta_e.toFixed(1)} · ${t("candidateReference", { percentile: candidate.reference_percentile.toFixed(0), reference: candidate.closest_reference_hex })}</span>
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
@@ -2350,7 +2512,16 @@
       if (el("#boundaryAck").checked) closeOnboarding({ remember: true });
     });
     el("#boundaryButton").addEventListener("click", () => openOnboarding(2));
-    els(".tab-button").forEach(button => button.addEventListener("click", () => selectView(button.dataset.view)));
+    els(".tab-button").forEach(button => {
+      button.addEventListener("click", () => selectView(button.dataset.view));
+      button.addEventListener("keydown", event => {
+        if (!["ArrowLeft","ArrowRight","Home","End"].includes(event.key)) return;
+        event.preventDefault(); event.stopPropagation();
+        const tabs=els(".tab-button"), i=tabs.indexOf(button);
+        const next=event.key==="Home"?0:event.key==="End"?tabs.length-1:(i+(event.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;
+        selectView(tabs[next].dataset.view); tabs[next].focus();
+      });
+    });
 
     el("#zoomIn").addEventListener("click", () => fov = clamp(fov - 8, 34, 100));
     el("#zoomOut").addEventListener("click", () => fov = clamp(fov + 8, 34, 100));
@@ -2410,7 +2581,7 @@
         }
         return;
       }
-      if (event.target.matches("input, button, summary")) return;
+      if (document.querySelector("dialog[open]") || event.target.matches("input, button, summary")) return;
       const controlled = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "-", " "];
       if (controlled.includes(event.key)) event.preventDefault();
       if (event.key === "ArrowLeft") yaw -= .08;

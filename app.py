@@ -161,6 +161,7 @@ async def analyze(
         },
         "candidates": _candidate_records(result.table),
         "network": _network_record(result.network),
+        "diagnostic_data": result.diagnostic_data,
         "reference_model": result.model_info,
         "method": {
             "sensitivity": float(sensitivity),

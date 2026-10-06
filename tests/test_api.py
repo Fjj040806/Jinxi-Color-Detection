@@ -32,7 +32,7 @@ def test_learning_page_and_reference_model_are_available():
     response = client.get("/api/reference-model")
     assert response.status_code == 200
     model = response.json()
-    assert model["reference_count"] == 3
+    assert model["reference_count"] == 13
     assert model["prototype_count"] == 28
     assert len(model["prototype_colors"]) == 28
     assert model["calibration"]["q95_delta_e"] > 0

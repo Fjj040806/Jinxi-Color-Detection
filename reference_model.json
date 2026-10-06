@@ -2,10 +2,10 @@
   "model_version": "0.3.0",
   "model_type": "balanced-superpixel-color-memory",
   "trained_on": "2026-10-06",
-  "fingerprint": "b96a7a2c5a444f9c",
+  "fingerprint": "25eb239bafb2bda1",
   "status": "prototype evidence",
   "reference_count": 13,
-  "training_region_count": 2017,
+  "training_region_count": 2053,
   "prototype_count": 28,
   "reference_weight": 0.35,
   "feature_space": "CIELAB median region color with CIEDE2000 matching",
@@ -20,422 +20,422 @@
     {
       "rank": 1,
       "lab": [
-        5.4223,
-        -0.61981,
-        -0.28965
+        30.52315,
+        -0.10003,
+        -0.45786
       ],
       "rgb": [
-        17,
-        18,
-        18
+        71,
+        72,
+        73
       ],
-      "hex": "#111212",
-      "support": 0.0760507
+      "hex": "#474849",
+      "support": 0.0806269
     },
     {
       "rank": 2,
       "lab": [
-        80.88776,
-        -1.24265,
-        -4.08515
+        4.76366,
+        -0.21898,
+        -1.11048
       ],
       "rgb": [
-        195,
-        202,
-        208
+        15,
+        16,
+        18
       ],
-      "hex": "#C3CAD0",
-      "support": 0.0728102
+      "hex": "#0F1012",
+      "support": 0.0748205
     },
     {
       "rank": 3,
       "lab": [
-        32.11324,
-        -0.87617,
-        -0.9539
+        12.03536,
+        -1.55412,
+        0.69048
       ],
       "rgb": [
-        73,
-        76,
-        77
+        30,
+        32,
+        31
       ],
-      "hex": "#494C4D",
-      "support": 0.064776
+      "hex": "#1E201F",
+      "support": 0.0708815
     },
     {
       "rank": 4,
       "lab": [
-        90.62549,
-        -0.88999,
-        -1.70952
+        82.2715,
+        -0.96031,
+        -3.40014
       ],
       "rgb": [
-        225,
-        229,
-        231
+        200,
+        205,
+        211
       ],
-      "hex": "#E1E5E7",
-      "support": 0.0600711
+      "hex": "#C8CDD3",
+      "support": 0.0674933
     },
     {
       "rank": 5,
       "lab": [
-        41.32961,
-        -1.65544,
-        -0.73865
+        19.80016,
+        -0.92267,
+        -2.58759
       ],
       "rgb": [
-        94,
-        98,
-        99
+        44,
+        48,
+        52
       ],
-      "hex": "#5E6263",
-      "support": 0.0584236
+      "hex": "#2C3034",
+      "support": 0.0591358
     },
     {
       "rank": 6,
       "lab": [
-        12.84136,
-        -0.1893,
-        -2.43502
+        90.75652,
+        -0.40548,
+        -1.49225
       ],
       "rgb": [
-        31,
-        33,
-        37
+        226,
+        229,
+        231
       ],
-      "hex": "#1F2125",
-      "support": 0.0584073
+      "hex": "#E2E5E7",
+      "support": 0.0557179
     },
     {
       "rank": 7,
       "lab": [
-        22.69373,
-        -0.92447,
-        -2.377
+        39.75861,
+        -2.47866,
+        -0.33356
       ],
       "rgb": [
-        51,
-        55,
-        58
+        89,
+        95,
+        94
       ],
-      "hex": "#33373A",
-      "support": 0.0550296
+      "hex": "#595F5E",
+      "support": 0.0554327
     },
     {
       "rank": 8,
       "lab": [
-        17.00967,
-        -3.88128,
-        4.85803
+        32.20805,
+        -7.31176,
+        10.41935
       ],
       "rgb": [
-        39,
-        43,
-        35
+        71,
+        79,
+        59
       ],
-      "hex": "#272B23",
-      "support": 0.0532516
+      "hex": "#474F3B",
+      "support": 0.0533953
     },
     {
       "rank": 9,
       "lab": [
-        68.97734,
-        -1.85397,
-        -4.32883
+        21.05155,
+        -5.0293,
+        6.30057
       ],
       "rgb": [
-        161,
-        170,
-        176
+        47,
+        52,
+        41
       ],
-      "hex": "#A1AAB0",
-      "support": 0.0431395
+      "hex": "#2F3429",
+      "support": 0.0488506
     },
     {
       "rank": 10,
       "lab": [
-        27.12714,
-        -7.99688,
-        7.04823
+        48.89257,
+        -2.22639,
+        -0.35289
       ],
       "rgb": [
-        56,
-        67,
-        53
+        112,
+        117,
+        117
       ],
-      "hex": "#384335",
-      "support": 0.0384257
+      "hex": "#707575",
+      "support": 0.0460493
     },
     {
       "rank": 11,
       "lab": [
-        37.00174,
-        -8.31429,
-        12.01709
+        70.54002,
+        -1.2005,
+        -3.72317
       ],
       "rgb": [
-        81,
-        90,
-        68
+        167,
+        173,
+        179
       ],
-      "hex": "#515A44",
-      "support": 0.0340613
+      "hex": "#A7ADB3",
+      "support": 0.0427132
     },
     {
       "rank": 12,
       "lab": [
-        58.71549,
-        -0.90415,
-        1.31138
+        74.22178,
+        -2.41642,
+        -11.23889
       ],
       "rgb": [
-        141,
-        142,
-        139
+        167,
+        185,
+        203
       ],
-      "hex": "#8D8E8B",
-      "support": 0.0335443
+      "hex": "#A7B9CB",
+      "support": 0.0315298
     },
     {
       "rank": 13,
       "lab": [
-        50.03265,
-        -0.2155,
-        9.54753
+        49.48464,
+        -10.35841,
+        13.8168
       ],
       "rgb": [
-        125,
-        119,
-        103
+        109,
+        122,
+        94
       ],
-      "hex": "#7D7767",
-      "support": 0.0329271
+      "hex": "#6D7A5E",
+      "support": 0.0298435
     },
     {
       "rank": 14,
       "lab": [
-        52.25184,
-        -13.99554,
-        15.64804
+        57.20125,
+        0.15556,
+        11.39898
       ],
       "rgb": [
-        110,
-        131,
-        97
+        146,
+        136,
+        118
       ],
-      "hex": "#6E8361",
-      "support": 0.0313685
+      "hex": "#928876",
+      "support": 0.0298194
     },
     {
       "rank": 15,
       "lab": [
-        72.85632,
-        -3.42974,
-        -12.82545
+        60.30618,
+        -1.91387,
+        -0.38943
       ],
       "rgb": [
-        159,
-        182,
-        202
+        141,
+        146,
+        146
       ],
-      "hex": "#9FB6CA",
-      "support": 0.0286152
+      "hex": "#8D9292",
+      "support": 0.0291424
     },
     {
       "rank": 16,
       "lab": [
-        30.57738,
-        -13.65328,
-        22.19299
+        21.70959,
+        -12.14466,
+        15.33371
       ],
       "rgb": [
-        62,
-        77,
-        36
+        42,
+        56,
+        29
       ],
-      "hex": "#3E4D24",
-      "support": 0.0284734
+      "hex": "#2A381D",
+      "support": 0.0288863
     },
     {
       "rank": 17,
       "lab": [
-        52.93964,
-        -2.1885,
-        -10.11318
+        35.96758,
+        -13.5291,
+        25.25069
       ],
       "rgb": [
-        113,
-        128,
-        143
+        77,
+        90,
+        43
       ],
-      "hex": "#71808F",
-      "support": 0.0268811
+      "hex": "#4D5A2B",
+      "support": 0.0269959
     },
     {
       "rank": 18,
       "lab": [
-        43.06813,
-        -14.4083,
-        27.74815
+        53.46454,
+        -16.39406,
+        27.5566
       ],
       "rgb": [
-        94,
-        107,
-        54
+        116,
+        134,
+        79
       ],
-      "hex": "#5E6B36",
-      "support": 0.0259842
+      "hex": "#74864F",
+      "support": 0.0263521
     },
     {
       "rank": 19,
       "lab": [
-        19.88235,
-        -11.79777,
-        13.35371
+        54.99307,
+        -1.61795,
+        -11.44409
       ],
       "rgb": [
-        37,
-        52,
-        28
+        118,
+        133,
+        151
       ],
-      "hex": "#25341C",
-      "support": 0.0252727
+      "hex": "#768597",
+      "support": 0.0209739
     },
     {
       "rank": 20,
       "lab": [
-        49.48591,
-        -5.94123,
-        3.21743
+        67.60079,
+        -0.85119,
+        9.02609
       ],
       "rgb": [
-        109,
-        120,
-        112
+        170,
+        165,
+        148
       ],
-      "hex": "#6D7870",
-      "support": 0.0242156
+      "hex": "#AAA594",
+      "support": 0.0183925
     },
     {
       "rank": 21,
       "lab": [
-        58.49207,
-        -17.6825,
-        31.53688
+        42.50514,
+        3.70734,
+        11.19139
       ],
       "rgb": [
-        129,
-        148,
-        84
+        113,
+        98,
+        82
       ],
-      "hex": "#819454",
-      "support": 0.0228662
+      "hex": "#716252",
+      "support": 0.0165953
     },
     {
       "rank": 22,
       "lab": [
-        33.78699,
-        1.95831,
-        7.10973
+        80.57805,
+        -0.68945,
+        7.59841
       ],
       "rgb": [
-        87,
-        78,
-        68
+        205,
+        200,
+        186
       ],
-      "hex": "#574E44",
-      "support": 0.0224958
+      "hex": "#CDC8BA",
+      "support": 0.0160572
     },
     {
       "rank": 23,
       "lab": [
-        68.12675,
-        -5.86122,
-        9.9804
+        67.78077,
+        -18.25675,
+        49.64006
       ],
       "rgb": [
-        163,
-        169,
-        148
+        161,
+        172,
+        71
       ],
-      "hex": "#A3A994",
-      "support": 0.020302
+      "hex": "#A1AC47",
+      "support": 0.0159833
     },
     {
       "rank": 24,
       "lab": [
-        81.06535,
-        1.33245,
-        10.22382
+        46.82376,
+        -17.07438,
+        37.74395
       ],
       "rgb": [
-        212,
-        200,
-        182
+        103,
+        118,
+        44
       ],
-      "hex": "#D4C8B6",
-      "support": 0.0163665
+      "hex": "#67762C",
+      "support": 0.0145436
     },
     {
       "rank": 25,
       "lab": [
-        86.85098,
-        4.90332,
-        25.93304
+        87.26779,
+        4.67725,
+        27.24693
       ],
       "rgb": [
-        245,
-        213,
-        169
+        246,
+        214,
+        167
       ],
-      "hex": "#F5D5A9",
-      "support": 0.0143852
+      "hex": "#F6D6A7",
+      "support": 0.0118619
     },
     {
       "rank": 26,
       "lab": [
-        68.76422,
-        -19.90481,
-        52.4245
+        78.92227,
+        2.90436,
+        17.43614
       ],
       "rgb": [
-        162,
-        176,
-        67
+        214,
+        192,
+        163
       ],
-      "hex": "#A2B043",
-      "support": 0.0118826
+      "hex": "#D6C0A3",
+      "support": 0.0113851
     },
     {
       "rank": 27,
       "lab": [
-        70.43478,
-        2.08225,
-        18.40951
+        66.4482,
+        -12.76683,
+        18.54039
       ],
       "rgb": [
-        189,
-        170,
-        139
+        151,
+        167,
+        128
       ],
-      "hex": "#BDAA8B",
-      "support": 0.0113609
+      "hex": "#97A780",
+      "support": 0.0092909
     },
     {
       "rank": 28,
       "lab": [
-        52.38042,
-        -18.10859,
-        43.64677
+        47.91653,
+        -16.71923,
+        10.62575
       ],
       "rgb": [
-        117,
-        132,
-        45
+        90,
+        121,
+        95
       ],
-      "hex": "#75842D",
-      "support": 0.008612
+      "hex": "#5A795F",
+      "support": 0.0072301
     }
   ],
   "calibration": {
@@ -443,1188 +443,1188 @@
     "curve": [
       {
         "percentile": 0,
-        "delta_e": 0.38215
+        "delta_e": 0.24202
       },
       {
         "percentile": 2,
-        "delta_e": 1.51147
+        "delta_e": 1.44169
       },
       {
         "percentile": 4,
-        "delta_e": 1.85785
+        "delta_e": 1.78524
       },
       {
         "percentile": 6,
-        "delta_e": 2.16239
+        "delta_e": 2.04512
       },
       {
         "percentile": 8,
-        "delta_e": 2.35397
+        "delta_e": 2.20491
       },
       {
         "percentile": 10,
-        "delta_e": 2.58195
+        "delta_e": 2.38318
       },
       {
         "percentile": 12,
-        "delta_e": 2.72512
+        "delta_e": 2.53998
       },
       {
         "percentile": 14,
-        "delta_e": 2.85331
+        "delta_e": 2.68145
       },
       {
         "percentile": 16,
-        "delta_e": 3.0294
+        "delta_e": 2.79464
       },
       {
         "percentile": 18,
-        "delta_e": 3.2191
+        "delta_e": 2.98571
       },
       {
         "percentile": 20,
-        "delta_e": 3.36391
+        "delta_e": 3.10878
       },
       {
         "percentile": 22,
-        "delta_e": 3.48792
+        "delta_e": 3.24799
       },
       {
         "percentile": 24,
-        "delta_e": 3.64159
+        "delta_e": 3.35139
       },
       {
         "percentile": 26,
-        "delta_e": 3.73544
+        "delta_e": 3.53356
       },
       {
         "percentile": 28,
-        "delta_e": 3.89822
+        "delta_e": 3.71027
       },
       {
         "percentile": 30,
-        "delta_e": 3.99456
+        "delta_e": 3.84831
       },
       {
         "percentile": 32,
-        "delta_e": 4.14729
+        "delta_e": 3.96616
       },
       {
         "percentile": 34,
-        "delta_e": 4.24995
+        "delta_e": 4.08216
       },
       {
         "percentile": 36,
-        "delta_e": 4.35446
+        "delta_e": 4.20642
       },
       {
         "percentile": 38,
-        "delta_e": 4.47808
+        "delta_e": 4.31497
       },
       {
         "percentile": 40,
-        "delta_e": 4.56927
+        "delta_e": 4.40976
       },
       {
         "percentile": 42,
-        "delta_e": 4.65184
+        "delta_e": 4.55446
       },
       {
         "percentile": 44,
-        "delta_e": 4.73708
+        "delta_e": 4.67594
       },
       {
         "percentile": 46,
-        "delta_e": 4.85884
+        "delta_e": 4.78678
       },
       {
         "percentile": 48,
-        "delta_e": 4.9621
+        "delta_e": 4.90691
       },
       {
         "percentile": 50,
-        "delta_e": 5.08637
+        "delta_e": 5.0285
       },
       {
         "percentile": 52,
-        "delta_e": 5.19311
+        "delta_e": 5.16991
       },
       {
         "percentile": 54,
-        "delta_e": 5.32617
+        "delta_e": 5.25829
       },
       {
         "percentile": 56,
-        "delta_e": 5.50796
+        "delta_e": 5.3548
       },
       {
         "percentile": 58,
-        "delta_e": 5.61418
+        "delta_e": 5.48795
       },
       {
         "percentile": 60,
-        "delta_e": 5.72014
+        "delta_e": 5.65965
       },
       {
         "percentile": 62,
-        "delta_e": 5.84324
+        "delta_e": 5.84113
       },
       {
         "percentile": 64,
-        "delta_e": 5.97378
+        "delta_e": 5.97839
       },
       {
         "percentile": 66,
-        "delta_e": 6.12862
+        "delta_e": 6.12678
       },
       {
         "percentile": 68,
-        "delta_e": 6.26712
+        "delta_e": 6.304
       },
       {
         "percentile": 70,
-        "delta_e": 6.43139
+        "delta_e": 6.426
       },
       {
         "percentile": 72,
-        "delta_e": 6.56418
+        "delta_e": 6.6013
       },
       {
         "percentile": 74,
-        "delta_e": 6.82278
+        "delta_e": 6.78028
       },
       {
         "percentile": 76,
-        "delta_e": 7.06588
+        "delta_e": 6.97716
       },
       {
         "percentile": 78,
-        "delta_e": 7.34302
+        "delta_e": 7.15327
       },
       {
         "percentile": 80,
-        "delta_e": 7.53101
+        "delta_e": 7.38776
       },
       {
         "percentile": 82,
-        "delta_e": 7.73747
+        "delta_e": 7.67668
       },
       {
         "percentile": 84,
-        "delta_e": 8.07587
+        "delta_e": 7.92363
       },
       {
         "percentile": 86,
-        "delta_e": 8.33245
+        "delta_e": 8.31164
       },
       {
         "percentile": 88,
-        "delta_e": 8.62152
+        "delta_e": 8.60395
       },
       {
         "percentile": 90,
-        "delta_e": 9.0847
+        "delta_e": 9.12028
       },
       {
         "percentile": 92,
-        "delta_e": 9.57812
+        "delta_e": 9.65952
       },
       {
         "percentile": 94,
-        "delta_e": 10.23276
+        "delta_e": 10.26977
       },
       {
         "percentile": 96,
-        "delta_e": 11.30963
+        "delta_e": 10.9748
       },
       {
         "percentile": 98,
-        "delta_e": 13.1445
+        "delta_e": 13.24136
       },
       {
         "percentile": 100,
-        "delta_e": 20.77249
+        "delta_e": 20.51153
       }
     ],
-    "q50_delta_e": 5.0864,
-    "q90_delta_e": 9.0847,
-    "q95_delta_e": 10.7422
+    "q50_delta_e": 5.0285,
+    "q90_delta_e": 9.1203,
+    "q95_delta_e": 10.5314
   },
   "references": [
     {
       "id": "ref-01",
       "label": "Positive reference 1",
-      "sha256": "221b44c4a307d649e50b1c559a31a92d3d18b25c9d16f531f4e00b0735e7a37e",
+      "sha256": "9cfa8809e6debe1b88206e7e965d2b279b6c8ebe63ff6f8d91a66a96e343fee0",
       "dimensions": {
-        "width": 675,
+        "width": 723,
         "height": 900
       },
-      "retained_regions": 171,
-      "median_chroma": 5.375,
-      "p90_chroma": 14.402,
+      "retained_regions": 178,
+      "median_chroma": 4.038,
+      "p90_chroma": 10.542,
       "palette": [
         {
-          "hex": "#505656",
-          "weight": 0.228208,
+          "hex": "#A4AFB9",
+          "weight": 0.22089,
           "lab": [
-            35.9502,
-            -2.2846,
-            -0.9533
+            70.7872,
+            -1.7815,
+            -6.4505
           ]
         },
         {
-          "hex": "#9FB0BC",
-          "weight": 0.20997,
+          "hex": "#C7CFD6",
+          "weight": 0.197966,
           "lab": [
-            70.9374,
-            -3.524,
-            -8.1141
+            82.7837,
+            -1.425,
+            -4.0314
           ]
         },
         {
-          "hex": "#C4D1D9",
-          "weight": 0.199336,
+          "hex": "#757C7F",
+          "weight": 0.193849,
           "lab": [
-            83.0175,
-            -2.8198,
-            -5.6372
+            51.6586,
+            -2.2503,
+            -2.0564
           ]
         },
         {
-          "hex": "#758185",
-          "weight": 0.164454,
+          "hex": "#4C514F",
+          "weight": 0.186364,
           "lab": [
-            53.3,
-            -3.6918,
-            -3.5306
+            33.7827,
+            -2.2119,
+            -0.0799
           ]
         },
         {
-          "hex": "#2B332C",
-          "weight": 0.13506,
+          "hex": "#2C322C",
+          "weight": 0.141499,
           "lab": [
-            20.3909,
-            -5.4341,
-            3.4584
+            19.9467,
+            -3.5221,
+            2.6422
           ]
         },
         {
-          "hex": "#3C4E2D",
-          "weight": 0.062973,
+          "hex": "#444E34",
+          "weight": 0.059432,
           "lab": [
-            30.6958,
-            -13.7058,
-            16.8374
+            31.7476,
+            -9.7979,
+            14.5118
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-01-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-01-palette.png",
+      "original_image": "/static/reference-originals/ref-01.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "eb9a11a406e79515d548deb5ce602a5b.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-02",
       "label": "Positive reference 2",
-      "sha256": "6eeabe4ff1f4c480633e495bec7c372576f87c1f2f147b87812cd78455183e98",
+      "sha256": "2bfa9de02326144839b5139062997ea6870ac82e262dee247297aa6fb37bb3eb",
       "dimensions": {
-        "width": 600,
+        "width": 635,
         "height": 900
       },
-      "retained_regions": 175,
-      "median_chroma": 5.614,
-      "p90_chroma": 14.575,
+      "retained_regions": 192,
+      "median_chroma": 4.819,
+      "p90_chroma": 12.64,
       "palette": [
         {
-          "hex": "#B5C2CE",
-          "weight": 0.207074,
+          "hex": "#3F4142",
+          "weight": 0.265031,
           "lab": [
-            77.8917,
-            -2.3103,
-            -7.1966
+            27.4898,
+            -0.8249,
+            -1.0042
           ]
         },
         {
-          "hex": "#D1D9E1",
-          "weight": 0.19534,
+          "hex": "#D5DCE3",
+          "weight": 0.200346,
           "lab": [
-            86.3368,
-            -1.3087,
-            -4.7755
+            87.3679,
+            -0.7189,
+            -4.3655
           ]
         },
         {
-          "hex": "#3F4242",
-          "weight": 0.183749,
+          "hex": "#B4BFCA",
+          "weight": 0.195423,
           "lab": [
-            27.6977,
-            -1.4333,
-            -0.6487
+            76.7823,
+            -1.6399,
+            -7.0666
           ]
         },
         {
-          "hex": "#88A2B9",
-          "weight": 0.14227,
+          "hex": "#20261D",
+          "weight": 0.12846,
           "lab": [
-            65.3549,
-            -3.5548,
-            -15.0163
+            14.3695,
+            -4.803,
+            5.1728
           ]
         },
         {
-          "hex": "#242A23",
-          "weight": 0.140947,
+          "hex": "#646D74",
+          "weight": 0.112791,
           "lab": [
-            16.4163,
-            -4.6823,
-            3.8715
+            45.5678,
+            -1.7614,
+            -5.1882
           ]
         },
         {
-          "hex": "#525C62",
-          "weight": 0.13062,
+          "hex": "#8FA7C1",
+          "weight": 0.097949,
           "lab": [
-            38.5355,
-            -2.474,
-            -4.7363
+            67.5012,
+            -2.4682,
+            -16.2246
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-02-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-02-palette.png",
+      "original_image": "/static/reference-originals/ref-02.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "72f650b733bb5168a4e27be480f31857.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-03",
       "label": "Positive reference 3",
-      "sha256": "56b1c3756fe74686c042afdfd8b5367cfb9c9ad35c38cdc85324350d77a8deec",
+      "sha256": "72f579f25557621fbd6d79ba63a9393f08b34218c13475b27e0f4dc9defb07a0",
       "dimensions": {
-        "width": 675,
+        "width": 695,
         "height": 900
       },
-      "retained_regions": 158,
-      "median_chroma": 3.876,
-      "p90_chroma": 10.905,
+      "retained_regions": 163,
+      "median_chroma": 2.808,
+      "p90_chroma": 10.083,
       "palette": [
         {
-          "hex": "#191B1F",
-          "weight": 0.296189,
+          "hex": "#131517",
+          "weight": 0.244753,
           "lab": [
-            9.8207,
-            -0.0048,
-            -2.8987
+            6.5519,
+            -0.3057,
+            -1.965
           ]
         },
         {
-          "hex": "#3C403F",
-          "weight": 0.182434,
+          "hex": "#CCCED5",
+          "weight": 0.192039,
           "lab": [
-            26.7549,
-            -1.9326,
-            -0.1027
+            82.8568,
+            0.4573,
+            -3.6712
           ]
         },
         {
-          "hex": "#CDD0D6",
-          "weight": 0.160951,
+          "hex": "#565C60",
+          "weight": 0.166206,
           "lab": [
-            83.4176,
-            0.1856,
-            -3.4127
+            38.5597,
+            -1.1018,
+            -3.1118
           ]
         },
         {
-          "hex": "#A9ACB3",
-          "weight": 0.155965,
+          "hex": "#2E3235",
+          "weight": 0.159144,
           "lab": [
-            70.3601,
-            -0.0327,
-            -3.8049
+            20.4097,
+            -0.6806,
+            -2.5374
           ]
         },
         {
-          "hex": "#686E73",
-          "weight": 0.124974,
+          "hex": "#9FA1A6",
+          "weight": 0.148423,
           "lab": [
-            46.2114,
-            -1.3397,
-            -3.4832
+            66.1161,
+            0.4174,
+            -3.1588
           ]
         },
         {
-          "hex": "#525742",
-          "weight": 0.079486,
+          "hex": "#474E3D",
+          "weight": 0.089434,
           "lab": [
-            36.0346,
-            -6.4056,
-            11.3245
+            32.1804,
+            -6.7433,
+            9.1987
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-03-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-03-palette.png",
+      "original_image": "/static/reference-originals/ref-03.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "5b72bca0470db2abc7a8ccd14691d866.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-04",
       "label": "Positive reference 4",
-      "sha256": "b4947bdd0d4d437c545684c3fbab552d68627d57cc6c197a2eeab5eb46f7d929",
+      "sha256": "9ea9f57c86d52c593c0b049f6000154eaf834c4c1f4c902e816f18472c4c5bc1",
       "dimensions": {
-        "width": 675,
+        "width": 716,
         "height": 900
       },
-      "retained_regions": 155,
-      "median_chroma": 3.397,
-      "p90_chroma": 9.339,
+      "retained_regions": 167,
+      "median_chroma": 3.144,
+      "p90_chroma": 8.084,
       "palette": [
         {
-          "hex": "#131417",
-          "weight": 0.196102,
+          "hex": "#17191B",
+          "weight": 0.299701,
           "lab": [
-            6.3912,
-            0.3585,
-            -2.3887
+            8.5106,
+            0.1664,
+            -1.9156
           ]
         },
         {
-          "hex": "#282A2D",
-          "weight": 0.181304,
+          "hex": "#CCCED4",
+          "weight": 0.18878,
           "lab": [
-            17.1498,
-            -0.3673,
-            -1.9954
+            82.7446,
+            0.4419,
+            -3.3548
           ]
         },
         {
-          "hex": "#CDCED5",
-          "weight": 0.17776,
+          "hex": "#A3A5AA",
+          "weight": 0.150085,
           "lab": [
-            82.9457,
-            0.6999,
-            -3.2073
+            67.6108,
+            0.3792,
+            -3.0915
           ]
         },
         {
-          "hex": "#A2A3A9",
-          "weight": 0.171487,
+          "hex": "#3B3E40",
+          "weight": 0.148464,
           "lab": [
-            67.1616,
-            0.5478,
-            -2.8755
+            25.8944,
+            -0.3455,
+            -2.1329
           ]
         },
         {
-          "hex": "#55595E",
-          "weight": 0.166267,
+          "hex": "#56574E",
+          "weight": 0.142036,
           "lab": [
-            37.5405,
-            -0.499,
-            -3.6585
+            36.5425,
+            -2.0778,
+            5.1458
           ]
         },
         {
-          "hex": "#4A4F3F",
-          "weight": 0.107081,
+          "hex": "#6C7177",
+          "weight": 0.070933,
           "lab": [
-            32.8684,
-            -5.5319,
-            8.6981
+            47.34,
+            -0.6096,
+            -3.9918
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-04-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-04-palette.png",
+      "original_image": "/static/reference-originals/ref-04.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "0234681a207d515a58bc3c6cf67d3495.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-05",
       "label": "Positive reference 5",
-      "sha256": "b453a565dd541464b68ab8baaf49ef4c1dae4458eed3b3736c48135e9be366d3",
+      "sha256": "dc82762815a374ddd3176c31b890b5c62ab16e28a874d04f48ef1f2ba687a025",
       "dimensions": {
-        "width": 675,
+        "width": 726,
         "height": 900
       },
-      "retained_regions": 172,
-      "median_chroma": 5.603,
-      "p90_chroma": 12.443,
+      "retained_regions": 171,
+      "median_chroma": 5.735,
+      "p90_chroma": 12.879,
       "palette": [
         {
-          "hex": "#E3E1E2",
-          "weight": 0.222202,
+          "hex": "#E4E1E2",
+          "weight": 0.237008,
           "lab": [
-            89.6468,
-            1.2287,
-            -0.4061
+            89.799,
+            1.1327,
+            -0.1677
           ]
         },
         {
-          "hex": "#191B21",
-          "weight": 0.1893,
+          "hex": "#1A1B21",
+          "weight": 0.193541,
           "lab": [
-            9.8493,
-            0.8703,
-            -4.5798
+            9.9635,
+            0.6851,
+            -3.9678
           ]
         },
         {
-          "hex": "#748092",
-          "weight": 0.184538,
+          "hex": "#6F7B8D",
+          "weight": 0.163368,
           "lab": [
-            53.2733,
-            -0.3318,
-            -11.1549
+            51.1527,
+            -0.1995,
+            -11.3507
           ]
         },
         {
-          "hex": "#5B5250",
-          "weight": 0.176223,
+          "hex": "#524742",
+          "weight": 0.157893,
           "lab": [
-            35.51,
-            3.3254,
-            2.4103
+            31.086,
+            3.4616,
+            4.7538
           ]
         },
         {
-          "hex": "#393B43",
-          "weight": 0.1559,
+          "hex": "#3F424C",
+          "weight": 0.139975,
           "lab": [
-            24.8487,
-            1.0529,
-            -5.2991
+            27.9251,
+            1.1696,
+            -6.5077
           ]
         },
         {
-          "hex": "#A4A7B1",
-          "weight": 0.071837,
+          "hex": "#999FAD",
+          "weight": 0.108215,
           "lab": [
-            68.4249,
-            1.2224,
-            -5.8917
+            65.5751,
+            0.5237,
+            -7.5792
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-05-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-05-palette.png",
+      "original_image": "/static/reference-originals/ref-05.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "364239e2fc4190a62461f0d0f6358458.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-06",
       "label": "Positive reference 6",
-      "sha256": "d04c76568e6ddb1b499d995321eb05e1f2597e25830289d723cf2d9c38c80c5a",
+      "sha256": "f3031d5bc68f5ffae735e2e8230eb03a2f982e851be1829d37f4c90d9a16fc8c",
       "dimensions": {
-        "width": 407,
+        "width": 433,
         "height": 900
       },
-      "retained_regions": 138,
-      "median_chroma": 18.667,
-      "p90_chroma": 46.291,
+      "retained_regions": 123,
+      "median_chroma": 17.553,
+      "p90_chroma": 42.807,
       "palette": [
         {
-          "hex": "#414A23",
-          "weight": 0.223249,
+          "hex": "#343523",
+          "weight": 0.227826,
           "lab": [
-            29.9154,
-            -11.117,
-            22.3758
+            21.5234,
+            -3.7078,
+            10.9375
           ]
         },
         {
-          "hex": "#797162",
-          "weight": 0.194702,
+          "hex": "#5C6A27",
+          "weight": 0.203193,
           "lab": [
-            48.0148,
-            0.2728,
-            9.5711
+            42.2768,
+            -15.8292,
+            34.7253
           ]
         },
         {
-          "hex": "#353723",
-          "weight": 0.186933,
+          "hex": "#7F7765",
+          "weight": 0.191351,
           "lab": [
-            22.322,
-            -4.6717,
-            11.9453
+            50.2617,
+            0.1729,
+            10.8919
           ]
         },
         {
-          "hex": "#5F6C2D",
-          "weight": 0.153161,
+          "hex": "#404925",
+          "weight": 0.168566,
           "lab": [
-            43.2011,
-            -14.8491,
-            32.9043
+            29.3391,
+            -10.4404,
+            20.0057
           ]
         },
         {
-          "hex": "#CEC7B9",
-          "weight": 0.136808,
+          "hex": "#C7C0AF",
+          "weight": 0.137544,
           "lab": [
-            80.4467,
-            -0.2053,
-            7.8501
+            77.8914,
+            -0.328,
+            9.3384
           ]
         },
         {
-          "hex": "#8D9B31",
-          "weight": 0.105147,
+          "hex": "#9DA936",
+          "weight": 0.071521,
           "lab": [
-            61.0403,
-            -19.3338,
-            51.6327
+            66.2046,
+            -19.3852,
+            55.2119
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-06-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-06-palette.png",
+      "original_image": "/static/reference-originals/ref-06.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "37c46a097ad1c9fa2c9a9020b4caba6e.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-07",
       "label": "Positive reference 7",
-      "sha256": "68773f28692ed108aa35240b2aa0e173dd452ba543fd1e033c539c9584f10503",
+      "sha256": "34af44253025d8602e2a47dac5d6676922865d0a07b933950cb5d061cc415036",
       "dimensions": {
-        "width": 660,
+        "width": 713,
         "height": 900
       },
-      "retained_regions": 118,
-      "median_chroma": 7.645,
-      "p90_chroma": 26.995,
+      "retained_regions": 124,
+      "median_chroma": 7.456,
+      "p90_chroma": 22.757,
       "palette": [
         {
-          "hex": "#989C97",
-          "weight": 0.441031,
+          "hex": "#8D8A7F",
+          "weight": 0.363956,
           "lab": [
-            64.0609,
-            -2.4621,
-            2.3095
+            57.5705,
+            -0.9631,
+            6.2055
           ]
         },
         {
-          "hex": "#55534D",
-          "weight": 0.164395,
+          "hex": "#364231",
+          "weight": 0.26297,
           "lab": [
-            35.3705,
-            -0.6014,
-            3.8153
+            26.5294,
+            -9.0922,
+            8.852
           ]
         },
         {
-          "hex": "#191A16",
-          "weight": 0.137177,
+          "hex": "#1B1B18",
+          "weight": 0.14384,
           "lab": [
-            8.9271,
-            -1.238,
-            2.5697
+            9.5688,
+            -0.4564,
+            1.8361
           ]
         },
         {
-          "hex": "#283E21",
-          "weight": 0.128504,
+          "hex": "#B1C3CF",
+          "weight": 0.132735,
           "lab": [
-            23.5449,
-            -15.078,
-            15.116
+            77.6412,
+            -3.5535,
+            -8.3625
           ]
         },
         {
-          "hex": "#7F9169",
-          "weight": 0.081005,
+          "hex": "#8A9E73",
+          "weight": 0.065469,
           "lab": [
-            57.788,
-            -13.9947,
-            19.2586
+            62.5638,
+            -14.9974,
+            20.1085
           ]
         },
         {
-          "hex": "#ACBB4C",
-          "weight": 0.047887,
+          "hex": "#A2B445",
+          "weight": 0.03103,
           "lab": [
-            72.9171,
-            -20.7692,
-            53.4962
+            69.8833,
+            -21.6272,
+            52.67
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-07-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-07-palette.png",
+      "original_image": "/static/reference-originals/ref-07.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "42764b3ba6002309cced09aa52655624.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-08",
       "label": "Positive reference 8",
-      "sha256": "760186d15bbad5a29359b5e35f0e2262afcf3a0c878c6023ff105918a5f5e313",
+      "sha256": "6a37f10a72bfd45041c51a323850aa4961691f29b5e233a9d114e7df514bd4df",
       "dimensions": {
-        "width": 713,
+        "width": 771,
         "height": 900
       },
-      "retained_regions": 159,
-      "median_chroma": 5.087,
-      "p90_chroma": 19.844,
+      "retained_regions": 174,
+      "median_chroma": 5.37,
+      "p90_chroma": 20.283,
       "palette": [
         {
-          "hex": "#697570",
-          "weight": 0.291849,
+          "hex": "#6B7972",
+          "weight": 0.270977,
           "lab": [
-            48.0184,
-            -5.5171,
-            1.1955
+            49.4374,
+            -6.2452,
+            1.7173
           ]
         },
         {
-          "hex": "#212723",
-          "weight": 0.228671,
+          "hex": "#AFB9B5",
+          "weight": 0.189376,
           "lab": [
-            14.836,
-            -3.8143,
-            1.6205
+            74.1593,
+            -4.27,
+            0.7468
           ]
         },
         {
-          "hex": "#AEB8B6",
-          "weight": 0.163108,
+          "hex": "#D9E1E1",
+          "weight": 0.17096,
           "lab": [
-            73.9229,
-            -3.8223,
-            -0.3032
+            88.9104,
+            -2.7451,
+            -0.7645
           ]
         },
         {
-          "hex": "#DBE4E4",
-          "weight": 0.159903,
+          "hex": "#3C4540",
+          "weight": 0.146216,
           "lab": [
-            89.9245,
-            -2.6717,
-            -1.292
+            28.2472,
+            -4.6143,
+            1.6906
           ]
         },
         {
-          "hex": "#AAB299",
-          "weight": 0.080433,
+          "hex": "#7D915E",
+          "weight": 0.111706,
           "lab": [
-            71.462,
-            -7.5966,
-            12.2679
+            57.4119,
+            -16.2184,
+            24.7976
           ]
         },
         {
-          "hex": "#738B53",
-          "weight": 0.076037,
+          "hex": "#151B19",
+          "weight": 0.110765,
           "lab": [
-            54.7919,
-            -18.8758,
-            27.3054
+            8.9655,
+            -3.095,
+            0.5804
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-08-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-08-palette.png",
+      "original_image": "/static/reference-originals/ref-08.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "6dc27f8044e4c26e822344005ab7cc6d.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-09",
       "label": "Positive reference 9",
-      "sha256": "4316f786453c70234687d923ae2a3ca8a3e781af365168ede66d542c55edb4a5",
+      "sha256": "b947c73aebc58dea8ffd7412b53d46c436b6f238afb2ea53c4d32da0246f67fc",
       "dimensions": {
-        "width": 675,
+        "width": 727,
         "height": 900
       },
-      "retained_regions": 139,
-      "median_chroma": 5.103,
-      "p90_chroma": 10.547,
+      "retained_regions": 134,
+      "median_chroma": 4.899,
+      "p90_chroma": 9.782,
       "palette": [
         {
-          "hex": "#21282B",
-          "weight": 0.26094,
+          "hex": "#56585B",
+          "weight": 0.193473,
           "lab": [
-            15.5839,
-            -2.6944,
-            -2.6963
+            37.3651,
+            -0.264,
+            -1.8296
           ]
         },
         {
-          "hex": "#545755",
-          "weight": 0.237081,
+          "hex": "#1D2627",
+          "weight": 0.192952,
           "lab": [
-            36.6584,
-            -1.748,
-            0.8677
+            14.2144,
+            -3.4786,
+            -2.4622
           ]
         },
         {
-          "hex": "#38433D",
-          "weight": 0.163297,
+          "hex": "#C7CDD2",
+          "weight": 0.18831,
           "lab": [
-            27.271,
-            -5.9505,
-            2.287
+            82.1845,
+            -1.3089,
+            -3.0402
           ]
         },
         {
-          "hex": "#B2BDC4",
-          "weight": 0.129935,
+          "hex": "#303839",
+          "weight": 0.187526,
           "lab": [
-            75.8741,
-            -2.1213,
-            -4.8081
+            22.9339,
+            -3.2308,
+            -1.7274
           ]
         },
         {
-          "hex": "#94918A",
-          "weight": 0.123008,
+          "hex": "#929088",
+          "weight": 0.146792,
           "lab": [
-            60.2116,
-            0.0896,
-            4.038
+            59.838,
+            -1.0223,
+            4.5895
           ]
         },
         {
-          "hex": "#DDE0E1",
-          "weight": 0.085738,
+          "hex": "#4A5747",
+          "weight": 0.090946,
           "lab": [
-            88.9056,
-            -0.6589,
-            -1.1239
+            35.319,
+            -8.385,
+            7.5573
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-09-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-09-palette.png",
+      "original_image": "/static/reference-originals/ref-09.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "7ba1a2124d330742190392ecdd9cbcae.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-10",
       "label": "Positive reference 10",
-      "sha256": "b29482ccf785911a285ef5860f9f1c0e288e1e6ab7295da6fddfa6dd40404cc0",
+      "sha256": "9e782f258155930249f7d14c2aceff7ce84684aab4ca76fe09f37c58a413ebcb",
       "dimensions": {
         "width": 900,
-        "height": 675
+        "height": 578
       },
-      "retained_regions": 137,
-      "median_chroma": 7.291,
-      "p90_chroma": 40.892,
+      "retained_regions": 130,
+      "median_chroma": 6.956,
+      "p90_chroma": 43.023,
       "palette": [
         {
-          "hex": "#252625",
-          "weight": 0.289391,
+          "hex": "#4F534C",
+          "weight": 0.298237,
           "lab": [
-            15.1794,
-            -0.8071,
-            0.55
+            34.8482,
+            -3.6436,
+            3.8652
           ]
         },
         {
-          "hex": "#5E5C58",
-          "weight": 0.230819,
+          "hex": "#222322",
+          "weight": 0.241939,
           "lab": [
-            39.1929,
-            0.065,
-            2.4823
+            13.4413,
+            -0.3459,
+            0.3763
           ]
         },
         {
-          "hex": "#8B9947",
-          "weight": 0.151103,
+          "hex": "#6B8247",
+          "weight": 0.146054,
           "lab": [
-            60.5185,
-            -17.4109,
-            40.6496
+            51.3058,
+            -18.8371,
+            28.9559
           ]
         },
         {
-          "hex": "#718C60",
-          "weight": 0.140386,
+          "hex": "#96A24B",
+          "weight": 0.127689,
           "lab": [
-            55.2424,
-            -18.1879,
-            20.3976
+            64.1757,
+            -17.3915,
+            43.1833
           ]
         },
         {
-          "hex": "#D1E0E0",
-          "weight": 0.111757,
+          "hex": "#9CA493",
+          "weight": 0.095837,
           "lab": [
-            88.0201,
-            -4.6503,
-            -1.8649
+            66.3072,
+            -5.9028,
+            8.076
           ]
         },
         {
-          "hex": "#365941",
-          "weight": 0.076544,
+          "hex": "#E1EDF1",
+          "weight": 0.090244,
           "lab": [
-            34.7729,
-            -18.7628,
-            9.9861
+            92.8769,
+            -3.2617,
+            -3.3579
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-10-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-10-palette.png",
+      "original_image": "/static/reference-originals/ref-10.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "9d17ae292cb7face738f2f74ff5cf01e.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-11",
       "label": "Positive reference 11",
-      "sha256": "0b1f86183e918634292962153f5a08d795d101bddb7690ff2b54956e87290dd5",
+      "sha256": "7f2060b10d8c7827559d0f73a129cd40f3ef8fda116142f33111f28a4633d5a5",
       "dimensions": {
-        "width": 674,
+        "width": 730,
         "height": 900
       },
-      "retained_regions": 160,
-      "median_chroma": 17.395,
-      "p90_chroma": 29.676,
+      "retained_regions": 159,
+      "median_chroma": 6.53,
+      "p90_chroma": 20.656,
       "palette": [
         {
-          "hex": "#768165",
-          "weight": 0.310447,
+          "hex": "#283426",
+          "weight": 0.256031,
           "lab": [
-            52.2645,
-            -9.1221,
-            13.7016
+            20.1557,
+            -8.4789,
+            7.453
           ]
         },
         {
-          "hex": "#5A6538",
-          "weight": 0.194798,
+          "hex": "#151915",
+          "weight": 0.219834,
           "lab": [
-            40.7161,
-            -12.1172,
-            23.7891
+            8.135,
+            -2.6258,
+            1.9778
           ]
         },
         {
-          "hex": "#5C5E4B",
-          "weight": 0.174555,
+          "hex": "#838E73",
+          "weight": 0.161996,
           "lab": [
-            39.361,
-            -4.7005,
-            11.1177
+            57.5834,
+            -9.1612,
+            13.3524
           ]
         },
         {
-          "hex": "#363B2B",
-          "weight": 0.144837,
+          "hex": "#545D55",
+          "weight": 0.150032,
           "lab": [
-            23.8432,
-            -5.0806,
-            9.2041
+            38.6189,
+            -5.6006,
+            3.299
           ]
         },
         {
-          "hex": "#808D50",
-          "weight": 0.095081,
+          "hex": "#C8C6C7",
+          "weight": 0.121062,
           "lab": [
-            56.4209,
-            -14.9221,
-            30.9064
+            80.1031,
+            0.9051,
+            -0.2158
           ]
         },
         {
-          "hex": "#B5A889",
-          "weight": 0.080283,
+          "hex": "#445934",
+          "weight": 0.091046,
           "lab": [
-            69.2679,
-            -0.6139,
-            17.7861
+            35.1937,
+            -15.64,
+            18.5373
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-11-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-11-palette.png",
+      "original_image": "/static/reference-originals/ref-11.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "ad1d464f6b0e146bd23d2f8d746afbfa.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-12",
       "label": "Positive reference 12",
-      "sha256": "f5ee16f7c2ad15316b346f8b0beb7a028c9fc5000a244d680d7147e6bbed0346",
+      "sha256": "fc4fc3f4edbec4cd5b6ab5efeeb70511408a09d0833da6f75e64225271859e36",
       "dimensions": {
         "width": 561,
         "height": 900
       },
-      "retained_regions": 178,
-      "median_chroma": 4.759,
-      "p90_chroma": 25.617,
+      "retained_regions": 185,
+      "median_chroma": 4.822,
+      "p90_chroma": 25.58,
       "palette": [
         {
-          "hex": "#141413",
-          "weight": 0.307021,
+          "hex": "#0F0F10",
+          "weight": 0.24245,
           "lab": [
-            6.2479,
-            -0.319,
-            0.2493
+            4.3067,
+            -0.0765,
+            -0.3428
           ]
         },
         {
-          "hex": "#34332F",
-          "weight": 0.182812,
+          "hex": "#272823",
+          "weight": 0.18047,
           "lab": [
-            21.3775,
-            -0.3816,
-            2.7417
+            15.7703,
+            -1.104,
+            2.9036
           ]
         },
         {
           "hex": "#F5D5A7",
-          "weight": 0.175553,
+          "weight": 0.168962,
           "lab": [
-            86.8875,
-            4.8539,
-            26.685
+            86.8167,
+            4.9989,
+            26.8611
+          ]
+        },
+        {
+          "hex": "#4B4842",
+          "weight": 0.152783,
+          "lab": [
+            30.7583,
+            -0.2017,
+            4.3935
           ]
         },
         {
           "hex": "#D2C1AE",
-          "weight": 0.158103,
+          "weight": 0.146963,
           "lab": [
-            78.9875,
-            2.7976,
-            11.8945
+            79.0747,
+            2.7557,
+            11.7893
           ]
         },
         {
-          "hex": "#6A6865",
-          "weight": 0.117615,
+          "hex": "#76736A",
+          "weight": 0.108372,
           "lab": [
-            44.0233,
-            -0.0161,
-            2.0453
-          ]
-        },
-        {
-          "hex": "#4D4C37",
-          "weight": 0.058895,
-          "lab": [
-            31.8651,
-            -3.7402,
-            12.577
+            48.5445,
+            -0.4779,
+            5.4159
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-12-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-12-palette.png",
+      "original_image": "/static/reference-originals/ref-12.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "bbb902de1e564afcba3c7209db737eca.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     },
     {
       "id": "ref-13",
       "label": "Positive reference 13",
-      "sha256": "a7eddbdfb8415aacd1655b6d5496bbc3181a8099535be749ffe21eabb87b96f9",
+      "sha256": "c28e6ee90763c9708044c6b9aed1e168a8948e897714414f3e5a17ca0ab9e5f4",
       "dimensions": {
-        "width": 675,
+        "width": 732,
         "height": 900
       },
-      "retained_regions": 157,
-      "median_chroma": 6.816,
-      "p90_chroma": 22.044,
+      "retained_regions": 153,
+      "median_chroma": 17.473,
+      "p90_chroma": 29.263,
       "palette": [
         {
-          "hex": "#191E19",
-          "weight": 0.32056,
+          "hex": "#707E62",
+          "weight": 0.248502,
           "lab": [
-            10.7653,
-            -3.9288,
-            2.9879
+            51.1298,
+            -10.8099,
+            13.6775
           ]
         },
         {
-          "hex": "#2C3C28",
-          "weight": 0.195807,
+          "hex": "#6B7743",
+          "weight": 0.2237,
           "lab": [
-            23.5658,
-            -11.4282,
-            10.7712
+            47.9839,
+            -13.3484,
+            26.9549
           ]
         },
         {
-          "hex": "#535D55",
-          "weight": 0.19531,
+          "hex": "#434931",
+          "weight": 0.189091,
           "lab": [
-            38.3635,
-            -5.4574,
-            3.2537
+            29.9822,
+            -7.2285,
+            13.8851
           ]
         },
         {
-          "hex": "#6B8156",
-          "weight": 0.13111,
+          "hex": "#646451",
+          "weight": 0.166783,
           "lab": [
-            51.1098,
-            -16.1356,
-            20.8372
+            41.8764,
+            -3.9564,
+            11.0942
           ]
         },
         {
-          "hex": "#A0A19A",
-          "weight": 0.103997,
+          "hex": "#AC9F83",
+          "weight": 0.127549,
           "lab": [
-            66.0943,
-            -1.7504,
-            3.855
+            65.9937,
+            -0.2131,
+            16.2682
           ]
         },
         {
-          "hex": "#EDE9EC",
-          "weight": 0.053216,
+          "hex": "#2C2D24",
+          "weight": 0.044375,
           "lab": [
-            92.572,
-            1.8974,
-            -0.9572
+            18.2197,
+            -2.5557,
+            5.8651
           ]
         }
       ],
       "derived_mosaic": "/static/reference-derived/ref-13-mosaic.png",
       "derived_palette": "/static/reference-derived/ref-13-palette.png",
+      "original_image": "/static/reference-originals/ref-13.jpg",
       "provenance": "user-supplied positive reference",
-      "license": "not provided",
-      "redistribution": "raw image excluded from project package",
-      "watermark_handling": "bottom-right provenance zone excluded from fitting",
-      "source_filename": "cc4449e21f26414d454fd7286c60ff20.jpg"
+      "license": "user-confirmed permission for project use and display",
+      "redistribution": "displayed in this project with user-confirmed permission",
+      "watermark_handling": "none; supplied original is watermark-free"
     }
   ],
   "evidence_boundaries": {
@@ -1635,7 +1635,7 @@
       "Composition and object frequency in the references affect which colors appear normal.",
       "The model does not recognize objects, materials, authenticity, safety, or historical significance.",
       "Candidates require review by residents, planners, designers, and other affected stakeholders.",
-      "Source licenses were not provided; raw reference images are not redistributed."
+      "The user confirmed permission to use and display these watermark-free images; specific license terms, creator credits, and capture metadata are not yet recorded."
     ],
     "zh-CN": [
       "模型只学习所提供图片的色彩分布；它不学习美感或文化价值。",
@@ -1644,7 +1644,7 @@
       "参考图的构图和物体出现频率会影响哪些颜色被模型视为常见。",
       "模型无法识别物体、材料、真实性、安全性或历史意义。",
       "候选区域仍需居民、规划者、设计者和其他受影响群体共同审查。",
-      "参考图未提供使用许可，因此项目不分发原始图片。"
+      "用户已确认这些无水印图片可用于本项目并公开展示；具体许可条款、创作者署名和拍摄元数据仍未完整记录。"
     ]
   },
   "recommended_next_evidence": {

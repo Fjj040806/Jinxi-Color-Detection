@@ -41,6 +41,10 @@ def test_learning_page_and_reference_model_are_available():
     assert page.status_code == 200
     assert "Learning & Evidence" in page.text
     assert "evidence_boundaries" in page.text
+    assert "reference-card-inner" in page.text
+    assert "reference-original" in page.text
+    assert "repeat(5, minmax(0, 1fr))" in page.text
+    assert "rotateY(180deg)" in page.text
 
     response = client.get("/api/reference-model")
     assert response.status_code == 200
@@ -49,6 +53,12 @@ def test_learning_page_and_reference_model_are_available():
     assert model["prototype_count"] == 28
     assert len(model["prototype_colors"]) == 28
     assert model["calibration"]["q95_delta_e"] > 0
+    assert all(item["original_image"].startswith("/static/reference-originals/") for item in model["references"])
+    assert all("user-confirmed" in item["license"] for item in model["references"])
+    for reference in model["references"]:
+        asset = client.get(reference["original_image"])
+        assert asset.status_code == 200
+        assert asset.headers["content-type"] == "image/jpeg"
 
 
 def test_analysis_returns_linked_network_masks():

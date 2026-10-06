@@ -129,20 +129,80 @@
     .section-head { display: grid; grid-template-columns: 260px 1fr; gap: 44px; margin-bottom: 34px; }
     .section-head h2 { margin: 0; font-size: clamp(30px, 4vw, 48px); }
     .section-head p { max-width: 720px; margin: 5px 0 0; color: var(--paper-soft); line-height: 1.75; }
-    .reference-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .reference-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
     .reference-card {
+      position: relative;
+      min-width: 0;
+      aspect-ratio: 4 / 5;
+      perspective: 1100px;
+      cursor: default;
+    }
+    .reference-card:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; border-radius: 16px; }
+    .reference-card-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform .62s cubic-bezier(.2, .72, .2, 1);
+    }
+    .reference-card:hover .reference-card-inner,
+    .reference-card:focus-visible .reference-card-inner,
+    .reference-card.is-flipped .reference-card-inner { transform: rotateY(180deg); }
+    .reference-face {
+      position: absolute;
+      inset: 0;
       overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
+      border-radius: 16px;
+      background: #121d1a;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .18);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
-    .reference-card .mosaic { width: 100%; aspect-ratio: 4 / 3; display: block; object-fit: cover; image-rendering: pixelated; background: #1b2824; }
-    .reference-card .palette { width: 100%; height: 48px; display: block; object-fit: cover; object-position: top; }
-    .reference-body { padding: 17px; }
-    .reference-body h3 { margin: 0 0 10px; font-size: 18px; }
-    .reference-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; color: var(--muted); font-size: 10px; }
-    .reference-meta strong { display: block; margin-top: 3px; color: var(--paper); font-size: 12px; }
-    .reference-note { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .reference-front { display: grid; place-items: center; }
+    .reference-front .mosaic {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      image-rendering: pixelated;
+      background: #1b2824;
+      transition: transform .65s ease, filter .65s ease;
+    }
+    .reference-card:hover .reference-front .mosaic { transform: scale(1.035); filter: saturate(1.06); }
+    .reference-back {
+      display: grid;
+      grid-template-rows: 42% 30px 1fr;
+      transform: rotateY(180deg);
+      background: linear-gradient(160deg, #182721, #0f1715 68%);
+    }
+    .reference-original-wrap { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .reference-original {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #1b2824;
+    }
+    .reference-original-label {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 4px 7px;
+      border: 1px solid rgba(240, 234, 223, .22);
+      border-radius: 999px;
+      background: rgba(16, 25, 23, .76);
+      color: var(--paper);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      backdrop-filter: blur(8px);
+    }
+    .reference-card .palette { width: 100%; height: 30px; display: block; object-fit: cover; object-position: top; }
+    .reference-body { min-height: 0; overflow: auto; padding: 11px 12px 12px; scrollbar-width: thin; }
+    .reference-body h3 { margin: 0 0 8px; font-size: 14px; }
+    .reference-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; color: var(--muted); font-size: 8px; }
+    .reference-meta strong { display: block; margin-top: 2px; color: var(--paper); font-size: 10px; }
+    .reference-note { margin: 8px 0 0; color: var(--muted); font-size: 8px; line-height: 1.45; }
     .pipeline { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--line); }
     .stage { min-height: 204px; padding: 20px 17px; background: #121d1a; }
     .stage-index { color: var(--amber); font-family: Georgia, serif; font-size: 28px; }
@@ -203,10 +263,13 @@
     .research-card a { color: var(--jade); font-size: 11px; text-underline-offset: 3px; }
     .loading { padding: 30px; color: var(--muted); text-align: center; }
     footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px 0 46px; color: var(--muted); font-size: 10px; }
+    @media (max-width: 1040px) {
+      .reference-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
     @media (max-width: 900px) {
       .hero, .section-head, .model-grid { grid-template-columns: 1fr; }
       .hero { gap: 34px; padding-top: 60px; }
-      .reference-grid, .research-grid { grid-template-columns: 1fr; }
+      .research-grid { grid-template-columns: 1fr; }
       .pipeline { grid-template-columns: repeat(2, 1fr); }
       .section-head { gap: 12px; }
     }
@@ -216,12 +279,19 @@
       .brand small, .back-copy { display: none; }
       .pill { width: 38px; padding: 0; justify-content: center; }
       .hero { padding: 48px 0; }
+      .reference-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .reference-card { aspect-ratio: 3 / 4.35; }
+      .reference-back { grid-template-rows: 40% 26px 1fr; }
+      .reference-card .palette { height: 26px; }
       .pipeline, .boundary-grid { grid-template-columns: 1fr; }
       .stage { min-height: 150px; }
       .stage h3 { margin-top: 18px; }
       .inspector { grid-template-columns: 1fr; }
       #colorPicker { width: 100%; height: 68px; }
       footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reference-card-inner, .reference-front .mosaic { transition: none; }
     }
   </style>
 </head>
@@ -261,7 +331,7 @@
     <section>
       <div class="section-head">
         <h2 data-i18n="samplesTitle">学习样本</h2>
-        <p data-i18n="samplesCopy">页面只展示从参考图派生的低分辨率空间色谱和调色板。原始图片不会随项目分发，因为它们的使用许可尚未得到确认。</p>
+        <p data-i18n="samplesCopy">正面展示从参考图派生的空间色块图。将鼠标移到卡片上可翻至背面，检查获准展示的无水印原图、主色卡与模型统计。</p>
       </div>
       <div class="reference-grid" id="referenceGrid"><div class="loading" data-i18n="loading">正在读取参考模型…</div></div>
     </section>
@@ -356,28 +426,28 @@
         brandSub:"学习与证据页面", back:"返回取景器", eyebrow:"Reference learning / evidence boundary",
         heroTitle:"系统从什么证据中学习？", heroCopy:"这个模型学习的是用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。",
         status:"模型状态", references:"参考图数量", regions:"学习区域", prototypes:"颜色原型", weight:"参考证据权重",
-        samplesTitle:"学习样本", samplesCopy:"页面只展示从参考图派生的低分辨率空间色谱和调色板。原始图片不会随项目分发，因为它们的使用许可尚未得到确认。", loading:"正在读取参考模型…",
+        samplesTitle:"学习样本", samplesCopy:"正面展示从参考图派生的空间色块图。将鼠标移到卡片上可翻至背面，检查获准展示的无水印原图、主色卡与模型统计。", loading:"正在读取参考模型…",
         processTitle:"学习过程", processCopy:"每一步都可以被检查和复现。当前方法借鉴正常样本异常检测的“记忆库”逻辑，但使用可解释的颜色区域，而不是不可见的深度特征。",
         stage1Title:"正面案例", stage1Copy:"输入经用户选择的古镇色彩参考图。", stage2Title:"区域分割", stage2Copy:"SLIC 将每张图片划分为保持空间连续性的颜色区域。", stage3Title:"感知色彩", stage3Copy:"每个区域转换到 CIELAB，并计算中位颜色和面积。", stage4Title:"平衡记忆", stage4Copy:"每张图贡献相同权重，减少天空或大墙面的支配。", stage5Title:"留一校准", stage5Copy:"每张参考图都与其余参考图比较，建立新颖度基线。", stage6Title:"证据融合", stage6Copy:"参考新颖度与当前画面的局部色差共同决定候选排名。",
         memoryTitle:"模型学到的颜色记忆", memoryCopy:"色块宽度表示各原型在参考集中获得的支持度。散点图显示原型在 CIELAB 的 a*–b* 色度平面中的位置。", prototypeLabel:"参考颜色原型", calibrationLabel:"留一参考图校准", scatterCaption:"横轴为 a*（绿色—红色），纵轴为 b*（蓝色—黄色）。点越大，参考支持度越高。",
         calibrationCaption:"曲线来自留一图片比较：每张正面案例只与其余参考图学习到的记忆匹配。", inspectTitle:"亲自检查一种颜色", inspectCopy:"选择一种颜色，页面会在参考记忆中找到最接近的原型，并显示它相对于正面案例的新颖程度。这只是颜色证据，不是审美评分。", selectedColor:"选择的颜色", nearestColor:"最接近的参考色", distance:"CIEDE2000 距离", percentile:"参考新颖度百分位",
         boundaryTitle:"证据边界", boundaryCopy:"这些限制不是附注，而是模型输出的一部分。候选区域必须由人进一步解释、验证和讨论。", nextTitle:"下一步需要什么证据？", nextCopy:"扩大参考图数量并不自动等于更可靠。数据还需要覆盖不同季节、天气、设备和利益相关者。",
         researchTitle:"开源研究路线", researchCopy:"我们采用了正常样本异常检测的核心思想，但当前先实现轻量、可解释的颜色记忆。当数据规模扩大后，可以用深度 patch 特征做对照实验。", patchcoreCopy:"以正常图像 patch 特征建立代表性记忆库，再用最近邻距离定位异常。", anomalibCopy:"集合 PatchCore、PaDiM 等视觉异常检测方法，适合未来统一基准测试。", dinov2Copy:"提供无需任务微调的通用视觉特征，可在更大数据集上补充物体与材质语义。",
-        positiveReference:"正面参考", regionsUnit:"个区域", rawExcluded:"原图未分发；右下角水印区已从学习中排除", modelStatus:"原型证据", formula:"融合分数 = (1 − {w}) × 局部证据 + {w} × 参考证据 + 0.08 × 二者较小值", q95:"正面参考的第95百分位距离为 ΔE00 {value}。超过该范围表示“参考集中少见”，不是“不美观”。",
+        positiveReference:"正面参考", regionsUnit:"个区域", originalLabel:"授权原图", flipAria:"翻转查看原图与色卡分析", originalPermission:"用户已确认本项目可使用和展示该无水印原图；创作者署名、拍摄时间和具体许可条款仍待补充。", modelStatus:"原型证据", formula:"融合分数 = (1 − {w}) × 局部证据 + {w} × 参考证据 + 0.08 × 二者较小值", q95:"正面参考的第95百分位距离为 ΔE00 {value}。超过该范围表示“参考集中少见”，不是“不美观”。",
         loadError:"参考模型未能载入。请确认 Python 服务正在运行。"
       },
       en: {
         brandSub:"Learning and evidence", back:"Back to viewfinder", eyebrow:"Reference learning / evidence boundary",
         heroTitle:"What evidence does the system learn from?", heroCopy:"The model learns recurring color distributions from user-supplied positive examples. It compresses them into an inspectable reference memory, then combines that evidence with local color contrast in the current frame.",
         status:"Model status", references:"Reference images", regions:"Learning regions", prototypes:"Color prototypes", weight:"Reference weight",
-        samplesTitle:"Learning samples", samplesCopy:"This page shows only low-resolution spatial mosaics and palettes derived from the references. Raw images are not distributed with the project because their usage licenses have not been verified.", loading:"Loading reference model…",
+        samplesTitle:"Learning samples", samplesCopy:"Each card shows a derived spatial color mosaic on the front. Hover to flip it and inspect the permitted watermark-free original, dominant palette, and model statistics.", loading:"Loading reference model…",
         processTitle:"Learning process", processCopy:"Every step is inspectable and reproducible. The method borrows the memory-bank logic of normal-only anomaly detection, but uses interpretable color regions rather than hidden deep features.",
         stage1Title:"Positive examples", stage1Copy:"Input user-selected townscape color references.", stage2Title:"Region segmentation", stage2Copy:"SLIC divides each image into spatially continuous color regions.", stage3Title:"Perceptual color", stage3Copy:"Each region is converted to CIELAB and summarized by median color and area.", stage4Title:"Balanced memory", stage4Copy:"Each image contributes equal weight, limiting domination by sky or large walls.", stage5Title:"Held-out calibration", stage5Copy:"Each reference is compared with a memory learned from all remaining reference images.", stage6Title:"Evidence fusion", stage6Copy:"Reference novelty and within-frame contrast jointly rank candidate regions.",
         memoryTitle:"The learned color memory", memoryCopy:"Block width represents support for each prototype in the reference set. The scatter plot positions prototypes in the CIELAB a*–b* chromatic plane.", prototypeLabel:"Reference color prototypes", calibrationLabel:"Leave-one-reference-out calibration", scatterCaption:"The x-axis is a* (green–red); the y-axis is b* (blue–yellow). Larger points have more reference support.",
         calibrationCaption:"The curve comes from held-out comparisons: each positive example is matched only against memory learned from all remaining reference images.", inspectTitle:"Inspect a color yourself", inspectCopy:"Choose a color to find its nearest reference prototype and its novelty relative to the positive examples. This is color evidence, not an aesthetic score.", selectedColor:"Selected color", nearestColor:"Nearest reference color", distance:"CIEDE2000 distance", percentile:"Reference novelty percentile",
         boundaryTitle:"Evidence boundaries", boundaryCopy:"These limitations are part of the model output, not a footnote. Candidate regions still require human interpretation, validation, and discussion.", nextTitle:"What evidence is needed next?", nextCopy:"More images do not automatically make the system reliable. Data must also cover seasons, weather, devices, and stakeholders.",
         researchTitle:"Open-source research path", researchCopy:"We adopted the core idea of normal-only anomaly detection while implementing a lightweight, interpretable color memory first. Deep patch features can become a comparison model after the dataset expands.", patchcoreCopy:"Builds a representative memory bank of normal patch features and localizes anomalies through nearest-neighbor distance.", anomalibCopy:"Collects visual anomaly methods such as PatchCore and PaDiM for future standardized benchmarking.", dinov2Copy:"Provides general visual features without task-specific fine-tuning and could add object and material semantics with a larger dataset.",
-        positiveReference:"Positive reference", regionsUnit:"regions", rawExcluded:"Raw image excluded; bottom-right watermark zone omitted from learning", modelStatus:"Prototype evidence", formula:"Fusion score = (1 − {w}) × local evidence + {w} × reference evidence + 0.08 × their minimum", q95:"The 95th-percentile positive-reference distance is ΔE00 {value}. Exceeding it means “rare in this reference set,” not “unattractive.”",
+        positiveReference:"Positive reference", regionsUnit:"regions", originalLabel:"Permitted original", flipAria:"Flip to inspect the original and palette analysis", originalPermission:"The user confirmed permission to use and display this watermark-free image in the project; creator credit, capture time, and specific license terms still need documentation.", modelStatus:"Prototype evidence", formula:"Fusion score = (1 − {w}) × local evidence + {w} × reference evidence + 0.08 × their minimum", q95:"The 95th-percentile positive-reference distance is ΔE00 {value}. Exceeding it means “rare in this reference set,” not “unattractive.”",
         loadError:"The reference model could not be loaded. Confirm that the Python service is running."
       }
     };
@@ -464,8 +534,15 @@
     function renderReferences() {
       const grid = $("#referenceGrid"); grid.replaceChildren();
       model.references.forEach((reference, index) => {
-        const card = document.createElement("article"); card.className="reference-card";
-        card.innerHTML = `<img loading="lazy" class="mosaic" src="${reference.derived_mosaic}" alt="${reference.label} derived spatial mosaic"><img loading="lazy" class="palette" src="${reference.derived_palette}" alt="${reference.label} derived palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("rawExcluded")}</p></div>`;
+        const card = document.createElement("article");
+        card.className="reference-card";
+        card.tabIndex=0;
+        card.setAttribute("role","button");
+        card.setAttribute("aria-label",`${t("positiveReference")} ${String(index+1).padStart(2,"0")} · ${t("flipAria")}`);
+        card.innerHTML = `<div class="reference-card-inner"><div class="reference-face reference-front" aria-hidden="true"><img loading="lazy" class="mosaic" src="${reference.derived_mosaic}" alt=""></div><div class="reference-face reference-back"><div class="reference-original-wrap"><img loading="lazy" class="reference-original" src="${reference.original_image}" alt="${reference.label} original"><span class="reference-original-label">${t("originalLabel")}</span></div><img loading="lazy" class="palette" src="${reference.derived_palette}" alt="${reference.label} derived dominant-color palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("originalPermission")}</p></div></div></div>`;
+        card.addEventListener("mouseleave",()=>card.classList.remove("is-flipped"));
+        card.addEventListener("click",()=>{if(matchMedia("(hover: none)").matches)card.classList.toggle("is-flipped");});
+        card.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();card.classList.toggle("is-flipped");}});
         grid.append(card);
       });
     }

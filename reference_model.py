@@ -51,16 +51,15 @@ def _prepare_rgb(path: Path, max_side: int = 900) -> np.ndarray:
     return np.asarray(image, dtype=np.uint8)
 
 
-def _watermark_mask(height: int, width: int) -> np.ndarray:
-    """Mask the common bottom-right provenance/watermark zone.
+def _excluded_source_mask(height: int, width: int) -> np.ndarray:
+    """Return source pixels that must be excluded from model fitting.
 
-    The source pixels remain untouched. The zone is excluded only from model
-    fitting so publisher marks do not become part of the learned color memory.
+    The current reference set is made from user-supplied, watermark-free
+    originals with confirmed permission for project use and display, so no
+    fixed image zone is excluded.
     """
 
-    mask = np.zeros((height, width), dtype=bool)
-    mask[int(height * 0.90) :, int(width * 0.70) :] = True
-    return mask
+    return np.zeros((height, width), dtype=bool)
 
 
 def _reference_segments(rgb: np.ndarray, requested_segments: int) -> dict[str, Any]:
@@ -79,7 +78,7 @@ def _reference_segments(rgb: np.ndarray, requested_segments: int) -> dict[str, A
     )
     count = int(labels.max()) + 1
     pixel_count = height * width
-    excluded = _watermark_mask(height, width)
+    excluded = _excluded_source_mask(height, width)
     median_lab: list[np.ndarray] = []
     mean_rgb: list[np.ndarray] = []
     weights: list[float] = []
@@ -171,7 +170,7 @@ def _derived_palette(palette: list[dict[str, Any]], destination: Path) -> None:
         next_cursor = width if index == len(palette) - 1 else cursor + int(round(width * item["weight"]))
         draw.rectangle((cursor, 0, next_cursor, 62), fill=item["hex"])
         cursor = next_cursor
-    draw.text((12, 70), "Derived color signature · raw reference not redistributed", fill=(42, 48, 45))
+    draw.text((12, 70), "Derived color signature · compare with the licensed original", fill=(42, 48, 45))
     destination.parent.mkdir(parents=True, exist_ok=True)
     image.save(destination, optimize=True)
 
@@ -234,10 +233,11 @@ def train_reference_model(
                 "palette": palette,
                 "derived_mosaic": f"/static/reference-derived/{mosaic_name}",
                 "derived_palette": f"/static/reference-derived/{palette_name}",
+                "original_image": f"/static/reference-originals/{reference_id}.jpg",
                 "provenance": "user-supplied positive reference",
-                "license": "not provided",
-                "redistribution": "raw image excluded from project package",
-                "watermark_handling": "bottom-right provenance zone excluded from fitting",
+                "license": "user-confirmed permission for project use and display",
+                "redistribution": "displayed in this project with user-confirmed permission",
+                "watermark_handling": "none; supplied original is watermark-free",
             }
         )
         # Equal total contribution per image prevents a large image or a broad
@@ -343,7 +343,7 @@ def train_reference_model(
                 "Composition and object frequency in the references affect which colors appear normal.",
                 "The model does not recognize objects, materials, authenticity, safety, or historical significance.",
                 "Candidates require review by residents, planners, designers, and other affected stakeholders.",
-                "Source licenses were not provided; raw reference images are not redistributed.",
+                "The user confirmed permission to use and display these watermark-free images; specific license terms, creator credits, and capture metadata are not yet recorded.",
             ],
             "zh-CN": [
                 "模型只学习所提供图片的色彩分布；它不学习美感或文化价值。",
@@ -352,7 +352,7 @@ def train_reference_model(
                 "参考图的构图和物体出现频率会影响哪些颜色被模型视为常见。",
                 "模型无法识别物体、材料、真实性、安全性或历史意义。",
                 "候选区域仍需居民、规划者、设计者和其他受影响群体共同审查。",
-                "参考图未提供使用许可，因此项目不分发原始图片。",
+                "用户已确认这些无水印图片可用于本项目并公开展示；具体许可条款、创作者署名和拍摄元数据仍未完整记录。",
             ],
         },
         "recommended_next_evidence": {

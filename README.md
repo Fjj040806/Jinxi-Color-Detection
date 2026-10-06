@@ -142,17 +142,18 @@ chmod +x start_mac_linux.sh
 
 ## Retrain the reference model
 
-Use only images that you have permission to process. Keep the source files
-outside the public project package unless their redistribution license is
-confirmed.
+Use only images that you have permission to process. The current 13
+watermark-free originals are included in `static/reference-originals/` because
+the user confirmed permission to use and display them in this project. Record
+specific license terms and creator credits when they become available.
 
 ```powershell
 .\.venv\Scripts\python.exe train_reference_model.py reference-1.jpg reference-2.jpg reference-3.jpg --output reference_model.json --assets static/reference-derived --segments 220 --prototypes 28
 ```
 
 Restart `app.py` after retraining so the API loads the new model. The model JSON
-stores hashes, derived statistics, calibration, and prototype colors. It does
-not store the raw photographs.
+stores hashes, derived statistics, calibration, prototype colors, and public
+paths to the permitted originals.
 
 ## Method
 
@@ -184,9 +185,9 @@ prototype uses a transparent color memory rather than a deep model.
   relationships. It is not an aesthetic verdict or an identified object.
 - The companion site view is deliberately schematic. It is not surveyed,
   georeferenced, or evidence of an exact location.
-- The supplied reference images did not include usage-license metadata. Their
-  bottom-right provenance marks were excluded from model fitting, and the raw
-  files are not redistributed in this package.
+- The user confirmed permission to use and display the supplied watermark-free
+  reference images in this project. Specific license terms, creator credits,
+  and capture metadata still need to be documented.
 - Candidate regions require review with residents, planners, business owners,
   visitors, maintenance staff, and other affected stakeholders.
 

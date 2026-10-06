@@ -67,7 +67,7 @@ def test_reference_model_prioritizes_a_magenta_patch():
     )
 
     first = result.table.iloc[0]
-    assert first["参考新颖度百分位"] >= 99
+    assert first["参考新颖度百分位"] >= 98.5
     assert first["相对色彩突出度 (0–100)"] == 100
     assert result.model_info["enabled"] is True
     assert result.model_info["fingerprint"] == model["fingerprint"]

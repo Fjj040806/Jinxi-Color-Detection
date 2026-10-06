@@ -31,19 +31,32 @@
 
 ## Reference model
 
-- Three user-supplied positive reference images were processed.
-- The trainer retained 506 SLIC regions and compressed them to 28 CIELAB color
+- Thirteen user-supplied, watermark-free positive reference images were processed.
+- The trainer retained 2,053 SLIC regions and compressed them to 28 CIELAB color
   prototypes.
 - Each reference image contributed the same total weight.
-- The bottom-right provenance/watermark zone was excluded from fitting.
+- No fixed image zone was excluded because the supplied originals are watermark-free.
 - Leave-one-reference-out calibration produced a positive-reference Q95 of
-  `ΔE00 = 8.1258`.
-- Model fingerprint: `9757bc4dfd13b0f2`.
-- Raw reference images are not included in the distributable package.
+  `ΔE00 = 10.5314`.
+- Model fingerprint: `25eb239bafb2bda1`.
+- The user confirmed permission to use and display the originals in this project.
+  Specific license terms, creator credits, and capture metadata remain unrecorded.
+
+## Learning-sample interface
+
+- Desktop layout displays five reference cards per row; tablet and mobile
+  breakpoints reduce the column count without distorting the images.
+- Each card front contains only the derived spatial color mosaic.
+- Hover or keyboard focus flips the card; pointer exit restores the front.
+- The back shows the permitted original, dominant-color palette, retained-region
+  count, median chroma, and the current permission boundary.
+- Touch users can toggle a card by tapping. Reduced-motion preference removes
+  the animated transition while preserving the two-sided content.
 
 ## Field-image checks
 
-At sensitivity 84, segmentation detail 220, and top-k 5:
+The following checks were recorded against the earlier three-reference model
+and must be repeated before being treated as current quantitative evidence:
 
 - The supplied pink-lotus image returned the lotus as candidate #1. The region
   covered 1.91% of the frame, had local `ΔE00 = 26.2`, and reached the 100th
@@ -53,8 +66,9 @@ At sensitivity 84, segmentation detail 220, and top-k 5:
 - A held positive-reference image produced a lower top-candidate reference
   novelty of P79, illustrating that local and reference evidence are distinct.
 
-These checks confirm implementation behavior on the current examples. They do
-not establish accuracy, cultural validity, or generalization.
+They remain useful regression targets, but their exact scores are not claims
+about the retrained 13-reference model. They do not establish accuracy,
+cultural validity, or generalization.
 
 ## Automated checks
 
@@ -66,7 +80,7 @@ not establish accuracy, cultural validity, or generalization.
 - Algorithm unit tests: passed, including a synthetic magenta-patch case with
   reference-model evidence.
 - FastAPI health, home, Learning & Evidence, and reference-model endpoints:
-  passed.
+  passed, including HTTP 200 checks for all 13 original-image assets.
 - End-to-end analysis request: HTTP 200 with overlay, mosaic, palette,
   diagnostics, ranked candidates, linked network data and masks, reference
   metrics, and claim boundary.
@@ -82,6 +96,8 @@ not establish accuracy, cultural validity, or generalization.
 - Turn on the operating system's reduced-motion setting and confirm that all
   functions remain usable without ambient or staged motion.
 - Test the mobile layout if the prototype will be shown on a phone.
-- Replace the three-reference demonstration set with licensed, documented,
-  seasonally and environmentally diverse evidence before interpreting results.
+- Add specific license terms, creator credits, locations, capture dates, and
+  weather/device metadata for all 13 references.
+- Expand the demonstration set with seasonally and environmentally diverse
+  evidence before interpreting results.
 - Treat all candidate regions as prompts for inspection, not aesthetic labels.

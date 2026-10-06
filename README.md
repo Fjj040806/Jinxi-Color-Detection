@@ -53,6 +53,22 @@ The reference contribution is deliberately capped at 35% because the current
 dataset contains only three images. The local detector remains the main source
 of evidence.
 
+## Review workflow
+
+Choose Chinese or English in the first-session evidence notice, enter the fixed
+360° observation point, frame and capture a view, then inspect the ranked
+candidates. The results distinguish local-context evidence from reference
+comparison and include a region-to-nearest-reference-color network. Network
+edges show measured CIEDE2000 distances; their lengths and layout do not encode
+distance. Multiple candidates can share a prototype. Select a candidate node
+to jump to its evidence card, and open “Why this result?” for interpretation.
+The Learning & Evidence page remains available for detailed methodology.
+
+The SDG 11.4 note connects evidence to community heritage discussion without
+claiming that the tool establishes preservation decisions or measured SDG
+impact. This version has one fixed panorama; a navigable Jinxi map requires
+verified observation coordinates and additional scenes.
+
 ## Run on Windows
 
 The simplest method is to double-click `start_windows.bat`. On the first run it

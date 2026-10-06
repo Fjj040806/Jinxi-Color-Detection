@@ -108,6 +108,11 @@ Open:
 - main experience: <http://127.0.0.1:7860/>
 - learning and evidence: <http://127.0.0.1:7860/learning>
 
+The evidence gallery uses small progressive previews from
+`static/reference-original-previews/` so the reverse side of each card is
+already decoded when it flips. Full-resolution permitted originals remain in
+`static/reference-originals/`.
+
 If an older interface remains visible, stop the old process with `Ctrl+C`,
 start this folder's `app.py`, and refresh with `Ctrl+F5`.
 

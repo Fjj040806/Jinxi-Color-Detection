@@ -43,6 +43,8 @@ def test_learning_page_and_reference_model_are_available():
     assert "evidence_boundaries" in page.text
     assert "reference-card-inner" in page.text
     assert "reference-original" in page.text
+    assert "reference-original-previews" in page.text
+    assert "data-full-original" in page.text
     assert "repeat(5, minmax(0, 1fr))" in page.text
     assert "rotateY(180deg)" in page.text
 
@@ -59,6 +61,12 @@ def test_learning_page_and_reference_model_are_available():
         asset = client.get(reference["original_image"])
         assert asset.status_code == 200
         assert asset.headers["content-type"] == "image/jpeg"
+        preview_path = reference["original_image"].replace(
+            "/reference-originals/", "/reference-original-previews/"
+        )
+        preview = client.get(preview_path)
+        assert preview.status_code == 200
+        assert preview.headers["content-type"] == "image/jpeg"
 
 
 def test_analysis_returns_linked_network_masks():

@@ -175,13 +175,18 @@
       transform: rotateY(180deg);
       background: linear-gradient(160deg, #182721, #0f1715 68%);
     }
-    .reference-original-wrap { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .reference-original-wrap {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(145deg, #20322c, #101816);
+    }
     .reference-original {
       width: 100%;
       height: 100%;
       display: block;
       object-fit: contain;
-      background: #1b2824;
+      background: transparent;
     }
     .reference-original-label {
       position: absolute;
@@ -535,11 +540,16 @@
       const grid = $("#referenceGrid"); grid.replaceChildren();
       model.references.forEach((reference, index) => {
         const card = document.createElement("article");
+        const previewImage = reference.original_image.replace("/reference-originals/", "/reference-original-previews/");
         card.className="reference-card";
         card.tabIndex=0;
         card.setAttribute("role","button");
         card.setAttribute("aria-label",`${t("positiveReference")} ${String(index+1).padStart(2,"0")} · ${t("flipAria")}`);
-        card.innerHTML = `<div class="reference-card-inner"><div class="reference-face reference-front" aria-hidden="true"><img loading="lazy" class="mosaic" src="${reference.derived_mosaic}" alt=""></div><div class="reference-face reference-back"><div class="reference-original-wrap"><img loading="lazy" class="reference-original" src="${reference.original_image}" alt="${reference.label} original"><span class="reference-original-label">${t("originalLabel")}</span></div><img loading="lazy" class="palette" src="${reference.derived_palette}" alt="${reference.label} derived dominant-color palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("originalPermission")}</p></div></div></div>`;
+        card.innerHTML = `<div class="reference-card-inner"><div class="reference-face reference-front" aria-hidden="true"><img loading="lazy" class="mosaic" src="${reference.derived_mosaic}" alt=""></div><div class="reference-face reference-back"><div class="reference-original-wrap"><img class="reference-original" decoding="async" src="${previewImage}" data-full-original="${reference.original_image}" alt="${reference.label} original"><span class="reference-original-label">${t("originalLabel")}</span></div><img loading="lazy" class="palette" src="${reference.derived_palette}" alt="${reference.label} derived dominant-color palette"><div class="reference-body"><h3>${t("positiveReference")} ${String(index+1).padStart(2,"0")}</h3><div class="reference-meta"><span>CIELAB<strong>${reference.retained_regions} ${t("regionsUnit")}</strong></span><span>Median chroma<strong>${reference.median_chroma.toFixed(1)}</strong></span></div><p class="reference-note">${t("originalPermission")}</p></div></div></div>`;
+        card.querySelector(".reference-original").addEventListener("error", event => {
+          const image = event.currentTarget;
+          if (image.dataset.fullOriginal) image.src = image.dataset.fullOriginal;
+        }, {once:true});
         card.addEventListener("mouseleave",()=>card.classList.remove("is-flipped"));
         card.addEventListener("click",()=>{if(matchMedia("(hover: none)").matches)card.classList.toggle("is-flipped");});
         card.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();card.classList.toggle("is-flipped");}});

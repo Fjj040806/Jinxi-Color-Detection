@@ -850,6 +850,38 @@
     .evidence-network a:focus circle { stroke:#ffdf91; stroke-width:4; }
     .evidence-copy { color:#c5c8bc; font-size:12px; line-height:1.7; }
     .candidate { scroll-margin-top:20px; }
+
+    :root { --surface:#121816; --border:#ffffff1a; --muted:#a1aaa5; --radius:12px; }
+    .analysis-drawer { width:min(1120px,94vw); background:#0c1210; }
+    .drawer-scroll { padding:28px; }
+    .drawer-head { border-bottom:1px solid var(--border); padding-bottom:20px; }
+    .drawer-title h2 { font-family:system-ui,sans-serif; font-size:26px; font-weight:600; letter-spacing:-.6px; }
+    .summary,.boundary-note { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; line-height:1.8; }
+    .view-tabs { display:flex; background:#1b2420; padding:5px; border-radius:10px; gap:4px; flex-wrap:wrap; margin:24px 0 16px; }
+    .tab-button { flex:1; border:0; border-radius:7px; padding:11px 14px; font:500 13px system-ui; color:var(--muted); background:transparent; white-space:nowrap; }
+    .tab-button.active { background:#edf3ee; color:#14251c; box-shadow:0 1px 4px #0004; }
+    .glass-button,.close-button,.icon-button { border-radius:8px; border:1px solid var(--border); }
+    .candidate { border:1px solid var(--border); background:var(--surface); border-radius:10px; padding:16px; }
+    .candidate-main strong { font-size:14px; } .candidate-main span { font-size:12px; line-height:1.8; }
+    .idiom-panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin:16px 0; }
+    [hidden] { display:none !important; }
+    .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+    .chart-card { min-width:0; background:#0c1210; padding:18px; border:1px solid var(--border); border-radius:10px; }
+    .chart-card h3 { font:600 16px system-ui; margin:0 0 8px; }
+    .chart-card svg { width:100%; height:auto; min-height:360px; overflow:visible; }
+    .chart-card text { fill:#bfc9c2; font:12px system-ui; }
+    .chart-card .grid { stroke:#ffffff12; }
+    .chart-tip { min-height:44px; font:13px system-ui; color:#bdcec1; padding:12px 0; }
+    .chart-mark { transform-box:fill-box; transform-origin:center; animation:mark-in .6s both; }
+    .chart-bar { transform-box:fill-box; transform-origin:left; animation:bar-in .75s both; }
+    .chart-mark:hover,.chart-mark:focus { stroke:#fff; stroke-width:3px; outline:none; }
+    .evidence-network { min-height:430px; max-height:650px; }
+    .evidence-network line { animation:edge-in .8s both; } .evidence-network circle { animation:mark-in .65s both; transform-box:fill-box; transform-origin:center; }
+    @keyframes mark-in { from { opacity:0; transform:scale(.2); } to { opacity:1; transform:scale(1); } }
+    @keyframes bar-in { from { transform:scaleX(0); opacity:0; } to { transform:scaleX(1); opacity:1; } }
+    @keyframes edge-in { from { opacity:0; } to { opacity:1; } }
+    @media(max-width:760px) { .chart-grid { grid-template-columns:1fr; } .drawer-scroll { padding:16px; } .idiom-panel { padding:14px; } }
+    @media(prefers-reduced-motion:reduce) { .chart-mark,.chart-bar,.evidence-network line,.evidence-network circle { animation:none !important; } }
   </style>
 </head>
 <body>
@@ -940,9 +972,10 @@
             <button class="tab-button" data-view="original" role="tab" data-i18n="tabOriginal">原始取景</button>
             <button class="tab-button" data-view="mosaic" role="tab" data-i18n="tabMosaic">空间色谱</button>
             <button class="tab-button" data-view="palette" role="tab" data-i18n="tabPalette">主色卡</button>
+            <button class="tab-button" data-view="network" role="tab" data-i18n="networkTitle">色彩关系网</button>
             <button class="tab-button" data-view="diagnostics" role="tab" data-i18n="tabDiagnostics">诊断视图</button>
           </div>
-          <div class="result-frame">
+          <div class="result-frame" id="imagePanel">
             <img id="resultImage" alt="色彩分析结果" data-i18n-alt="resultAlt">
           </div>
           <div class="result-caption">
@@ -950,9 +983,8 @@
             <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png" data-i18n="downloadView">下载当前视图 ↓</a>
           </div>
 
-          <h3 class="section-label" data-i18n="networkTitle"></h3>
-          <p class="evidence-copy" data-i18n="networkCopy"></p>
-          <div id="evidenceNetwork"></div>
+          <section id="diagnosticPanel" class="idiom-panel" hidden></section>
+          <section id="networkPanel" class="idiom-panel" hidden><h3 data-i18n="networkTitle"></h3><p class="evidence-copy" data-i18n="networkCopy"></p><div id="evidenceNetwork"></div></section>
           <h3 class="section-label" data-i18n="rankedCandidates">候选区域排名 · 同一画面内比较</h3>
           <div class="candidate-list" id="candidateList"></div>
 
@@ -1616,12 +1648,65 @@
 
     function selectView(view) {
       activeView = view;
-      els(".tab-button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+      els(".tab-button").forEach(button => {
+        const selected = button.dataset.view === view;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-selected", selected);
+        button.tabIndex = selected ? 0 : -1;
+      });
+      const custom = view === "network" || view === "diagnostics";
+      el("#imagePanel").hidden = custom;
+      el("#diagnosticPanel").hidden = view !== "diagnostics";
+      el("#networkPanel").hidden = view !== "network";
+      el("#downloadResult").hidden = view === "network";
+      if (view === "network") {
+        renderNetwork(lastPayload?.candidates || []);
+        el("#resultCaption").textContent = t("networkCopy"); return;
+      }
+      if (view === "diagnostics") renderDiagnostics();
       const source = view === "original" ? capturedUrl : resultImages[view];
-      el("#resultImage").src = source;
+      el("#resultImage").src = source || "";
       el("#resultCaption").textContent = t(captionKeys[view]);
-      el("#downloadResult").href = source;
-      el("#downloadResult").download = view === "original" ? "jinxi-captured-view.png" : `jinxi-${view}.png`;
+      el("#downloadResult").href = source || "";
+      el("#downloadResult").download = `jinxi-${view}.png`;
+    }
+
+    function renderDiagnostics() {
+      const host = el("#diagnosticPanel"); host.replaceChildren();
+      const data = lastPayload?.diagnostic_data;
+      if (!data) { const img = document.createElement("img"); img.src = resultImages.diagnostics; img.style.width="100%"; host.append(img); return; }
+      const zh = currentLanguage === "zh-CN";
+      const grid = document.createElement("div"); grid.className="chart-grid"; host.append(grid);
+      const ns="http://www.w3.org/2000/svg";
+      function chart(title, subtitle, height=450) {
+        const card=document.createElement("div"); card.className="chart-card";
+        const h=document.createElement("h3"); h.textContent=title; card.append(h);
+        const p=document.createElement("p"); p.className="evidence-copy"; p.textContent=subtitle; card.append(p);
+        const svg=document.createElementNS(ns,"svg"); svg.setAttribute("viewBox",`0 0 460 ${height}`); svg.setAttribute("role","img"); svg.setAttribute("aria-label",title); card.append(svg);
+        const tip=document.createElement("div"); tip.className="chart-tip"; tip.setAttribute("aria-live","polite"); card.append(tip); grid.append(card);
+        return {svg,tip};
+      }
+      function draw(svg,tag,attrs,text) { const n=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v)); if(text!==undefined)n.textContent=text; svg.append(n); return n; }
+      const left=chart(zh?"CIELAB 色彩分布":"CIELAB color distribution",zh?"点代表分割区域；大小表示面积。悬停或聚焦查看数值。":"Points represent segmented regions; size encodes area. Hover or focus to inspect.");
+      const points=data.points;
+      const amin=Math.min(-15,...points.map(p=>p.a))-3, amax=Math.max(15,...points.map(p=>p.a))+3;
+      const bmin=Math.min(-20,...points.map(p=>p.b))-3, bmax=Math.max(30,...points.map(p=>p.b))+3;
+      const x=v=>60+(v-amin)/(amax-amin)*370,y=v=>390-(v-bmin)/(bmax-bmin)*350;
+      for(let i=0;i<=5;i++){ const av=amin+(amax-amin)*i/5,bv=bmin+(bmax-bmin)*i/5; draw(left.svg,"line",{x1:x(av),y1:40,x2:x(av),y2:390,class:"grid"}); draw(left.svg,"line",{x1:60,y1:y(bv),x2:430,y2:y(bv),class:"grid"}); draw(left.svg,"text",{x:x(av),y:413,"text-anchor":"middle"},av.toFixed(0)); draw(left.svg,"text",{x:48,y:y(bv)+4,"text-anchor":"end"},bv.toFixed(0)); }
+      draw(left.svg,"text",{x:240,y:442,"text-anchor":"middle"},"a* · green ← → red"); draw(left.svg,"text",{x:60,y:22},"b* · blue ↓ ↑ yellow");
+      points.forEach((p,i)=>{const label=`${p.hex} · a* ${p.a.toFixed(1)} · b* ${p.b.toFixed(1)} · ${zh?'面积':'area'} ${(p.area*100).toFixed(2)}%`;const n=draw(left.svg,"circle",{cx:x(p.a),cy:y(p.b),r:3+Math.sqrt(p.area)*45,fill:p.hex,stroke:"#ffffff55",class:"chart-mark",tabindex:0,"aria-label":label,style:`animation-delay:${Math.min(i*3,450)}ms`}); n.addEventListener("mouseenter",()=>left.tip.textContent=label); n.addEventListener("focus",()=>left.tip.textContent=label);});
+      data.candidates.forEach(c=>{
+        const n=draw(left.svg,"circle",{cx:x(c.a),cy:y(c.b),r:10,fill:c.hex,stroke:"#f7df9a","stroke-width":3,class:"chart-mark",tabindex:0,"aria-label":`Candidate #${c.rank}`});
+        draw(left.svg,"text",{x:x(c.a)+13,y:y(c.b)-10},`#${c.rank}`);
+        n.addEventListener("focus",()=>left.tip.textContent=`#${c.rank} · ${c.hex} · a* ${c.a.toFixed(1)} · b* ${c.b.toFixed(1)}`);
+      });
+      const right=chart(zh?"区域为何被标记":"Why regions were flagged",zh?"各特征在画面内的百分位；参考新颖度使用参考集校准。":"Within-frame feature percentiles; reference novelty uses reference-set calibration.",Math.max(450,data.candidates.length*125+110));
+      const colors=["#f28c65","#65b5dc","#83c7a0","#aa94df","#e598be"];
+      const labels=zh?["局部色差","色度距离","彩度提升","色彩稀有度","参考新颖度"]:["Local gap","Chromatic distance","Chroma lift","Color rarity","Reference novelty"];
+      const names=["Local color gap","Chromatic distance","Chroma lift","Color rarity","Reference novelty"];
+      for(let i=0;i<=4;i++){draw(right.svg,"line",{x1:65+i*90,y1:35,x2:65+i*90,y2:data.candidates.length*125+40,class:"grid"});draw(right.svg,"text",{x:65+i*90,y:23,"text-anchor":"middle"},i*25);}
+      data.candidates.forEach((c,i)=>{draw(right.svg,"text",{x:8,y:65+i*125},`#${c.rank}`);names.forEach((name,j)=>{if(c.features[name]===undefined)return;const v=c.features[name]; const label=`#${c.rank} · ${labels[j]} · ${v.toFixed(1)}%`; const bar=draw(right.svg,"rect",{x:65,y:43+i*125+j*18,width:v*3.6,height:12,rx:3,fill:colors[j],class:"chart-bar",tabindex:0,"aria-label":label,style:`animation-delay:${i*90+j*40}ms`});bar.addEventListener("mouseenter",()=>right.tip.textContent=label);bar.addEventListener("focus",()=>right.tip.textContent=label);});});
+      labels.forEach((label,j)=>{draw(right.svg,"rect",{x:20+(j%2)*220,y:data.candidates.length*125+55+Math.floor(j/2)*20,width:10,height:10,rx:2,fill:colors[j]});draw(right.svg,"text",{x:36+(j%2)*220,y:data.candidates.length*125+65+Math.floor(j/2)*20},label);});
     }
 
     function localizedSummary(payload) {
@@ -1716,7 +1801,16 @@
     els(".language-button").forEach(button => {
       button.addEventListener("click", () => applyLanguage(button.dataset.language));
     });
-    els(".tab-button").forEach(button => button.addEventListener("click", () => selectView(button.dataset.view)));
+    els(".tab-button").forEach(button => {
+      button.addEventListener("click", () => selectView(button.dataset.view));
+      button.addEventListener("keydown", event => {
+        if (!["ArrowLeft","ArrowRight","Home","End"].includes(event.key)) return;
+        event.preventDefault(); event.stopPropagation();
+        const tabs=els(".tab-button"), i=tabs.indexOf(button);
+        const next=event.key==="Home"?0:event.key==="End"?tabs.length-1:(i+(event.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;
+        selectView(tabs[next].dataset.view); tabs[next].focus();
+      });
+    });
 
     el("#zoomIn").addEventListener("click", () => fov = clamp(fov - 8, 34, 100));
     el("#zoomOut").addEventListener("click", () => fov = clamp(fov + 8, 34, 100));

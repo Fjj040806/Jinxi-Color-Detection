@@ -35,6 +35,7 @@ class AnalysisResult:
     summary: str
     score_map: np.ndarray
     segment_labels: np.ndarray
+    diagnostic_data: dict[str, Any]
     model_info: dict[str, Any]
 
 
@@ -394,6 +395,7 @@ def _candidate_metrics(
                 "reference_percentile": reference_percentile,
                 "reference_evidence_score": reference_score,
                 "closest_reference_hex": closest_reference_hex,
+                "lab": region_lab,
                 "mean_rgb": region_rgb,
                 "hex": _hex(region_rgb),
                 "centroid": (float(centroid_x), float(centroid_y)),
@@ -834,6 +836,10 @@ def analyze_color_context(
         mosaic=_spatial_mosaic(rgb, int(mosaic_cells)),
         palette=_dominant_palette(rgb),
         diagnostics=_diagnostics_figure(analysis, candidates),
+        diagnostic_data={
+            "points": [{"a": float(lab[1]), "b": float(lab[2]), "hex": _hex(rgb), "area": float(area)} for lab, rgb, area in zip(analysis["median_lab"], analysis["mean_rgb"], analysis["area_fraction"])],
+            "candidates": [{"rank": c["rank"], "hex": c["hex"], "a": float(c["lab"][1]), "b": float(c["lab"][2]), "features": c["feature_percentiles"]} for c in candidates],
+        },
         table=_results_table(candidates),
         summary=_summary(
             candidates,

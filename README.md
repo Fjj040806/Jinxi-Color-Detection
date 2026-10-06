@@ -58,7 +58,10 @@ of evidence.
 Choose Chinese or English in the first-session evidence notice, enter the fixed
 360° observation point, frame and capture a view, then inspect the ranked
 candidates. The results distinguish local-context evidence from reference
-comparison and include a region-to-nearest-reference-color network. Network
+comparison and include a region-to-nearest-reference-color network. The diagnostics tab now renders animated SVG CIELAB scatter and feature bars
+from measured API data. Hover/focus reveals values, and reduced-motion
+preferences disable entrance animations. The interface follows shadcn/ui-style
+Tabs, Card, and button conventions in the existing native HTML stack. Network
 edges show measured CIEDE2000 distances; their lengths and layout do not encode
 distance. Multiple candidates can share a prototype. Select a candidate node
 to jump to its evidence card, and open “Why this result?” for interpretation.

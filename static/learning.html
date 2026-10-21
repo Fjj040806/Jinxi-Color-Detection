@@ -299,7 +299,32 @@
     @media (prefers-reduced-motion: reduce) {
       .reference-card-inner, .reference-front .mosaic { transition: none; }
     }
-  </style>
+  
+    /* Two-track algorithm explainer: readable at a glance, inspectable in depth. */
+    .algo-panel { padding:24px; border:1px solid var(--line); border-radius:18px; background:var(--panel); }
+    .algo-two-paths { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+    .algo-path { min-width:0; border:1px solid rgba(155,197,180,.20); border-radius:16px; overflow:hidden; }
+    .algo-path-head { display:flex; align-items:center; gap:12px; padding:15px 17px; border-bottom:1px solid var(--line); background:rgba(155,197,180,.045); }
+    .algo-path-number { color:var(--jade); font-size:12px; font-weight:800; }
+    .algo-path-title { margin:0; font-size:16px; }
+    .algo-path-content { padding:15px 17px; }
+    .algo-row { display:grid; grid-template-columns:26px minmax(0,1fr); column-gap:10px; padding:10px 0; border-bottom:1px solid rgba(240,234,223,.09); }
+    .algo-row:last-child { border-bottom:0; }
+    .algo-step-dot { display:grid; place-items:center; height:25px; width:25px; border-radius:8px; background:rgba(155,197,180,.13); color:var(--jade); font-size:11px; font-weight:700; }
+    .algo-row h3 { margin:0 0 5px; font-size:12px; font-weight:700; }
+    .algo-row p { margin:0; color:var(--paper-soft); font-size:12px; line-height:1.7; }
+    .algo-meaning { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+    .algo-meaning > div { border:1px solid var(--line); border-radius:12px; padding:17px; }
+    .algo-meaning strong { color:var(--jade); font-size:13px; }
+    .algo-meaning p { margin:8px 0 0; color:var(--paper-soft); line-height:1.7; font-size:12px; }
+    .algo-limits { display:flex; gap:10px; padding:16px; border-left:2px solid var(--amber); background:rgba(233,188,105,.07); border-radius:0 10px 10px 0; margin:18px 0; color:var(--paper-soft); font-size:12px; line-height:1.7; }
+    .algo-limits b { color:var(--amber); }
+    .algo-links { display:flex; flex-wrap:wrap; gap:9px; margin-top:12px; }
+    .algo-links a { display:inline-block; border:1px solid var(--line); border-radius:100px; padding:9px 12px; color:var(--jade); font-size:11px; text-decoration:none; }
+    .algo-links a:hover { border-color:var(--jade); }
+    @media(max-width:760px) { .algo-two-paths,.algo-meaning{grid-template-columns:1fr;} .algo-panel{padding:16px;} }
+
+</style>
 </head>
 <body>
   <header class="topbar">
@@ -355,6 +380,51 @@
         <article class="stage"><span class="stage-index">04</span><h3 data-i18n="stage4Title">平衡记忆</h3><p data-i18n="stage4Copy">每张图贡献相同权重，减少天空或大墙面的支配。</p></article>
         <article class="stage"><span class="stage-index">05</span><h3 data-i18n="stage5Title">留一校准</h3><p data-i18n="stage5Copy">每张参考图都与其余参考图比较，建立新颖度基线。</p></article>
         <article class="stage"><span class="stage-index">06</span><h3 data-i18n="stage6Title">证据融合</h3><p data-i18n="stage6Copy">参考新颖度与当前画面的局部色差共同决定候选排名。</p></article>
+      </div>
+    </section>
+
+
+    <section id="algorithm-explained" aria-labelledby="algoHeading">
+      <div class="section-head">
+        <h2 id="algoHeading" data-i18n="algoTitle">从一张照片到候选排名：算法到底怎么工作？</h2>
+        <p data-i18n="algoIntro">把流程分成两部分：先从参考照片建立“颜色记忆”，再分析你刚拍的画面。以下步骤对应仓库中的 Python 实现，而非我们自己发明的新算法。</p>
+      </div>
+      <div class="algo-panel">
+        <div class="algo-two-paths">
+          <div class="algo-path">
+            <div class="algo-path-head"><span class="algo-path-number">A</span><h3 class="algo-path-title" data-i18n="algoOffline">离线：建立参考色彩模型</h3></div>
+            <div class="algo-path-content">
+              <div class="algo-row"><span class="algo-step-dot">1</span><div><h3 data-i18n="algoOff1Title">收集有限的参考照片</h3><p data-i18n="algoOff1Copy">将项目选定的锦溪色彩照片作为比较样本；不是全镇所有颜色的完整数据库。</p></div></div>
+              <div class="algo-row"><span class="algo-step-dot">2</span><div><h3 data-i18n="algoOff2Title">SLIC + CIELAB：切成小色块并记录颜色</h3><p data-i18n="algoOff2Copy">SLIC 把照片划分为局部区域；CIELAB 用适合比较颜色的数值描述每块区域。</p></div></div>
+              <div class="algo-row"><span class="algo-step-dot">3</span><div><h3 data-i18n="algoOff3Title">MiniBatchKMeans：提炼颜色原型</h3><p data-i18n="algoOff3Copy">对参考颜色进行聚类，保存一组具有代表性的颜色原型，而不是逐张肉眼比较所有像素。</p></div></div>
+              <div class="algo-row"><span class="algo-step-dot">4</span><div><h3 data-i18n="algoOff4Title">Leave-one-reference-out：建立参照基线</h3><p data-i18n="algoOff4Copy">轮流留出一张参考图，用剩余图建立比较，再测被留出图片有多不同，以便解释新颖度百分位。</p></div></div>
+            </div>
+          </div>
+          <div class="algo-path">
+            <div class="algo-path-head"><span class="algo-path-number">B</span><h3 class="algo-path-title" data-i18n="algoOnline">在线：分析用户当前画面</h3></div>
+            <div class="algo-path-content">
+              <div class="algo-row"><span class="algo-step-dot">1</span><div><h3 data-i18n="algoOn1Title">浏览器取景 → Python 服务</h3><p data-i18n="algoOn1Copy">JavaScript/WebGL 负责环视和截图；浏览器将截图发送给 FastAPI 后端，不是在浏览器中训练模型。</p></div></div>
+              <div class="algo-row"><span class="algo-step-dot">2</span><div><h3 data-i18n="algoOn2Title">重新分割当前照片</h3><p data-i18n="algoOn2Copy">Python 使用 SLIC 和 CIELAB 提取当前画面的局部颜色区域及其周围颜色。</p></div></div>
+              <div class="algo-row"><span class="algo-step-dot">3</span><div><h3 data-i18n="algoOn3Title">计算两类不一样</h3><p data-i18n="algoOn3Copy">局部证据：区域与附近颜色的差异；参考证据：与最接近的参考色原型的差异。CIEDE2000 (ΔE00) 用来衡量感知色差。</p></div></div>
+              <div class="algo-row"><span class="algo-step-dot">4</span><div><h3 data-i18n="algoOn4Title">融合证据 → 候选排名 → 返回可视化</h3><p data-i18n="algoOn4Copy">后端融合局部与参考证据，生成候选排名和颜色关系；前端把这些结果画成 Overlay、Network 和图表。</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="algo-meaning">
+          <div><strong data-i18n="algoLocalHead">Local Contrast · 和旁边比</strong><p data-i18n="algoLocalExplain">想象墙上有一块亮红色装饰，周围都是灰白色：它很显眼，局部对比可能高；但不一定在锦溪参考照片中罕见。</p></div>
+          <div><strong data-i18n="algoRefHead">Reference Novelty · 和参考照片比</strong><p data-i18n="algoRefExplain">如果这种颜色在有限的参考照片中不常出现，新颖度可能高；这不等于它在整个锦溪或其他季节都少见。</p></div>
+        </div>
+        <div class="algo-limits"><span>◎</span><div><b data-i18n="algoBoundaryHead">解释边界：</b> <span data-i18n="algoBoundaryCopy">分数用于确定“先检查哪里”，不能自动决定什么颜色更美、是否符合地方文化、或是否应该移除。当前未使用 PatchCore、Anomalib 或 DINOv2 的深度模型。</span></div></div>
+        <div class="section-head">
+          <h2 data-i18n="algoProvenanceTitle">实现来源与责任</h2>
+          <p data-i18n="algoProvenanceCopy">本项目以 AI 辅助编程（vibe coding）构建原型，采用已有 Python 开源库实现经典方法。SLIC、CIEDE2000 与 MiniBatchKMeans 并非团队原创；PatchCore 仅作为研究灵感。下列源码链接可供逐步审核；算法输出仍需独立测试及社区反馈。</p>
+        </div>
+        <div class="algo-links">
+          <a href="https://github.com/Fjj040806/Jinxi-Color-Detection/blob/main/reference_model.py" target="_blank" rel="noopener" data-i18n="algoLinkRef">参考模型源码 ↗</a>
+          <a href="https://github.com/Fjj040806/Jinxi-Color-Detection/blob/main/color_incongruity.py" target="_blank" rel="noopener" data-i18n="algoLinkAnalysis">颜色分析源码 ↗</a>
+          <a href="https://github.com/Fjj040806/Jinxi-Color-Detection/blob/main/app.py" target="_blank" rel="noopener" data-i18n="algoLinkAPI">FastAPI 服务源码 ↗</a>
+          <a href="https://github.com/Fjj040806/Jinxi-Color-Detection/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="algoLinkLicense">代码 MIT 许可 ↗</a>
+        </div>
       </div>
     </section>
 
@@ -430,6 +500,38 @@
   <script>
     const translations = {
       "zh-CN": {
+        algoTitle:"从一张照片到候选排名：算法到底怎么工作？",
+        algoIntro:"两个过程：先从参考照片建立“颜色记忆”，再分析你刚拍的画面。这些步骤对应仓库中的 Python 实现，并非团队发明的新算法。",
+        algoOffline:"离线：建立参考色彩模型",
+        algoOnline:"在线：分析用户当前画面",
+        algoOff1Title:"收集有限的参考照片",
+        algoOff1Copy:"将项目选定的锦溪色彩照片作为比较样本；不是全镇所有颜色的完整数据库。",
+        algoOff2Title:"SLIC + CIELAB：切成小色块并记录颜色",
+        algoOff2Copy:"SLIC 将照片划分为局部区域；CIELAB 用可以比较颜色的数值描述每一块。",
+        algoOff3Title:"MiniBatchKMeans：提炼颜色原型",
+        algoOff3Copy:"将参考颜色进行聚类，保存一组代表性的颜色原型，而不是肉眼比较所有像素。",
+        algoOff4Title:"Leave-one-reference-out：建立比较基线",
+        algoOff4Copy:"轮流留出一张参考图，用其余图建立模型，衡量被留出图片有多不同，从而校准新颖度百分位。",
+        algoOn1Title:"浏览器取景 → Python 服务",
+        algoOn1Copy:"JavaScript / WebGL 负责环视和截图；浏览器将截图发给 FastAPI 后端，不在浏览器训练模型。",
+        algoOn2Title:"重新分割当前照片",
+        algoOn2Copy:"Python 使用 SLIC 和 CIELAB 提取局部颜色区域以及相邻颜色信息。",
+        algoOn3Title:"计算两类颜色差异",
+        algoOn3Copy:"局部：区域和周边颜色比；参考：区域和最接近的参考色比。CIEDE2000 (ΔE00) 衡量视觉色差。",
+        algoOn4Title:"融合证据 → 排名 → 可视化",
+        algoOn4Copy:"后端融合局部与参考证据，返回候选排名和区域关系；前端展示 Overlay、Network 和图表。",
+        algoLocalHead:"Local Contrast · 和旁边比",
+        algoLocalExplain:"假设灰白墙面上有亮红色装饰：它在这张照片中很显眼，局部对比可能高；但不一定在参考照片中少见。",
+        algoRefHead:"Reference Novelty · 和参考照片比",
+        algoRefExplain:"如果一种颜色在有限参考样本中不常出现，它的新颖度可能高；这不代表整个锦溪或其他季节都很少见。",
+        algoBoundaryHead:"解释边界：",
+        algoBoundaryCopy:"分数用来决定先检查哪里，不能判断美丑、文化价值或是否应该移除。当前没有运行 PatchCore、Anomalib 或 DINOv2。",
+        algoProvenanceTitle:"实现来源与责任",
+        algoProvenanceCopy:"项目使用 AI 辅助编程（vibe coding）及现有开源 Python 库来构建原型。SLIC、CIEDE2000 和 MiniBatchKMeans 是已有方法，不属于团队原创；PatchCore 仅是研究启发。以下为实际源码，成果正确性还需独立验证与用户反馈。",
+        algoLinkRef:"参考模型源码 ↗",
+        algoLinkAnalysis:"颜色分析源码 ↗",
+        algoLinkAPI:"FastAPI 服务源码 ↗",
+        algoLinkLicense:"代码 MIT 许可 ↗",
         brandSub:"学习与证据页面", back:"返回取景器", method:"算法原理", eyebrow:"Reference learning / evidence boundary",
         heroTitle:"系统从什么证据中学习？", heroCopy:"这个模型学习的是用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。",
         status:"模型状态", references:"参考图数量", regions:"学习区域", prototypes:"颜色原型", weight:"参考证据权重",
@@ -444,6 +546,38 @@
         loadError:"参考模型未能载入。请确认 Python 服务正在运行。"
       },
       en: {
+        algoTitle:"From a photograph to a candidate ranking: how does the algorithm work?",
+        algoIntro:"Two separate workflows: learn a reference color memory, then analyze your captured view. These steps describe the implemented Python code, not a new algorithm invented by the team.",
+        algoOffline:"Offline: build the reference color model",
+        algoOnline:"Online: analyze the captured view",
+        algoOff1Title:"Collect a limited set of reference photographs",
+        algoOff1Copy:"Select a small reference set of Jinxi photographs, not a complete catalog of every color in the town.",
+        algoOff2Title:"SLIC + CIELAB: segment and describe colors",
+        algoOff2Copy:"SLIC splits photographs into local image regions. CIELAB represents their colors numerically for comparison.",
+        algoOff3Title:"MiniBatchKMeans: learn color prototypes",
+        algoOff3Copy:"Cluster reference colors into representative prototypes instead of manually comparing every pixel.",
+        algoOff4Title:"Leave-one-reference-out: calibrate novelty",
+        algoOff4Copy:"Hold out one reference photograph at a time and compare it against a model of the others to establish a novelty baseline.",
+        algoOn1Title:"Browser capture → Python service",
+        algoOn1Copy:"JavaScript / WebGL handles looking around and capturing. The browser sends the image to FastAPI; no model is trained in your browser.",
+        algoOn2Title:"Segment the current image",
+        algoOn2Copy:"Python uses SLIC and CIELAB to extract local color regions and their neighboring colors.",
+        algoOn3Title:"Compare two kinds of color difference",
+        algoOn3Copy:"Local evidence compares surrounding regions; reference evidence compares nearest reference prototypes. CIEDE2000 (ΔE00) estimates visible color difference.",
+        algoOn4Title:"Combine evidence → rank → visualize",
+        algoOn4Copy:"The backend combines local and reference evidence and returns candidates and color relationships; the frontend draws overlays, networks, and charts.",
+        algoLocalHead:"Local Contrast · compared with neighbors",
+        algoLocalExplain:"A vivid red decoration against a gray wall may stand out locally, even if that red also appears in the reference photographs.",
+        algoRefHead:"Reference Novelty · compared with reference photos",
+        algoRefExplain:"A color absent from a limited reference set may score high on novelty; that does not prove rarity across Jinxi or other seasons.",
+        algoBoundaryHead:"Evidence limits:",
+        algoBoundaryCopy:"Rankings guide what to review first. They do not judge beauty, heritage value, or removal decisions. PatchCore, Anomalib, and DINOv2 are not run in this implementation.",
+        algoProvenanceTitle:"Implementation provenance and responsibility",
+        algoProvenanceCopy:"This prototype was built with AI-assisted coding (vibe coding) and established open-source Python libraries. SLIC, CIEDE2000 and MiniBatchKMeans are existing methods, not original inventions. PatchCore is conceptual inspiration only. The source code is available for inspection; independent testing and user feedback are still needed.",
+        algoLinkRef:"Reference-model code ↗",
+        algoLinkAnalysis:"Color-analysis code ↗",
+        algoLinkAPI:"FastAPI backend ↗",
+        algoLinkLicense:"Code: MIT License ↗",
         brandSub:"Learning and evidence", back:"Back to viewfinder", method:"How it works", eyebrow:"Reference learning / evidence boundary",
         heroTitle:"What evidence does the system learn from?", heroCopy:"The model learns recurring color distributions from user-supplied positive examples. It compresses them into an inspectable reference memory, then combines that evidence with local color contrast in the current frame.",
         status:"Model status", references:"Reference images", regions:"Learning regions", prototypes:"Color prototypes", weight:"Reference weight",

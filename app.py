@@ -23,7 +23,7 @@ STATIC = ROOT / "static"
 REFERENCE_MODEL_PATH = ROOT / "reference_model.json"
 REFERENCE_MODEL = load_reference_model(REFERENCE_MODEL_PATH)
 MAX_UPLOAD_BYTES = 18 * 1024 * 1024
-APP_VERSION = "0.6.0"
+APP_VERSION = "0.7.0"
 BUILD_SHA = (
     os.getenv("VERCEL_GIT_COMMIT_SHA")
     or os.getenv("GITHUB_SHA")
@@ -103,6 +103,12 @@ def home() -> FileResponse:
 @app.get("/learning", include_in_schema=False)
 def learning() -> FileResponse:
     return FileResponse(STATIC / "learning.html")
+
+
+@app.get("/method", include_in_schema=False)
+def method() -> FileResponse:
+    """Interactive, step-by-step explanation of the implemented pipeline."""
+    return FileResponse(STATIC / "method.html")
 
 
 @app.get("/api/health")

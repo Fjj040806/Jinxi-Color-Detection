@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1211">
+  <meta name="description" content="通过七个可交互步骤解释锦溪 Color Lens 的色彩语境分析算法。">
+  <title>锦溪 Color Lens · 算法原理</title>
+  <style>
+    :root {
+      --ink:#09100f; --panel:#101b19; --panel-2:#14231f; --paper:#f0eade;
+      --muted:#aeb7b1; --jade:#9bc5b4; --amber:#e9bc69; --rose:#d7798e;
+      --line:rgba(240,234,222,.14); --soft:rgba(240,234,222,.06);
+      --shadow:0 28px 90px rgba(0,0,0,.38);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:
+      radial-gradient(circle at 76% 8%,rgba(72,122,102,.17),transparent 32%),
+      radial-gradient(circle at 12% 82%,rgba(233,188,105,.08),transparent 26%),var(--ink);
+      color:var(--paper);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      -webkit-font-smoothing:antialiased}
+    button,a{font:inherit;color:inherit}
+    a{text-decoration:none}
+    button:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+    .shell{width:min(1440px,calc(100% - 48px));margin:auto}
+    .topbar{position:sticky;z-index:20;top:0;border-bottom:1px solid var(--line);background:rgba(9,16,15,.78);backdrop-filter:blur(22px) saturate(1.2)}
+    .topbar-inner{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-mark{width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(240,234,222,.35);border-radius:50%;color:var(--amber)}
+    .brand strong,.brand small{display:block}.brand strong{font-size:12px;letter-spacing:.17em}.brand small{margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:.07em}
+    .nav-actions{display:flex;align-items:center;gap:8px}
+    .pill,.lang button{border:1px solid var(--line);background:rgba(240,234,222,.04);cursor:pointer;transition:.2s ease}
+    .pill{min-height:38px;padding:0 14px;display:inline-flex;align-items:center;border-radius:999px;font-size:11px;letter-spacing:.04em}
+    .pill:hover,.lang button:hover{background:rgba(240,234,222,.11);transform:translateY(-1px)}
+    .lang{display:flex;padding:3px;border:1px solid var(--line);border-radius:999px}
+    .lang button{height:30px;min-width:43px;border:0;border-radius:999px;color:var(--muted);font-size:10px;font-weight:750}
+    .lang button.active{background:var(--paper);color:var(--ink)}
+    .hero{padding:64px 0 34px;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,440px);gap:60px;align-items:end}
+    .eyebrow{margin:0 0 14px;color:var(--jade);font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+    h1{max-width:820px;margin:0;font:400 clamp(40px,6vw,80px)/.98 Georgia,"Noto Serif SC",serif;letter-spacing:-.025em}
+    .hero-copy{margin:0 0 5px;color:var(--muted);font-size:14px;line-height:1.85}
+    .fact-row{margin-top:24px;display:flex;flex-wrap:wrap;gap:8px}
+    .fact{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:var(--soft);font-size:10px;color:#d5d9d4}
+    .workspace{display:grid;grid-template-columns:220px minmax(0,1fr) 330px;min-height:650px;border:1px solid var(--line);border-radius:28px;overflow:hidden;background:rgba(12,21,19,.78);box-shadow:var(--shadow)}
+    .step-rail{padding:18px;border-right:1px solid var(--line);background:rgba(5,10,9,.42)}
+    .rail-label{margin:4px 8px 15px;color:#78847e;font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+    .step-button{position:relative;width:100%;min-height:66px;padding:11px 10px 11px 48px;border:0;border-radius:13px;background:transparent;text-align:left;cursor:pointer;color:#8f9a94;transition:.25s ease}
+    .step-button:hover{color:var(--paper);background:var(--soft)}
+    .step-button.active{color:var(--paper);background:linear-gradient(110deg,rgba(155,197,180,.16),rgba(155,197,180,.04))}
+    .step-button::before{content:attr(data-number);position:absolute;left:11px;top:16px;width:25px;height:25px;display:grid;place-items:center;border:1px solid rgba(240,234,222,.18);border-radius:50%;font-size:9px;font-weight:800}
+    .step-button.active::before{border-color:var(--jade);background:var(--jade);color:var(--ink);box-shadow:0 0 0 5px rgba(155,197,180,.08)}
+    .step-button strong,.step-button span{display:block}.step-button strong{font-size:11px}.step-button span{margin-top:4px;font-size:9px;line-height:1.35;color:#75807b}.step-button.active span{color:#aeb8b3}
+    .visual-column{position:relative;min-width:0;padding:22px;display:flex;flex-direction:column;background:
+      linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),#0b1513;background-size:28px 28px}
+    .visual-head{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .visual-head span{color:var(--jade);font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    .visual-head code{color:#88938d;font-size:9px}
+    #visual{position:relative;flex:1;min-height:500px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(240,234,222,.08);border-radius:20px;background:radial-gradient(circle at 50% 42%,rgba(50,85,73,.17),transparent 55%),rgba(3,8,7,.38)}
+    #visual::after{content:"TEACHING VIEW · NOT PIXEL OUTPUT";position:absolute;right:14px;bottom:11px;color:rgba(240,234,222,.25);font-size:8px;font-weight:800;letter-spacing:.14em;pointer-events:none}
+    .visual-enter{width:100%;height:100%;min-height:500px;animation:visualIn .55s cubic-bezier(.2,.75,.2,1) both}
+    .detail-panel{padding:26px;border-left:1px solid var(--line);background:linear-gradient(180deg,rgba(20,35,31,.92),rgba(11,19,17,.95));display:flex;flex-direction:column}
+    .stage-count{color:var(--amber);font-size:10px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+    .detail-panel h2{margin:15px 0 13px;font:400 31px/1.12 Georgia,"Noto Serif SC",serif}
+    .detail-panel>p{margin:0;color:var(--muted);font-size:12px;line-height:1.75}
+    .io-grid{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .io-card{padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--soft)}
+    .io-card small,.io-card strong{display:block}.io-card small{color:#718078;font-size:8px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.io-card strong{margin-top:7px;font-size:10px;line-height:1.45}
+    .method-note{margin-top:18px;padding:14px;border-left:2px solid var(--jade);background:rgba(155,197,180,.055);color:#c7cfca;font-size:10px;line-height:1.65}
+    .method-note strong{display:block;margin-bottom:5px;color:var(--jade);font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+    .formula{margin-top:18px;padding:14px;border:1px solid rgba(233,188,105,.18);border-radius:13px;background:rgba(233,188,105,.045);color:#e9d3a9;font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+    .controls{margin-top:auto;padding-top:24px;display:grid;grid-template-columns:40px 1fr 40px;gap:8px;align-items:center}
+    .round{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--soft);cursor:pointer;transition:.2s ease}.round:hover{background:rgba(240,234,222,.13)}
+    .play{height:40px;border:1px solid rgba(155,197,180,.3);border-radius:999px;background:rgba(155,197,180,.1);cursor:pointer;color:var(--jade);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+    .progress{height:2px;margin-top:14px;background:rgba(240,234,222,.09);overflow:hidden}.progress span{display:block;height:100%;width:14.285%;background:var(--jade);transition:width .45s ease}
+    .footer-note{padding:28px 0 55px;display:flex;justify-content:space-between;gap:30px;color:#7d8882;font-size:10px;line-height:1.7}.footer-note strong{color:#abb4af}
+
+    /* Visual primitives */
+    .capture{position:relative;width:88%;height:78%;margin:6% auto;border-radius:16px;overflow:hidden;background:#263733 url('/static/panorama.png') center 47%/cover no-repeat;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+    .capture::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,10,9,.15),transparent 35%,rgba(5,10,9,.35))}
+    .frame{position:absolute;z-index:2;inset:12%;border:1px solid rgba(240,234,222,.75)}.frame::before,.frame::after{content:"";position:absolute;background:rgba(240,234,222,.32)}.frame::before{left:33.3%;right:33.3%;top:0;bottom:0;border-left:1px solid;border-right:1px solid;background:none}.frame::after{top:33.3%;bottom:33.3%;left:0;right:0;border-top:1px solid;border-bottom:1px solid;background:none}
+    .reticle{position:absolute;z-index:3;left:50%;top:50%;width:34px;height:34px;border:1px solid var(--amber);border-radius:50%;transform:translate(-50%,-50%);animation:pulse 2.2s infinite}.capture-label{position:absolute;z-index:3;left:24px;bottom:20px;padding:7px 10px;border-radius:999px;background:rgba(8,15,14,.72);font-size:9px;letter-spacing:.1em}
+    .segments{width:100%;height:100%}.segments .base{fill:#1a2b27}.segments polygon{stroke:rgba(240,234,222,.65);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:segmentIn .55s both}.segments polygon:nth-of-type(3n){animation-delay:.08s}.segments polygon:nth-of-type(4n){animation-delay:.15s}.segments .hot{fill:#be7188!important;stroke:#ffd8df;filter:drop-shadow(0 0 9px rgba(215,121,142,.5))}
+    .lab-wrap{width:100%;height:100%;display:grid;place-items:center}.lab-svg{width:92%;height:90%;overflow:visible}.lab-axis{stroke:rgba(240,234,222,.22);stroke-width:1.2}.lab-grid{stroke:rgba(240,234,222,.08);stroke-width:1}.lab-svg text{fill:#9ba69f;font-size:12px}.lab-point{stroke:#f0eade;stroke-width:1;animation:pointIn .55s both;transform-box:fill-box;transform-origin:center}.lab-point.hot{filter:drop-shadow(0 0 9px var(--rose));animation:pulse 2s infinite}.lab-key{position:absolute;left:22px;bottom:20px;display:flex;gap:12px;color:#98a49e;font-size:9px}.lab-key i{width:8px;height:8px;display:inline-block;margin-right:5px;border-radius:50%}
+    .network-svg,.reference-svg{width:94%;height:92%}.edge{stroke:rgba(240,234,222,.27);stroke-width:2;stroke-dasharray:5 5;animation:dash 8s linear infinite}.edge.hot{stroke:var(--rose);stroke-width:3}.node{stroke:rgba(240,234,222,.65);stroke-width:1.5;cursor:pointer;transition:.2s ease;transform-box:fill-box;transform-origin:center}.node:hover{transform:scale(1.18);filter:drop-shadow(0 0 9px currentColor)}.node.hot{stroke:#fff1f4;stroke-width:3;animation:pulse 2s infinite}.network-svg text,.reference-svg text{fill:#c4cbc7;font-size:11px}.network-svg .delta,.reference-svg .delta{fill:var(--amber);font-size:10px}.node-tooltip{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);min-width:230px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(8,15,13,.88);color:#c8d0cc;font-size:9px;text-align:center;pointer-events:none}
+    .rank-wrap{width:82%;display:grid;gap:20px}.score-row{display:grid;grid-template-columns:82px 1fr 48px;align-items:center;gap:13px}.score-row label{font-size:10px;color:#afb8b3}.bar{height:12px;border-radius:999px;background:rgba(240,234,222,.08);overflow:hidden}.bar span{display:block;height:100%;border-radius:inherit;transform-origin:left;animation:grow .85s cubic-bezier(.2,.8,.2,1) both}.score-row output{font:700 11px ui-monospace,monospace;color:var(--paper)}.rank-formula{padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(240,234,222,.035);text-align:center;font:clamp(13px,2vw,20px)/1.6 ui-monospace,monospace}.rank-formula b{color:var(--amber)}
+    .boundary-wrap{width:88%;display:grid;grid-template-columns:1fr 1fr;gap:14px}.boundary-card{padding:23px;border:1px solid var(--line);border-radius:18px;background:rgba(240,234,222,.035)}.boundary-card.valid{border-top:3px solid var(--jade)}.boundary-card.invalid{border-top:3px solid var(--rose)}.boundary-card h3{margin:0 0 16px;font:400 21px Georgia,serif}.boundary-card ul{margin:0;padding-left:17px;color:#aeb8b2;font-size:11px;line-height:1.75}.decision{grid-column:1/-1;padding:14px 18px;border:1px solid rgba(233,188,105,.22);border-radius:14px;background:rgba(233,188,105,.06);color:#dbc9a3;font-size:10px;line-height:1.6}
+    @keyframes visualIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+    @keyframes segmentIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+    @keyframes pointIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+    @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @keyframes pulse{0%,100%{filter:drop-shadow(0 0 0 rgba(215,121,142,0))}50%{filter:drop-shadow(0 0 9px rgba(215,121,142,.72))}}
+    @keyframes dash{to{stroke-dashoffset:-100}}
+    @media(max-width:1050px){.workspace{grid-template-columns:170px minmax(0,1fr)}.detail-panel{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1.15fr 1fr;gap:18px}.detail-panel .controls,.detail-panel .progress{grid-column:1/-1}.io-grid{margin-top:0}.method-note,.formula{margin-top:8px}}
+    @media(max-width:720px){.shell{width:min(100% - 24px,1440px)}.topbar-inner{height:auto;padding:12px 0;align-items:flex-start}.brand small,.pill.secondary{display:none}.nav-actions{flex-wrap:wrap;justify-content:flex-end}.hero{padding:42px 0 25px;grid-template-columns:1fr;gap:20px}.workspace{display:block}.step-rail{display:flex;gap:5px;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.rail-label,.step-button span{display:none}.step-button{flex:0 0 49px;min-height:45px;padding:0}.step-button::before{left:12px;top:10px}.step-button strong{display:none}.visual-column{padding:12px}#visual,.visual-enter{min-height:420px}.detail-panel{display:block;padding:22px}.io-grid{margin-top:20px}.boundary-wrap{grid-template-columns:1fr}.decision{grid-column:auto}.footer-note{display:block}.footer-note span{display:block;margin-top:8px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="/" aria-label="Jinxi Color Lens home"><span class="brand-mark">◇</span><span><strong>JINXI / COLOR LENS</strong><small data-i18n="brandSub">算法原理实验室</small></span></a>
+      <div class="nav-actions">
+        <a class="pill secondary" href="/learning" data-i18n="evidence">学习与证据</a>
+        <a class="pill" href="/" data-i18n="lens">打开取景器 ↗</a>
+        <div class="lang" role="group" aria-label="语言 / Language"><button class="active" data-lang="zh-CN" aria-pressed="true">简中</button><button data-lang="en" aria-pressed="false">EN</button></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div><p class="eyebrow">Algorithm observatory · 07 stages</p><h1 data-i18n="heroTitle">一张照片，如何变成可检查的色彩证据？</h1><div class="fact-row"><span class="fact">13 references</span><span class="fact">2,053 regions</span><span class="fact">28 prototypes</span><span class="fact">CIEDE2000</span></div></div>
+      <p class="hero-copy" data-i18n="heroCopy">沿着真实实现逐步查看每一次转换。点击步骤、悬停节点或自动播放。所有动画只解释计算逻辑，不伪装成一次真实分析输出。</p>
+    </section>
+
+    <section class="workspace" aria-label="Interactive algorithm explanation" data-i18n-aria="workspaceAria">
+      <nav class="step-rail" id="stepRail" aria-label="Algorithm steps"><p class="rail-label" data-i18n="pipeline">实现流程</p></nav>
+      <div class="visual-column">
+        <div class="visual-head"><span id="visualKicker">01 · INPUT</span><code id="methodCode">browser capture</code></div>
+        <div id="visual" aria-live="polite"></div>
+      </div>
+      <aside class="detail-panel">
+        <div><span class="stage-count" id="stageCount">Stage 01 / 07</span><h2 id="stageTitle"></h2><p id="stageCopy"></p></div>
+        <div><div class="io-grid"><div class="io-card"><small>Input</small><strong id="stageInput"></strong></div><div class="io-card"><small>Output</small><strong id="stageOutput"></strong></div></div><div class="method-note"><strong data-i18n="whyLabel">为什么需要这一步</strong><span id="stageWhy"></span></div><div class="formula" id="stageFormula"></div></div>
+        <div class="controls"><button class="round" id="prev" aria-label="Previous step">←</button><button class="play" id="play" data-i18n="autoPlay">自动播放</button><button class="round" id="next" aria-label="Next step">→</button></div>
+        <div class="progress"><span id="progress"></span></div>
+      </aside>
+    </section>
+
+    <div class="footer-note"><strong data-i18n="footerStrong">这是一张算法地图，不是一份审美评分表。</strong><span data-i18n="footerCopy">页面中的粉色候选仅用于说明色彩差异。最终解释需要现场、社区和专业证据。</span></div>
+  </main>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    let language = 'zh-CN', current = 0, timer = null;
+    const copy = {
+      'zh-CN': {
+        brandSub:'算法原理实验室', evidence:'学习与证据', lens:'打开取景器 ↗', heroTitle:'一张照片，如何变成可检查的色彩证据？', heroCopy:'沿着真实实现逐步查看每一次转换。点击步骤、悬停节点或自动播放。所有动画只解释计算逻辑，不伪装成一次真实分析输出。', workspaceAria:'逐步算法原理可视化', pipeline:'实现流程', whyLabel:'为什么需要这一步', autoPlay:'自动播放', pause:'暂停播放', footerStrong:'这是一张算法地图，不是一份审美评分表。', footerCopy:'页面中的粉色候选仅用于说明色彩差异。最终解释需要现场、社区和专业证据。',
+        steps:[
+          ['选择取景','照片进入系统','拖动固定机位全景并按下快门。浏览器只提交当前视野，不提交界面控件。','用户选择的 RGB 图像','可复现的截图与方向/FOV 元数据','取景会改变画面中的颜色比例，所以方向与视野必须成为证据的一部分。','browser canvas → PNG'],
+          ['划分区域','SLIC 超像素','SLIC 将相邻且颜色相近的像素聚成小区域。它们是计算区域，不是“荷花”“建筑”等语义物体。','RGB 图像','带区域编号的分割图','区域化让系统比较局部语境，也避免逐像素噪声主导结果。','SLIC(image, detail)'],
+          ['统一色彩坐标','RGB → CIELAB','系统计算每个区域的中位颜色，再将其转换到 CIELAB。L* 表示明度，a* 与 b* 表示颜色方向。','区域 RGB 中位数','每个区域的 [L*, a*, b*]','CIELAB 更接近人类感知距离，为 CIEDE2000 比较提供统一坐标。','region median → Lab'],
+          ['测量局部反差','邻接网络 + ΔE00','相邻区域成为节点。只有图像空间相邻且色差超过自适应阈值的区域才形成重点边。','区域及空间邻接关系','局部对比分数与可检查网络','粉色区域可能占比很小，却与多个周边区域差异很大。网络把这种局部关系显式化。','local = f(ΔE00, adjacency, area)'],
+          ['比较参考记忆','有限正面参考集','13 张获准使用的正面参考图被均衡抽样为 2,053 个区域，再压缩为 28 个颜色原型。候选与最近原型进行比较。','候选区域 Lab + 28 个原型','最近参考色与参考 ΔE00','参考比较回答“这种颜色在当前有限参考集中是否少见”，而不是“它是否难看”。','nearest prototype by ΔE00'],
+          ['校准并排序','两条证据合成','留一参考图校准把参考距离转换为新颖度百分位。系统再合成局部对比与参考新颖度，只用于候选排序。','局部分数 + 参考新颖度','综合复核分数与候选顺序','分开保留两条证据，用户才能知道高分来自局部反差、参考稀有，还是两者同时出现。','clip(.65L + .35R + .08·min(L,R))'],
+          ['交给人判断','证据边界','系统输出值得检查的位置和原因。它不识别文化价值，也不决定某个装饰是否应该保留或移除。','候选、分数、可视化与限制','可讨论、可质疑、可修正的证据','居民、商户、维护人员、规划者与游客可能有不同判断。算法应支持对话，而不是替代它。','evidence ≠ aesthetic verdict']
+        ],
+        valid:'系统可以支持', invalid:'系统不能推出', validItems:['哪些区域与邻近颜色差异较大','哪些颜色在有限参考集中较少见','分数由哪些证据组成'], invalidItems:['某个物体客观上“丑”','某种颜色不属于锦溪文化','某项装饰应当被移除'], decision:'下一步证据：控制天气和白平衡，扩大获准使用的参考集，并邀请不同社区成员解释、质疑和修正结果。', tooltip:'悬停节点：粉色候选与多个邻近区域形成较大的 ΔE00。'
+      },
+      en: {
+        brandSub:'Algorithm observatory', evidence:'Learning & evidence', lens:'Open live lens ↗', heroTitle:'How does one image become inspectable color evidence?', heroCopy:'Follow each transformation in the implemented pipeline. Select a stage, inspect nodes, or autoplay the sequence. The animations explain computation; they do not pretend to be a real analysis result.', workspaceAria:'Step-by-step algorithm visualization', pipeline:'Implemented pipeline', whyLabel:'Why this step matters', autoPlay:'Autoplay', pause:'Pause', footerStrong:'This is an algorithm map, not an aesthetic scorecard.', footerCopy:'The pink candidate is an explanatory example of color difference. Final interpretation requires field, community, and professional evidence.',
+        steps:[
+          ['Frame a view','Image enters the system','Drag the fixed-position panorama and press the shutter. The browser submits the selected view without interface controls.','User-framed RGB image','Reproducible capture + direction/FOV metadata','Framing changes the color composition, so direction and field of view are part of the evidence.','browser canvas → PNG'],
+          ['Partition regions','SLIC superpixels','SLIC groups nearby, similarly colored pixels into small regions. They are computational regions, not semantic objects such as “lotus” or “building.”','RGB image','Numbered region segmentation','Regions support contextual comparison while reducing pixel-level noise.','SLIC(image, detail)'],
+          ['Normalize color','RGB → CIELAB','The system takes each region’s median color and converts it to CIELAB. L* is lightness; a* and b* encode color directions.','Region median RGB','One [L*, a*, b*] vector per region','CIELAB provides a perceptually oriented coordinate system for CIEDE2000 comparison.','region median → Lab'],
+          ['Measure local contrast','Adjacency network + ΔE00','Regions become nodes. Priority edges require image-space adjacency and color difference above an adaptive threshold.','Regions + spatial adjacency','Local contrast score + inspectable network','A small pink region may differ strongly from several neighbors. The network makes that local relationship explicit.','local = f(ΔE00, adjacency, area)'],
+          ['Compare reference memory','Limited positive set','Thirteen permitted positive references contribute 2,053 balanced regions, compressed into 28 color prototypes. Each candidate is matched to its nearest prototype.','Candidate Lab + 28 prototypes','Nearest reference color + reference ΔE00','This asks whether a color is uncommon in the current limited references—not whether it is ugly.','nearest prototype by ΔE00'],
+          ['Calibrate and rank','Combine two evidence channels','Leave-one-reference-out calibration converts reference distance to a novelty percentile. Local contrast and reference novelty are combined only to rank candidates.','Local score + reference novelty','Combined review score + candidate order','Keeping both channels visible shows whether a result comes from local contrast, reference rarity, or both.','clip(.65L + .35R + .08·min(L,R))'],
+          ['Return to people','Evidence boundary','The system returns where to inspect and why. It does not recognize cultural value or decide whether an installation should stay or be removed.','Candidates, scores, views, limitations','Evidence that can be discussed and corrected','Residents, businesses, maintenance staff, planners, and visitors may disagree. The algorithm supports that dialogue; it does not replace it.','evidence ≠ aesthetic verdict']
+        ],
+        valid:'The system can support', invalid:'The system cannot conclude', validItems:['Which regions differ strongly from their neighbors','Which colors are uncommon in the limited references','Which evidence channels produce a score'], invalidItems:['That an object is objectively “ugly”','That a color does not belong to Jinxi culture','That an installation should be removed'], decision:'Next evidence: control weather and white balance, expand the permission-cleared reference set, and invite different community members to interpret, challenge, and correct the results.', tooltip:'Hover a node: the pink candidate has large ΔE00 differences from several adjacent regions.'
+      }
+    };
+
+    const segmentVisual = () => `<div class="visual-enter"><svg class="segments" viewBox="0 0 700 500" role="img" aria-label="SLIC region teaching diagram"><rect class="base" width="700" height="500"/><g fill="#64716a"><polygon points="0,0 150,0 132,110 0,145"/><polygon points="150,0 315,0 302,105 132,110"/><polygon points="315,0 486,0 468,124 302,105"/><polygon points="486,0 700,0 700,118 468,124"/><polygon points="0,145 132,110 178,236 0,258"/><polygon points="132,110 302,105 320,230 178,236"/><polygon points="302,105 468,124 451,248 320,230"/><polygon points="468,124 700,118 700,256 451,248"/><polygon points="0,258 178,236 160,376 0,392"/><polygon points="178,236 320,230 345,361 160,376"/><polygon class="hot" points="320,230 451,248 478,363 345,361"/><polygon points="451,248 700,256 700,376 478,363"/><polygon points="0,392 160,376 180,500 0,500"/><polygon points="160,376 345,361 353,500 180,500"/><polygon points="345,361 478,363 514,500 353,500"/><polygon points="478,363 700,376 700,500 514,500"/></g></svg></div>`;
+    const labVisual = () => `<div class="visual-enter lab-wrap"><svg class="lab-svg" viewBox="0 0 700 500"><g>${[120,200,280,360,440].map(y=>`<line class="lab-grid" x1="95" y1="${y}" x2="620" y2="${y}"/>`).join('')}${[160,260,360,460,560].map(x=>`<line class="lab-grid" x1="${x}" y1="70" x2="${x}" y2="430"/>`).join('')}</g><line class="lab-axis" x1="90" y1="430" x2="630" y2="430"/><line class="lab-axis" x1="90" y1="430" x2="90" y2="60"/><line class="lab-axis" x1="90" y1="430" x2="580" y2="90"/><text x="635" y="435">a*</text><text x="75" y="50">L*</text><text x="587" y="87">b*</text><g><circle class="lab-point" cx="245" cy="330" r="17" fill="#56635d"/><circle class="lab-point" cx="330" cy="265" r="23" fill="#8e8c78"/><circle class="lab-point" cx="420" cy="202" r="18" fill="#63786e"/><circle class="lab-point" cx="487" cy="292" r="14" fill="#b8aa8d"/><circle class="lab-point hot" cx="548" cy="145" r="22" fill="#d7798e"/><circle class="lab-point" cx="206" cy="186" r="12" fill="#384641"/></g><text x="515" y="112">candidate</text></svg><div class="lab-key"><span><i style="background:#56635d"></i>region median</span><span><i style="background:#d7798e"></i>candidate example</span></div></div>`;
+    const networkVisual = () => `<div class="visual-enter"><svg class="network-svg" viewBox="0 0 700 500"><g><line class="edge hot" x1="350" y1="244" x2="165" y2="132"/><line class="edge hot" x1="350" y1="244" x2="540" y2="128"/><line class="edge hot" x1="350" y1="244" x2="545" y2="360"/><line class="edge" x1="350" y1="244" x2="160" y2="365"/><line class="edge" x1="165" y1="132" x2="540" y2="128"/><line class="edge" x1="160" y1="365" x2="545" y2="360"/></g><g><circle class="node" data-tip="ΔE00 28.4" cx="165" cy="132" r="42" fill="#58665f"/><circle class="node" data-tip="ΔE00 25.1" cx="540" cy="128" r="38" fill="#697b70"/><circle class="node hot" data-tip="Candidate · local contrast 92.5" cx="350" cy="244" r="52" fill="#d7798e"/><circle class="node" data-tip="ΔE00 14.2" cx="160" cy="365" r="34" fill="#9a917c"/><circle class="node" data-tip="ΔE00 27.8" cx="545" cy="360" r="44" fill="#3f514c"/></g><text x="319" y="249">candidate</text><text class="delta" x="228" y="168">28.4</text><text class="delta" x="459" y="168">25.1</text><text class="delta" x="461" y="319">27.8</text></svg><div class="node-tooltip">${copy[language].tooltip}</div></div>`;
+    const referenceVisual = () => `<div class="visual-enter"><svg class="reference-svg" viewBox="0 0 700 500"><defs><linearGradient id="fade"><stop stop-color="#d7798e"/><stop offset="1" stop-color="#9bc5b4"/></linearGradient></defs><text x="72" y="55">candidate region</text><circle class="node hot" cx="120" cy="230" r="54" fill="#d7798e"/><g>${[['#474849',480,90],['#C8CDD3',555,170],['#59605e',470,260],['#8b8171',565,345],['#405b51',430,395]].map((d,i)=>`<circle class="node" data-tip="prototype ${i+1}" cx="${d[1]}" cy="${d[2]}" r="${24+i%2*7}" fill="${d[0]}"/>`).join('')}</g><path d="M174 230 C270 220 340 250 445 260" fill="none" stroke="url(#fade)" stroke-width="4" stroke-dasharray="7 7" class="edge"/><text class="delta" x="272" y="218">nearest ΔE00</text><text x="438" y="55">28 color prototypes</text><text x="73" y="310">unseen color</text><text x="417" y="304">nearest prototype</text></svg><div class="node-tooltip">13 references → 2,053 balanced regions → 28 prototypes</div></div>`;
+    const rankVisual = () => `<div class="visual-enter" style="display:grid;place-items:center"><div class="rank-wrap"><div class="rank-formula"><b>Review score</b> = .65 Local + .35 Reference + .08 min(Local, Reference)</div><div class="score-row"><label>Local</label><div class="bar"><span style="width:92.5%;background:#d7798e"></span></div><output>92.5</output></div><div class="score-row"><label>Reference</label><div class="bar"><span style="width:100%;background:#9bc5b4"></span></div><output>100</output></div><div class="score-row"><label>Combined</label><div class="bar"><span style="width:100%;background:linear-gradient(90deg,#d7798e,#e9bc69)"></span></div><output>rank</output></div><div style="color:#7e8a84;font-size:10px;text-align:center">Scores are evidence channels for ordering candidates, not validated aesthetic thresholds.</div></div></div>`;
+    const boundaryVisual = () => { const c=copy[language]; return `<div class="visual-enter" style="display:grid;place-items:center"><div class="boundary-wrap"><article class="boundary-card valid"><h3>✓ ${c.valid}</h3><ul>${c.validItems.map(x=>`<li>${x}</li>`).join('')}</ul></article><article class="boundary-card invalid"><h3>× ${c.invalid}</h3><ul>${c.invalidItems.map(x=>`<li>${x}</li>`).join('')}</ul></article><div class="decision">${c.decision}</div></div></div>`; };
+    const captureVisual = () => `<div class="visual-enter"><div class="capture"><div class="frame"><span class="reticle"></span></div><span class="capture-label">107° · FOV 34° · RGB</span></div></div>`;
+    const visuals=[captureVisual,segmentVisual,labVisual,networkVisual,referenceVisual,rankVisual,boundaryVisual];
+
+    function buildRail(){ const rail=$('#stepRail'), label=rail.querySelector('.rail-label'); rail.replaceChildren(label); copy[language].steps.forEach((s,i)=>{const b=document.createElement('button');b.className='step-button';b.dataset.number=String(i+1).padStart(2,'0');b.innerHTML=`<strong>${s[0]}</strong><span>${s[1]}</span>`;b.addEventListener('click',()=>show(i));rail.append(b);}); }
+    function show(index){current=(index+7)%7;const s=copy[language].steps[current];$$('.step-button').forEach((b,i)=>{b.classList.toggle('active',i===current);b.setAttribute('aria-current',i===current?'step':'false')});$('#visualKicker').textContent=`${String(current+1).padStart(2,'0')} · ${['INPUT','SEGMENT','COLOR SPACE','LOCAL GRAPH','REFERENCE','RANK','BOUNDARY'][current]}`;$('#methodCode').textContent=s[6];$('#stageCount').textContent=`Stage ${String(current+1).padStart(2,'0')} / 07`;$('#stageTitle').textContent=s[0];$('#stageCopy').textContent=s[2];$('#stageInput').textContent=s[3];$('#stageOutput').textContent=s[4];$('#stageWhy').textContent=s[5];$('#stageFormula').textContent=s[6];$('#progress').style.width=`${(current+1)/7*100}%`;$('#visual').innerHTML=visuals[current]();bindNodeTips();}
+    function bindNodeTips(){const tip=$('.node-tooltip');if(!tip)return;$$('.node[data-tip]').forEach(n=>{n.addEventListener('mouseenter',()=>tip.textContent=n.dataset.tip);n.addEventListener('focus',()=>tip.textContent=n.dataset.tip)});}
+    function applyLanguage(next){language=next;document.documentElement.lang=next;const c=copy[next];$$('[data-i18n]').forEach(n=>{if(c[n.dataset.i18n])n.textContent=c[n.dataset.i18n]});$$('[data-i18n-aria]').forEach(n=>{if(c[n.dataset.i18nAria])n.setAttribute('aria-label',c[n.dataset.i18nAria])});$$('[data-lang]').forEach(b=>{const active=b.dataset.lang===next;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});try{localStorage.setItem('jinxi-color-lens-language',next)}catch(_){}buildRail();show(current);}
+    function togglePlay(){if(timer){clearInterval(timer);timer=null;$('#play').textContent=copy[language].autoPlay;return}$('#play').textContent=copy[language].pause;timer=setInterval(()=>show(current+1),2600)}
+    $('#prev').addEventListener('click',()=>show(current-1));$('#next').addEventListener('click',()=>show(current+1));$('#play').addEventListener('click',togglePlay);$$('[data-lang]').forEach(b=>b.addEventListener('click',()=>applyLanguage(b.dataset.lang)));document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(current+1);if(e.key==='ArrowLeft')show(current-1);if(e.key===' '&&e.target===document.body){e.preventDefault();togglePlay();}});
+    let preferred='zh-CN';try{if(localStorage.getItem('jinxi-color-lens-language')==='en')preferred='en'}catch(_){}applyLanguage(preferred);
+  </script>
+</body>
+</html>

@@ -1009,8 +1009,11 @@
     .onboarding-panel {
       position: relative;
       width: min(760px, 100%);
-      min-height: 520px;
-      overflow: hidden;
+      min-height: min(520px, calc(100dvh - 40px));
+      max-height: calc(100dvh - 40px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       border: 1px solid rgba(239,233,220,.18);
       border-radius: 28px;
       background: linear-gradient(145deg, rgba(17,31,28,.96), rgba(8,16,15,.96));
@@ -1038,6 +1041,7 @@
     .onboarding-progress { display: flex; align-items: center; gap: 7px; }
     .progress-dot { width: 22px; height: 3px; border-radius: 99px; background: rgba(239,233,220,.14); transition: width .35s ease, background .35s ease; }
     .progress-dot.active { width: 42px; background: var(--amber); }
+    @media(max-height:650px){.onboarding-step{padding-top:24px;padding-bottom:22px}}
     .tour-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0 8px}
     .tour-step{display:flex;gap:13px;min-width:0;padding:17px;border:1px solid rgba(239,233,220,.13);border-radius:14px;background:rgba(239,233,220,.035)}
     .tour-number{flex-shrink:0;display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(155,197,180,.34);border-radius:10px;color:var(--jade);font:700 11px system-ui}

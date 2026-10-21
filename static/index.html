@@ -797,6 +797,95 @@
       text-decoration: none;
     }
 
+    .caption-with-info, .viz-title-row, .metric-line, .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .viz-title-row {
+      width: 100%;
+      justify-content: space-between;
+      margin: 0 0 9px;
+    }
+    .viz-title-row h3 { margin: 0; font-size: 13px; font-weight: 650; }
+    .info-trigger {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(155, 197, 180, .34);
+      border-radius: 50%;
+      background: rgba(155, 197, 180, .07);
+      color: rgba(190, 222, 208, .82);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1;
+      cursor: help;
+      vertical-align: middle;
+      transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .info-trigger:hover, .info-trigger:focus-visible, .info-trigger[aria-expanded="true"] {
+      color: var(--ink);
+      background: var(--jade);
+      border-color: var(--jade);
+      transform: translateY(-1px);
+    }
+    .info-popover {
+      position: fixed;
+      z-index: 300;
+      width: min(320px, calc(100vw - 24px));
+      max-height: min(360px, calc(100vh - 24px));
+      overflow: auto;
+      padding: 16px 38px 16px 16px;
+      border: 1px solid rgba(155, 197, 180, .28);
+      border-radius: 14px;
+      background: rgba(8, 17, 15, .97);
+      box-shadow: 0 18px 55px rgba(0, 0, 0, .48);
+      backdrop-filter: blur(22px) saturate(1.16);
+      color: rgba(239, 233, 220, .82);
+      font-size: 11px;
+      line-height: 1.65;
+      animation: softIn .2s ease both;
+    }
+    .info-popover[hidden] { display: none !important; }
+    .info-popover strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--jade);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .info-popover p { margin: 0; }
+    .info-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(239, 233, 220, .06);
+      color: rgba(239, 233, 220, .62);
+      cursor: pointer;
+    }
+    .network-help-row, .reference-help-row, .feature-help {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      margin-top: 8px;
+      color: rgba(239, 233, 220, .52);
+      font-size: 9px;
+    }
+    .network-help-row .info-trigger, .reference-help-row .info-trigger, .feature-help .info-trigger {
+      width: 16px;
+      height: 16px;
+      flex-basis: 16px;
+      font-size: 10px;
+    }
+
     .section-label {
       margin: 20px 0 10px;
       color: rgba(239, 233, 220, .48);
@@ -836,6 +925,11 @@
     }
     .candidate-main strong { display: block; font-size: 12px; }
     .candidate-main span { display: block; color: rgba(239, 233, 220, .48); font-size: 9px; }
+    .candidate-main { display: grid; gap: 5px; min-width: 0; }
+    .candidate-main .metric-line { display: flex; flex-wrap: wrap; line-height: 1.45; }
+    .candidate-main .metric-line strong { display: inline; }
+    .candidate-main .metric-label { color: rgba(239, 233, 220, .78); }
+    .candidate-main .metric-detail { color: rgba(239, 233, 220, .48); }
     .candidate-swatch {
       width: 32px;
       height: 32px;
@@ -1156,6 +1250,11 @@
     @keyframes bar-in { from { transform:scaleX(0); opacity:0; } to { transform:scaleX(1); opacity:1; } }
     @keyframes edge-in { from { opacity:0; } to { opacity:1; } }
     @media(max-width:760px) { .chart-grid { grid-template-columns:1fr; } .idiom-panel { padding:14px; } }
+    @media(max-width:760px) {
+      .info-popover { left: 12px !important; right: 12px; bottom: 12px; top: auto !important; width: auto; max-height: 45vh; }
+      .candidate { grid-template-columns: 36px 1fr; }
+      .candidate-swatch { display: none; }
+    }
     @media(prefers-reduced-motion:reduce) { .chart-mark,.chart-bar,.evidence-network line,.evidence-network circle { animation:none !important; } }
   </style>
 </head>
@@ -1270,20 +1369,37 @@
             <img id="resultImage" alt="色彩分析结果" data-i18n-alt="resultAlt">
           </div>
           <div class="network-view" id="networkView">
+            <div class="viz-title-row"><h3 data-i18n="localNetworkTitle">局部邻接网络</h3><button type="button" class="info-trigger" data-info-key="infoLocalNetwork" aria-label="解释局部邻接网络">ⓘ</button></div>
             <div class="network-grid">
               <div class="network-photo"><img id="networkPhoto" alt="原始取景"><img id="networkMask" alt="当前网络节点对应区域"></div>
               <div class="network-graph"><svg id="networkGraph" viewBox="0 0 360 260" role="img" aria-label="局部色彩对比网络" data-i18n-aria="networkAria"></svg></div>
             </div>
             <div class="network-readout" id="networkReadout"></div>
-            <div class="network-legend"><span data-i18n="networkHubLegend">对比枢纽</span><span data-i18n="networkNodeLegend">候选/语境区域</span><em data-i18n="networkEdgeLegend">连线 = 相邻且色差超过阈值</em></div>
+            <div class="network-legend"><span data-i18n="networkHubLegend">对比枢纽</span><span data-i18n="networkCandidateLegend">候选节点 #</span><span data-i18n="networkContextLegend">语境节点 C</span><em data-i18n="networkEdgeLegend">连线 = 相邻且色差超过阈值</em></div>
+            <div class="network-help-row">
+              <span class="legend-item"><span data-i18n="networkCandidateLegend">候选节点 #</span><button type="button" class="info-trigger" data-info-key="infoCandidateNode" aria-label="解释候选节点">ⓘ</button></span>
+              <span class="legend-item"><span data-i18n="networkContextLegend">语境节点 C</span><button type="button" class="info-trigger" data-info-key="infoContextNode" aria-label="解释语境节点">ⓘ</button></span>
+              <span class="legend-item"><span data-i18n="networkEdgesLabel">连线与阈值</span><button type="button" class="info-trigger" data-info-key="infoLocalEdges" aria-label="解释连线和阈值">ⓘ</button></span>
+              <span class="legend-item"><span data-i18n="networkHubLegend">对比枢纽</span><button type="button" class="info-trigger" data-info-key="infoContrastHub" aria-label="解释对比枢纽">ⓘ</button></span>
+              <span class="legend-item"><span data-i18n="networkSelectLabel">选择节点</span><button type="button" class="info-trigger" data-info-key="infoNodeSelection" aria-label="解释节点选择">ⓘ</button></span>
+            </div>
           </div>
           <div class="result-caption" id="resultCaptionRow">
-            <span id="resultCaption" data-i18n="captionOverlay">热力与轮廓显示相对色彩突出区域</span>
+            <span class="caption-with-info"><span id="resultCaption" data-i18n="captionOverlay">热力与轮廓显示相对色彩突出区域</span><button type="button" class="info-trigger" id="resultInfo" data-info-key="infoOverlay" aria-label="解释当前视图">ⓘ</button></span>
             <a class="text-link" id="downloadResult" download="jinxi-color-analysis.png" data-i18n="downloadView">下载当前视图 ↓</a>
           </div>
 
           <section id="diagnosticPanel" class="idiom-panel" hidden></section>
-          <section id="referenceNetworkPanel" class="idiom-panel" hidden><h3 data-i18n="referenceNetworkTitle"></h3><p class="evidence-copy" data-i18n="referenceNetworkCopy"></p><div id="evidenceNetwork"></div></section>
+          <section id="referenceNetworkPanel" class="idiom-panel" hidden>
+            <div class="viz-title-row"><h3 data-i18n="referenceNetworkTitle"></h3><button type="button" class="info-trigger" data-info-key="infoReferenceNetwork" aria-label="解释参考匹配网络">ⓘ</button></div>
+            <p class="evidence-copy" data-i18n="referenceNetworkCopy"></p>
+            <div class="reference-help-row">
+              <span class="legend-item"><span data-i18n="referenceCandidateLabel">候选区域</span><button type="button" class="info-trigger" data-info-key="infoReferenceCandidate" aria-label="解释参考网络候选区域">ⓘ</button></span>
+              <span class="legend-item"><span data-i18n="referencePrototypeLabel">参考色原型</span><button type="button" class="info-trigger" data-info-key="infoReferencePrototype" aria-label="解释参考色原型">ⓘ</button></span>
+              <span class="legend-item"><span data-i18n="referenceEdgeLabel">最近匹配连线</span><button type="button" class="info-trigger" data-info-key="infoReferenceEdges" aria-label="解释参考匹配连线">ⓘ</button></span>
+            </div>
+            <div id="evidenceNetwork"></div>
+          </section>
           <h3 class="section-label" data-i18n="rankedCandidates">候选区域排名 · 同一画面内比较</h3>
           <div class="candidate-list" id="candidateList"></div>
 
@@ -1394,6 +1510,12 @@
     </div>
   </dialog>
 
+  <aside class="info-popover" id="infoPopover" role="dialog" aria-modal="false" aria-live="polite" hidden>
+    <button type="button" class="info-close" id="infoClose" aria-label="关闭解释">×</button>
+    <strong id="infoTitle">Explanation</strong>
+    <p id="infoCopy"></p>
+  </aside>
+
   <script>
     "use strict";
 
@@ -1431,6 +1553,8 @@
     let panoramaLoaded = false;
     let onboardingStep = 1;
     let lastOnboardingFocus = null;
+    let activeInfoTrigger = null;
+    let infoCloseTimer = null;
 
     const onboardingStorageKey = "jinxi-color-lens-onboarding-v2";
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -1443,6 +1567,82 @@
       "zh-CN": {
         referenceNetworkTitle: "参考关系网 · 区域 → 最近参考色",
         referenceNetworkCopy: "左侧为候选区域，右侧为最近的参考色原型。连线表示最近参考色关系，并标注 CIEDE2000 色差；布局和线长不编码距离。点击区域节点可跳转到对应证据。",
+        localNetworkTitle: "局部邻接网络",
+        networkCandidateLegend: "候选节点 #",
+        networkContextLegend: "语境节点 C",
+        networkEdgesLabel: "连线与阈值",
+        networkSelectLabel: "选择节点",
+        referenceCandidateLabel: "候选区域",
+        referencePrototypeLabel: "参考色原型",
+        referenceEdgeLabel: "最近匹配连线",
+        infoButtonLabel: "查看解释：{title}",
+        infoCloseAria: "关闭解释",
+        candidateCombinedLabel: "综合复核分数 {score}/100",
+        candidateLocalLabel: "局部对比 · 周边 ΔE00 {delta}",
+        candidateAreaLabel: "画面面积 {area}%",
+        candidateChromaLabel: "彩度提升 {chroma}",
+        candidateReferenceLabel: "参考新颖度 P{percentile} · 最近参考色 ΔE00 {delta}",
+        candidateReferenceColor: "最近参考色 {reference}",
+        infoCombinedTitle: "综合复核分数",
+        infoCombined: "这个分数用于决定先检查哪些颜色区域。它综合多种证据，但不测量美感、文化价值，也不表示应当移除什么。分数越高，只表示复核优先级越高，不表示设计更好或更差。",
+        infoLocalContrastTitle: "局部对比",
+        infoLocalContrast: "局部对比衡量一个区域与紧邻颜色之间的差异。高值表示它在当前画面局部更突出，但不一定表示这种颜色在整个锦溪都少见。",
+        infoDeltaELocalTitle: "周边 ΔE00 / CIEDE2000",
+        infoDeltaELocal: "ΔE00 是感知色差指标。数值越大，两个颜色之间的差异通常越容易被注意。这里比较的是候选区域与同一画面中相邻颜色。",
+        infoReferenceNoveltyTitle: "参考新颖度",
+        infoReferenceNovelty: "参考新颖度衡量某种颜色与项目有限参考照片中的颜色有多不相同。高值表示它不同于这些参考案例，并不能证明该颜色在整个锦溪都很罕见。",
+        infoDeltaEReferenceTitle: "参考色 ΔE00",
+        infoDeltaEReference: "这里的 ΔE00 比较候选颜色与最接近的参考色原型。它不同于周边 ΔE00，后者比较的是同一张照片中相邻区域。",
+        infoPercentileTitle: "新颖度百分位",
+        infoPercentile: "百分位表示该区域在参考集校准比较中的位置。P98 大约表示第 98 百分位，不表示该颜色在锦溪罕见的概率为 98%。",
+        infoAreaTitle: "画面面积",
+        infoArea: "这是检测区域大约占截图像素的百分比，不是该区域在现实世界中的物理面积。",
+        infoChromaTitle: "彩度提升",
+        infoChroma: "彩度提升表示该区域相对周边颜色更加鲜艳的程度。它不是审美质量分数。",
+        infoLocalNetworkTitle: "局部邻接网络",
+        infoLocalNetwork: "这个网络展示同一张图片中不同颜色区域与附近区域的关系。节点是颜色区域；连线表示两个区域在图像中相邻，并且色差超过当前阈值。连线不表示道路或地理距离。",
+        infoCandidateNodeTitle: "候选节点 #1、#2…",
+        infoCandidateNode: "带编号的节点对应排名中的候选颜色区域。编号表示复核顺序，不是审美名次。",
+        infoContextNodeTitle: "语境节点 C1、C2…",
+        infoContextNode: "C 节点是候选区域附近的颜色区域。它们帮助系统判断候选在局部环境中是否突出。",
+        infoLocalEdgesTitle: "连线与色差阈值",
+        infoLocalEdges: "只有两个区域在图像中相邻，并且 CIEDE2000 色差超过显示的阈值时，系统才保留连线。线条不表示地理距离。",
+        infoContrastHubTitle: "对比枢纽",
+        infoContrastHub: "对比枢纽具有多条较强的局部色差连接。它说明该区域与多个邻近区域不同，不表示它丑陋或应该被移除。",
+        infoNodeSelectionTitle: "选择一个节点",
+        infoNodeSelection: "悬停、聚焦或点击节点时，网络会突出其相关连线，并在照片中高亮对应区域。选择不会重新计算分数。",
+        infoReferenceNetworkTitle: "参考匹配网络",
+        infoReferenceNetwork: "这个网络把检测到的颜色区域与参考照片学习到的颜色进行比较。连线表示最近的参考色匹配，不表示图像中的物理相邻关系。",
+        infoReferenceCandidateTitle: "参考网络中的候选区域",
+        infoReferenceCandidate: "左侧候选节点与排名卡片中的区域相对应。选择它会跳转到该区域的证据卡片。",
+        infoReferencePrototypeTitle: "参考色原型",
+        infoReferencePrototype: "右侧色点是从有限参考照片中归纳出的代表颜色，不是整个锦溪的完整色彩标准。",
+        infoReferenceEdgesTitle: "最近参考匹配",
+        infoReferenceEdges: "每条线连接候选颜色及其最接近的参考色原型，并标注参考 ΔE00。线长和位置不编码距离。",
+        infoCIELABTitle: "CIELAB 色彩分布",
+        infoCIELAB: "CIELAB 用数值坐标描述颜色。横向 a* 轴从绿色到红色，纵向 b* 轴从蓝色到黄色。每个点代表一个分割区域；较大的点通常覆盖更多画面。带编号的高亮点对应候选区域。",
+        infoFeaturesTitle: "区域为何被标记",
+        infoFeatures: "每组彩色条对应一个候选区域。每条表示一种颜色特征，例如局部色差、彩度提升、色彩稀有度或参考新颖度。条越长，特征值越高。这些值解释系统为什么标记区域，不判断它是否美观。",
+        infoFeatureLocalGapTitle: "局部色差",
+        infoFeatureLocalGap: "候选区域与紧邻颜色之间的感知差异百分位。",
+        infoFeatureChromaticTitle: "色度距离",
+        infoFeatureChromatic: "只看颜色方向和鲜艳程度的差异，不包含明度差异。",
+        infoFeatureChromaTitle: "彩度提升",
+        infoFeatureChroma: "候选区域比周边颜色更加鲜艳的程度。",
+        infoFeatureRarityTitle: "色彩稀有度",
+        infoFeatureRarity: "该颜色在当前截图的分割区域中相对少见的程度。",
+        infoFeatureReferenceTitle: "参考新颖度",
+        infoFeatureReference: "该颜色与有限参考照片中已学习颜色不同的程度。",
+        infoOverlayTitle: "检测叠图",
+        infoOverlay: "彩色轮廓标出候选颜色区域。它们来自颜色分割，不是物体的精确边界。",
+        infoOriginalTitle: "原始取景",
+        infoOriginal: "显示用户拍摄的原始截图，不包含检测标记。",
+        infoMosaicTitle: "空间色谱",
+        infoMosaic: "用简化颜色显示画面，同时保留这些颜色在截图中的大致位置。",
+        infoPaletteTitle: "主色卡",
+        infoPalette: "显示画面的代表颜色以及它们大约占据的像素比例。",
+        infoDiagnosticsTitle: "诊断视图",
+        infoDiagnostics: "显示候选区域背后的量化证据，包括 CIELAB 位置和各项特征百分位。它用于解释结果，不是审美评分。",
         localLabel: "局部语境",
         referenceLabel: "参考比较",
         whyTitle: "为什么出现这个结果？",
@@ -1585,6 +1785,82 @@
       en: {
         referenceNetworkTitle: "Reference network · region → nearest reference color",
         referenceNetworkCopy: "Candidates appear on the left and nearest reference-color prototypes on the right. Edges encode nearest-reference relationships and label CIEDE2000 distance; position and edge length do not encode distance. Select a candidate node to jump to its evidence.",
+        localNetworkTitle: "Local adjacency network",
+        networkCandidateLegend: "Candidate nodes #",
+        networkContextLegend: "Context nodes C",
+        networkEdgesLabel: "Edges & threshold",
+        networkSelectLabel: "Select a node",
+        referenceCandidateLabel: "Candidate regions",
+        referencePrototypeLabel: "Reference prototypes",
+        referenceEdgeLabel: "Nearest-match edges",
+        infoButtonLabel: "Learn more: {title}",
+        infoCloseAria: "Close explanation",
+        candidateCombinedLabel: "Combined Review Score {score}/100",
+        candidateLocalLabel: "Local Contrast · surrounding ΔE00 {delta}",
+        candidateAreaLabel: "Image area {area}%",
+        candidateChromaLabel: "Chroma lift {chroma}",
+        candidateReferenceLabel: "Reference Novelty P{percentile} · nearest-reference ΔE00 {delta}",
+        candidateReferenceColor: "nearest reference {reference}",
+        infoCombinedTitle: "Combined Review Score",
+        infoCombined: "This score helps decide which color regions to inspect first. It combines several forms of evidence, but it does not measure beauty, cultural value, or whether anything should be removed. A higher score means higher review priority—not better or worse design.",
+        infoLocalContrastTitle: "Local Contrast",
+        infoLocalContrast: "Local Contrast measures how different a region's color is from the colors immediately around it. A high value means the region stands out locally; it does not necessarily mean the color is unusual throughout Jinxi.",
+        infoDeltaELocalTitle: "Surrounding ΔE00 / CIEDE2000",
+        infoDeltaELocal: "ΔE00 measures perceptual color difference. Larger values generally mean the two colors are easier to tell apart. Here it compares a candidate with neighboring colors in the same image.",
+        infoReferenceNoveltyTitle: "Reference Novelty",
+        infoReferenceNovelty: "Reference Novelty measures how unusual a color is compared with this project's limited reference photographs. A high value means it differs from those examples; it does not establish that the color is rare across the entire town.",
+        infoDeltaEReferenceTitle: "Nearest-reference ΔE00",
+        infoDeltaEReference: "This ΔE00 compares the candidate color with its nearest reference-color prototype. It differs from surrounding ΔE00, which compares adjacent regions in the same image.",
+        infoPercentileTitle: "Novelty Percentile",
+        infoPercentile: "The percentile shows where a region falls within the reference-calibrated novelty comparisons. P98 means approximately the 98th percentile; it is not a 98% probability that the color is rare across Jinxi.",
+        infoAreaTitle: "Image Area %",
+        infoArea: "This is the approximate percentage of captured-image pixels occupied by the detected region. It is not the region's real-world physical area.",
+        infoChromaTitle: "Chroma Lift",
+        infoChroma: "Chroma Lift indicates how much more vivid the region's color is than its surroundings. It is not an aesthetic quality score.",
+        infoLocalNetworkTitle: "Local Adjacency Network",
+        infoLocalNetwork: "This network shows how color regions relate to nearby regions in the same image. Nodes are color regions. A line means two regions are adjacent and their color difference exceeds the current threshold. Lines do not represent roads or geographic distance.",
+        infoCandidateNodeTitle: "Candidate nodes #1, #2…",
+        infoCandidateNode: "Numbered nodes correspond to candidate color regions in the ranking. The number is a review order, not an aesthetic rank.",
+        infoContextNodeTitle: "Context nodes C1, C2…",
+        infoContextNode: "C nodes are nearby color regions around candidates. They help show whether a candidate stands out in its local surroundings.",
+        infoLocalEdgesTitle: "Edges and color-difference threshold",
+        infoLocalEdges: "An edge is retained only when two regions are adjacent in the image and their CIEDE2000 difference exceeds the displayed threshold. Edge lines do not encode geographic distance.",
+        infoContrastHubTitle: "Contrast Hub",
+        infoContrastHub: "The contrast hub has several strong local color-difference connections. It differs from several neighbors, but that does not mean it is ugly or should be removed.",
+        infoNodeSelectionTitle: "Selecting a node",
+        infoNodeSelection: "Hovering, focusing, or clicking a node highlights its related edges and the corresponding photo region. Selection does not recalculate any score.",
+        infoReferenceNetworkTitle: "Reference Matching Network",
+        infoReferenceNetwork: "This network compares detected color regions with colors learned from the reference photographs. Connections show nearest reference-color matches, not physical adjacency in the image.",
+        infoReferenceCandidateTitle: "Candidate regions in the reference network",
+        infoReferenceCandidate: "Candidate nodes on the left correspond to ranked regions. Selecting one moves to its evidence card.",
+        infoReferencePrototypeTitle: "Reference-color prototypes",
+        infoReferencePrototype: "The color nodes on the right summarize the limited reference photographs. They are not a complete color standard for all of Jinxi.",
+        infoReferenceEdgesTitle: "Nearest-reference matches",
+        infoReferenceEdges: "Each line connects a candidate to its nearest reference-color prototype and labels reference ΔE00. Line length and position do not encode distance.",
+        infoCIELABTitle: "CIELAB Color Distribution",
+        infoCIELAB: "CIELAB describes colors with numerical coordinates. The horizontal a* axis runs from green to red, and the vertical b* axis runs from blue to yellow. Each dot is a segmented color region. Larger dots generally cover more of the image. Highlighted numbered dots are detected candidates.",
+        infoFeaturesTitle: "Why Regions Were Flagged",
+        infoFeatures: "Each group of colored bars represents one candidate region. Each bar shows a color characteristic such as local color difference, chroma lift, rarity, or reference novelty. Longer bars mean higher feature values. These values explain why a region was highlighted; they do not judge whether it looks attractive.",
+        infoFeatureLocalGapTitle: "Local color gap",
+        infoFeatureLocalGap: "The perceptual color-difference percentile between a candidate and its immediate neighbors.",
+        infoFeatureChromaticTitle: "Chromatic distance",
+        infoFeatureChromatic: "Difference in color direction and vividness without the lightness component.",
+        infoFeatureChromaTitle: "Chroma lift",
+        infoFeatureChroma: "How much more vivid the candidate is than its surroundings.",
+        infoFeatureRarityTitle: "Color rarity",
+        infoFeatureRarity: "How uncommon the color is among the segmented regions in this captured image.",
+        infoFeatureReferenceTitle: "Reference novelty",
+        infoFeatureReference: "How different the color is from colors learned from the limited reference photographs.",
+        infoOverlayTitle: "Detection Overlay",
+        infoOverlay: "Colored outlines identify candidate color regions created by segmentation. They are not exact object boundaries.",
+        infoOriginalTitle: "Captured View",
+        infoOriginal: "This shows the original captured image without detection marks.",
+        infoMosaicTitle: "Spatial Mosaic",
+        infoMosaic: "This shows simplified colors while preserving their approximate positions within the captured image.",
+        infoPaletteTitle: "Color Palette",
+        infoPalette: "This shows representative colors and their approximate pixel proportions in the image.",
+        infoDiagnosticsTitle: "Diagnostics",
+        infoDiagnostics: "This view displays quantitative evidence behind highlighted regions, including CIELAB positions and feature percentiles. It explains results; it is not an aesthetic score.",
         localLabel: "Local context",
         referenceLabel: "Reference comparison",
         whyTitle: "Why this result?",
@@ -1735,6 +2011,67 @@
       return text;
     }
 
+    function infoButton(key) {
+      const title = t(`${key}Title`);
+      return `<button type="button" class="info-trigger" data-info-key="${key}" aria-label="${t("infoButtonLabel", { title })}" aria-expanded="false">ⓘ</button>`;
+    }
+
+    function updateInfoLabels() {
+      els(".info-trigger[data-info-key]").forEach(button => {
+        const title = t(`${button.dataset.infoKey}Title`);
+        button.setAttribute("aria-label", t("infoButtonLabel", { title }));
+        button.setAttribute("aria-controls", "infoPopover");
+      });
+      el("#infoClose").setAttribute("aria-label", t("infoCloseAria"));
+    }
+
+    function positionInfoPopover(trigger) {
+      const popover = el("#infoPopover");
+      if (matchMedia("(max-width: 760px)").matches) {
+        popover.style.left = "12px";
+        popover.style.top = "auto";
+        return;
+      }
+      const rect = trigger.getBoundingClientRect();
+      const width = Math.min(320, innerWidth - 24);
+      popover.style.width = `${width}px`;
+      let left = rect.left + rect.width / 2 - width / 2;
+      left = clamp(left, 12, innerWidth - width - 12);
+      popover.style.left = `${left}px`;
+      popover.style.top = `${rect.bottom + 9}px`;
+      const popRect = popover.getBoundingClientRect();
+      if (popRect.bottom > innerHeight - 12) {
+        popover.style.top = `${Math.max(12, rect.top - popRect.height - 9)}px`;
+      }
+    }
+
+    function openInfo(trigger, { focus = false } = {}) {
+      window.clearTimeout(infoCloseTimer);
+      if (activeInfoTrigger && activeInfoTrigger !== trigger) activeInfoTrigger.setAttribute("aria-expanded", "false");
+      activeInfoTrigger = trigger;
+      const key = trigger.dataset.infoKey;
+      el("#infoTitle").textContent = t(`${key}Title`);
+      el("#infoCopy").textContent = t(key);
+      el("#infoPopover").hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      positionInfoPopover(trigger);
+      if (focus) el("#infoClose").focus({ preventScroll: true });
+    }
+
+    function closeInfo({ restoreFocus = false } = {}) {
+      window.clearTimeout(infoCloseTimer);
+      const trigger = activeInfoTrigger;
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+      activeInfoTrigger = null;
+      el("#infoPopover").hidden = true;
+      if (restoreFocus && trigger?.isConnected) trigger.focus({ preventScroll: true });
+    }
+
+    function scheduleInfoClose() {
+      window.clearTimeout(infoCloseTimer);
+      infoCloseTimer = window.setTimeout(() => closeInfo(), 180);
+    }
+
     function preferredLanguage() {
       try {
         const stored = localStorage.getItem("jinxi-color-lens-language");
@@ -1744,6 +2081,7 @@
     }
 
     function applyLanguage(language) {
+      closeInfo();
       currentLanguage = language === "en" ? "en" : "zh-CN";
       document.documentElement.lang = currentLanguage;
       document.title = t("documentTitle");
@@ -1771,6 +2109,7 @@
         renderNetwork(lastPayload.network);
         selectView(activeView);
       }
+      updateInfoLabels();
       renderTimeline();
       try { localStorage.setItem("jinxi-color-lens-language", currentLanguage); } catch (_) {}
     }
@@ -2210,6 +2549,15 @@
       palette: "captionPalette",
       diagnostics: "captionDiagnostics"
     };
+    const captionInfoKeys = {
+      overlay: "infoOverlay",
+      original: "infoOriginal",
+      mosaic: "infoMosaic",
+      palette: "infoPalette",
+      diagnostics: "infoDiagnostics",
+      network: "infoLocalNetwork",
+      "reference-network": "infoReferenceNetwork"
+    };
 
     function selectView(view) {
       activeView = view;
@@ -2229,6 +2577,9 @@
       el("#referenceNetworkPanel").hidden = !referenceMode;
       el("#resultCaptionRow").hidden = networkMode;
       el("#downloadResult").hidden = custom;
+      const resultInfo = el("#resultInfo");
+      resultInfo.dataset.infoKey = captionInfoKeys[view] || "infoDiagnostics";
+      updateInfoLabels();
       if (networkMode) {
         renderNetwork(lastPayload?.network);
         return;
@@ -2257,16 +2608,18 @@
       const zh = currentLanguage === "zh-CN";
       const grid = document.createElement("div"); grid.className="chart-grid"; host.append(grid);
       const ns="http://www.w3.org/2000/svg";
-      function chart(title, subtitle, height=450) {
+      function chart(title, subtitle, height=450, infoKey="infoDiagnostics") {
         const card=document.createElement("div"); card.className="chart-card";
-        const h=document.createElement("h3"); h.textContent=title; card.append(h);
+        const heading=document.createElement("div"); heading.className="viz-title-row";
+        const h=document.createElement("h3"); h.textContent=title; heading.append(h);
+        heading.insertAdjacentHTML("beforeend",infoButton(infoKey)); card.append(heading);
         const p=document.createElement("p"); p.className="evidence-copy"; p.textContent=subtitle; card.append(p);
         const svg=document.createElementNS(ns,"svg"); svg.setAttribute("viewBox",`0 0 460 ${height}`); svg.setAttribute("role","img"); svg.setAttribute("aria-label",title); card.append(svg);
         const tip=document.createElement("div"); tip.className="chart-tip"; tip.setAttribute("aria-live","polite"); card.append(tip); grid.append(card);
-        return {svg,tip};
+        return {svg,tip,card};
       }
       function draw(svg,tag,attrs,text) { const n=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v)); if(text!==undefined)n.textContent=text; svg.append(n); return n; }
-      const left=chart(zh?"CIELAB 色彩分布":"CIELAB color distribution",zh?"点代表分割区域；大小表示面积。悬停或聚焦查看数值。":"Points represent segmented regions; size encodes area. Hover or focus to inspect.");
+      const left=chart(zh?"CIELAB 色彩分布":"CIELAB color distribution",zh?"点代表分割区域；大小表示面积。悬停或聚焦查看数值。":"Points represent segmented regions; size encodes area. Hover or focus to inspect.",450,"infoCIELAB");
       const points=data.points;
       const amin=Math.min(-15,...points.map(p=>p.a))-3, amax=Math.max(15,...points.map(p=>p.a))+3;
       const bmin=Math.min(-20,...points.map(p=>p.b))-3, bmax=Math.max(30,...points.map(p=>p.b))+3;
@@ -2279,13 +2632,18 @@
         draw(left.svg,"text",{x:x(c.a)+13,y:y(c.b)-10},`#${c.rank}`);
         n.addEventListener("focus",()=>left.tip.textContent=`#${c.rank} · ${c.hex} · a* ${c.a.toFixed(1)} · b* ${c.b.toFixed(1)}`);
       });
-      const right=chart(zh?"区域为何被标记":"Why regions were flagged",zh?"各特征在画面内的百分位；参考新颖度使用参考集校准。":"Within-frame feature percentiles; reference novelty uses reference-set calibration.",Math.max(450,data.candidates.length*125+110));
+      const right=chart(zh?"区域为何被标记":"Why regions were flagged",zh?"各特征在画面内的百分位；参考新颖度使用参考集校准。":"Within-frame feature percentiles; reference novelty uses reference-set calibration.",Math.max(450,data.candidates.length*125+110),"infoFeatures");
       const colors=["#f28c65","#65b5dc","#83c7a0","#aa94df","#e598be"];
       const labels=zh?["局部色差","色度距离","彩度提升","色彩稀有度","参考新颖度"]:["Local gap","Chromatic distance","Chroma lift","Color rarity","Reference novelty"];
       const names=["Local color gap","Chromatic distance","Chroma lift","Color rarity","Reference novelty"];
       for(let i=0;i<=4;i++){draw(right.svg,"line",{x1:65+i*90,y1:35,x2:65+i*90,y2:data.candidates.length*125+40,class:"grid"});draw(right.svg,"text",{x:65+i*90,y:23,"text-anchor":"middle"},i*25);}
       data.candidates.forEach((c,i)=>{draw(right.svg,"text",{x:8,y:65+i*125},`#${c.rank}`);names.forEach((name,j)=>{if(c.features[name]===undefined)return;const v=c.features[name]; const label=`#${c.rank} · ${labels[j]} · ${v.toFixed(1)}%`; const bar=draw(right.svg,"rect",{x:65,y:43+i*125+j*18,width:v*3.6,height:12,rx:3,fill:colors[j],class:"chart-bar",tabindex:0,"aria-label":label,style:`animation-delay:${i*90+j*40}ms`});bar.addEventListener("mouseenter",()=>right.tip.textContent=label);bar.addEventListener("focus",()=>right.tip.textContent=label);});});
       labels.forEach((label,j)=>{draw(right.svg,"rect",{x:20+(j%2)*220,y:data.candidates.length*125+55+Math.floor(j/2)*20,width:10,height:10,rx:2,fill:colors[j]});draw(right.svg,"text",{x:36+(j%2)*220,y:data.candidates.length*125+65+Math.floor(j/2)*20},label);});
+      const featureKeys=["infoFeatureLocalGap","infoFeatureChromatic","infoFeatureChroma","infoFeatureRarity","infoFeatureReference"];
+      const guide=document.createElement("div"); guide.className="feature-help";
+      guide.innerHTML=labels.map((label,j)=>`<span class="legend-item"><span>${label}</span>${infoButton(featureKeys[j])}</span>`).join("");
+      right.card.append(guide);
+      updateInfoLabels();
     }
 
     function localizedSummary(payload) {
@@ -2353,9 +2711,11 @@
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
-            <strong>${t("localLabel")} · ${t("candidateMain", { score: candidate.score.toFixed(1), delta: candidate.delta_e.toFixed(1) })}</strong>
-            <span>${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
-            <span>${t("referenceLabel")} · ΔE00 ${candidate.reference_delta_e.toFixed(1)} · ${t("candidateReference", { percentile: candidate.reference_percentile.toFixed(0), reference: candidate.closest_reference_hex })}</span>
+            <div class="metric-line"><strong>${t("candidateCombinedLabel", { score: candidate.score.toFixed(1) })}</strong>${infoButton("infoCombined")}</div>
+            <div class="metric-line"><span class="metric-label">${t("candidateLocalLabel", { delta: candidate.delta_e.toFixed(1) })}</span>${infoButton("infoLocalContrast")}${infoButton("infoDeltaELocal")}</div>
+            <div class="metric-line"><span class="metric-detail">${t("candidateAreaLabel", { area: candidate.area.toFixed(2) })}</span>${infoButton("infoArea")}<span class="metric-detail">· ${t("candidateChromaLabel", { chroma: candidate.chroma_lift.toFixed(1) })}</span>${infoButton("infoChroma")}<span class="metric-detail">· ${candidate.hex}</span></div>
+            <div class="metric-line"><span class="metric-label">${t("candidateReferenceLabel", { percentile: candidate.reference_percentile.toFixed(0), delta: candidate.reference_delta_e.toFixed(1) })}</span>${infoButton("infoReferenceNovelty")}${infoButton("infoPercentile")}${infoButton("infoDeltaEReference")}</div>
+            <div class="metric-line"><span class="metric-detail">${t("candidateReferenceColor", { reference: candidate.closest_reference_hex })}</span></div>
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
@@ -2366,12 +2726,14 @@
         item.addEventListener("focus", () => {
           if (activeView === "network") activateNetworkNode(networkId);
         });
-        item.addEventListener("click", () => {
+        item.addEventListener("click", event => {
+          if (event.target.closest(".info-trigger")) return;
           selectView("network");
           activateNetworkNode(networkId);
         });
         container.append(item);
       });
+      updateInfoLabels();
     }
 
     function networkPositions(network) {
@@ -2522,6 +2884,38 @@
         selectView(tabs[next].dataset.view); tabs[next].focus();
       });
     });
+
+    document.addEventListener("click", event => {
+      const trigger = event.target.closest?.(".info-trigger[data-info-key]");
+      if (trigger) {
+        event.preventDefault();
+        if (activeInfoTrigger === trigger && !el("#infoPopover").hidden) closeInfo();
+        else openInfo(trigger);
+        return;
+      }
+      if (!el("#infoPopover").contains(event.target)) closeInfo();
+    });
+    document.addEventListener("pointerover", event => {
+      if (!matchMedia("(hover: hover)").matches) return;
+      const trigger = event.target.closest?.(".info-trigger[data-info-key]");
+      if (trigger) openInfo(trigger);
+    });
+    document.addEventListener("pointerout", event => {
+      if (!matchMedia("(hover: hover)").matches) return;
+      const trigger = event.target.closest?.(".info-trigger[data-info-key]");
+      if (trigger && !el("#infoPopover").contains(event.relatedTarget)) scheduleInfoClose();
+    });
+    el("#infoPopover").addEventListener("pointerenter", () => window.clearTimeout(infoCloseTimer));
+    el("#infoPopover").addEventListener("pointerleave", scheduleInfoClose);
+    el("#infoClose").addEventListener("click", () => closeInfo({ restoreFocus: true }));
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !el("#infoPopover").hidden) {
+        event.preventDefault();
+        closeInfo({ restoreFocus: true });
+      }
+    });
+    window.addEventListener("resize", () => { if (activeInfoTrigger) positionInfoPopover(activeInfoTrigger); });
+    window.addEventListener("scroll", () => { if (activeInfoTrigger) positionInfoPopover(activeInfoTrigger); }, true);
 
     el("#zoomIn").addEventListener("click", () => fov = clamp(fov - 8, 34, 100));
     el("#zoomOut").addEventListener("click", () => fov = clamp(fov + 8, 34, 100));

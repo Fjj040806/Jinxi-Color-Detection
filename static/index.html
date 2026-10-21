@@ -1524,7 +1524,7 @@
       const language=currentLanguage==="zh-CN"?0:1;
       const label=language===0?"查看解释":"Explain this";
       const displayLabel=pill?(language===0?"ⓘ 评分说明":"ⓘ Read scores"):"i";
-      return '<details class="inline-info'+(right?' info-right':'')+(pill?' help-pill':'')+'"><summary aria-label="'+label+'" title="'+label+'">'+displayLabel+'</summary><span class="info-popup" role="note">'+entry[language]+'</span></details>';
+      return '<details class="inline-info'+(right?' info-right':'')+(pill?' help-pill':'')+'"><summary aria-label="'+label+'" title="'+label+'">'+displayLabel+'</summary><div class="info-popup" role="note">'+entry[language]+'</div></details>';
     }
     document.addEventListener("toggle",event=>{
       const node=event.target;

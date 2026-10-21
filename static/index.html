@@ -830,6 +830,45 @@
       letter-spacing: .16em;
       text-transform: uppercase;
     }
+
+    /* Quiet, editorial help controls: one intentional affordance per evidence block. */
+    .inline-info { display:inline-block; position:relative; margin-left:8px; vertical-align:baseline;
+      font-family:system-ui,-apple-system,sans-serif; font-size:initial; font-weight:400; text-transform:none; letter-spacing:normal; }
+    .inline-info > summary { display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      min-width:20px; min-height:20px; padding:0 6px; box-sizing:border-box; border-radius:6px;
+      border:1px solid rgba(155,197,180,.2); background:rgba(155,197,180,.065);
+      color:rgba(190,221,207,.7); list-style:none; font:600 11px/1.3 system-ui,sans-serif;
+      cursor:pointer; transition:color .2s,border-color .2s,background .2s; }
+    .inline-info > summary::-webkit-details-marker { display:none; }
+    .inline-info > summary:hover, .inline-info[open] > summary {
+      color:#d4e7dd; background:rgba(155,197,180,.15); border-color:rgba(155,197,180,.48); }
+    .inline-info > summary:focus-visible { outline:2px solid #e9bc69; outline-offset:3px; }
+    .inline-info .info-popup { position:absolute; z-index:90; top:calc(100% + 10px); left:0;
+      width:min(330px,calc(100vw - 60px)); box-sizing:border-box; padding:16px 18px;
+      border-radius:12px; border:1px solid rgba(155,197,180,.28);
+      background:#17231f; box-shadow:0 18px 42px rgba(0,0,0,.55);
+      color:#dfdfd5; font:400 12.5px/1.7 system-ui,-apple-system,sans-serif;
+      text-align:left; white-space:normal; overflow-wrap:break-word; }
+    .inline-info .info-popup strong { color:#b8dbc9; font-weight:650; }
+    .inline-info .info-popup p { margin:0 0 10px; } 
+    .inline-info .info-popup p:last-child { margin-bottom:0; }
+    .inline-info.info-right .info-popup { left:auto; right:0; }
+    .inline-info.help-pill > summary { padding:5px 9px; border-radius:999px; font-size:10px; letter-spacing:.015em; }
+    .inline-info.help-pill .info-popup { left:auto; right:0; }
+    .candidate-main { min-width:0; }
+    .candidate-main .metric-help-row { display:block; line-height:1.5; }
+    .candidate-topline { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+    .candidate-topline > strong { min-width:0; line-height:1.55; }
+    .candidate-topline .inline-info { margin-top:0; flex-shrink:0; }
+    .chart-card { overflow:visible; }
+    .chart-card h3 .inline-info { margin-left:10px; }
+    .network-explain-bar { display:flex; justify-content:flex-end; gap:8px; padding:8px 2px 0; }
+    .network-explain-bar .inline-info { margin-left:0; }
+    @media (max-width:600px) {
+      .inline-info .info-popup { width:min(285px,calc(100vw - 40px)); padding:13px 14px; }
+      .candidate-topline { align-items:flex-start; }
+      .inline-info.help-pill > summary { font-size:10px; }
+    }
     .candidate-list { display: grid; gap: 8px; }
     .candidate {
       display: grid;
@@ -970,8 +1009,11 @@
     .onboarding-panel {
       position: relative;
       width: min(760px, 100%);
-      min-height: 520px;
-      overflow: hidden;
+      min-height: min(520px, calc(100dvh - 40px));
+      max-height: calc(100dvh - 40px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       border: 1px solid rgba(239,233,220,.18);
       border-radius: 28px;
       background: linear-gradient(145deg, rgba(17,31,28,.96), rgba(8,16,15,.96));
@@ -999,6 +1041,13 @@
     .onboarding-progress { display: flex; align-items: center; gap: 7px; }
     .progress-dot { width: 22px; height: 3px; border-radius: 99px; background: rgba(239,233,220,.14); transition: width .35s ease, background .35s ease; }
     .progress-dot.active { width: 42px; background: var(--amber); }
+    @media(max-height:650px){.onboarding-step{padding-top:24px;padding-bottom:22px}}
+    .tour-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0 8px}
+    .tour-step{display:flex;gap:13px;min-width:0;padding:17px;border:1px solid rgba(239,233,220,.13);border-radius:14px;background:rgba(239,233,220,.035)}
+    .tour-number{flex-shrink:0;display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(155,197,180,.34);border-radius:10px;color:var(--jade);font:700 11px system-ui}
+    .tour-step strong{display:block;margin:1px 0 7px;color:var(--paper);font-size:13px}
+    .tour-step p{margin:0;color:rgba(239,233,220,.68);font-size:11.5px;line-height:1.65}
+    @media(max-width:650px){.tour-steps{grid-template-columns:1fr;gap:8px}.tour-step{padding:12px}.tour-step p{font-size:11px}}
     .onboarding-step { display: none; position: relative; padding: 42px 48px 38px; }
     .onboarding-step.active { display: block; animation: stepIn .46s cubic-bezier(.2,.72,.2,1) both; }
     .step-kicker { color: var(--jade); font-size: 10px; font-weight: 750; letter-spacing: .18em; text-transform: uppercase; }
@@ -1304,7 +1353,7 @@
               <div class="network-photo"><img id="networkPhoto" alt="原始取景"><img id="networkMask" alt="当前网络节点对应区域"></div>
               <div class="network-graph"><svg id="networkGraph" viewBox="0 0 360 260" role="img" aria-label="局部色彩对比网络" data-i18n-aria="networkAria"></svg></div>
             </div>
-            <div class="network-readout" id="networkReadout"></div>
+            <div class="network-readout" id="networkReadout"></div><div class="network-explain-bar" id="networkExplain"></div>
             <div class="network-legend"><span data-i18n="networkHubLegend">对比枢纽</span><span data-i18n="networkNodeLegend">候选/语境区域</span><em data-i18n="networkEdgeLegend">连线 = 相邻且色差超过阈值</em></div>
           </div>
           <div class="result-caption" id="resultCaptionRow">
@@ -1313,7 +1362,7 @@
           </div>
 
           <section id="diagnosticPanel" class="idiom-panel" hidden></section>
-          <section id="referenceNetworkPanel" class="idiom-panel" hidden><h3 data-i18n="referenceNetworkTitle"></h3><p class="evidence-copy" data-i18n="referenceNetworkCopy"></p><div id="evidenceNetwork"></div></section>
+          <section id="referenceNetworkPanel" class="idiom-panel" hidden><h3 data-i18n="referenceNetworkTitle"></h3><p class="evidence-copy" data-i18n="referenceNetworkCopy"></p><div class="network-explain-bar" id="referenceNetworkExplain"></div><div id="evidenceNetwork"></div></section>
           <h3 class="section-label" data-i18n="rankedCandidates">候选区域排名 · 同一画面内比较</h3>
           <div class="candidate-list" id="candidateList"></div>
 
@@ -1361,7 +1410,7 @@
         <div class="onboarding-brand">JINXI / COLOR LENS · 0.5</div>
         <div class="onboarding-progress" aria-label="设置进度" data-i18n-aria="onboardingProgressAria">
           <span class="progress-dot active" data-step-dot="1"></span>
-          <span class="progress-dot" data-step-dot="2"></span>
+          <span class="progress-dot" data-step-dot="2"></span><span class="progress-dot" data-step-dot="3"></span>
         </div>
       </header>
 
@@ -1380,7 +1429,19 @@
       </div>
 
       <div class="onboarding-step" data-onboarding-step="2">
-        <div class="step-kicker">02 / Evidence boundary</div>
+  <div class="step-kicker" data-i18n="tourKicker">02 / Quick tour</div>
+  <h2 data-i18n="tourTitle">60 秒学会怎么使用</h2>
+  <p class="onboarding-intro" data-i18n="tourCopy">先取景，再拍摄，最后比较证据。</p>
+  <div class="tour-steps">
+    <article class="tour-step"><span class="tour-number">01</span><div><strong data-i18n="tour1Title">拖动 360° 画面</strong><p data-i18n="tour1Copy">按住鼠标拖动或触摸滑动选择方向；滚轮或 +/− 调整视野。</p></div></article>
+    <article class="tour-step"><span class="tour-number">02</span><div><strong data-i18n="tour2Title">按下快门进行分析</strong><p data-i18n="tour2Copy">点击圆形快门，截取当前视角并分析颜色。</p></div></article>
+    <article class="tour-step"><span class="tour-number">03</span><div><strong data-i18n="tour3Title">选择区域并查看网络</strong><p data-i18n="tour3Copy">在结果中检查彩色标记和排名；点击网络节点定位照片中的区域。</p></div></article>
+    <article class="tour-step"><span class="tour-number">04</span><div><strong data-i18n="tour4Title">比较两类证据</strong><p data-i18n="tour4Copy">Local Contrast 比较邻近颜色，Reference Novelty 比较参考照片；点击评分说明了解区别。</p></div></article>
+  </div>
+  <div class="onboarding-actions"><button class="onboarding-secondary" id="tourBack" type="button" data-i18n="tourBack">← 返回语言选择</button><button class="onboarding-primary" id="tourNext" type="button" data-i18n="tourNext">下一步 · 证据边界 →</button></div>
+ </div>
+ <div class="onboarding-step" data-onboarding-step="3">
+        <div class="step-kicker" data-i18n="boundaryKicker">03 / Evidence boundary</div>
         <h2 data-i18n="boundaryWelcomeTitle">使用前，请先了解它能说明什么</h2>
         <p class="onboarding-intro" data-i18n="boundaryWelcomeCopy">本原型帮助发现值得进一步检查的色彩关系。它提供证据线索，而不是审美裁决。</p>
         <div class="boundary-grid">
@@ -1464,13 +1525,39 @@
     let backendHealth = null;
     let backendHealthError = false;
 
-    const onboardingStorageKey = "jinxi-color-lens-onboarding-v2";
+    const onboardingStorageKey = "jinxi-color-lens-onboarding-v3";
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
     const el = (selector) => document.querySelector(selector);
     const els = (selector) => [...document.querySelectorAll(selector)];
 
+    const infoDefinitions={"combined":["综合分数是“优先查看顺序”，不是美丑或整改评分。它结合不同的颜色证据。","The combined score sets review priority, not beauty or removal advice. It combines different color clues."],"local":["局部对比衡量这块颜色与紧邻颜色的不同。高分代表在当前画面里更显眼，并不等于在整个锦溪都罕见。","Local contrast measures difference from nearby colors. Higher means more noticeable in this image, not necessarily rare across Jinxi."],"reference":["参考新颖度比较这块颜色与项目参考照片的不同程度。高分只意味着在有限参考样本里较少见。","Reference novelty measures how unusual this color is against the limited reference photos, not against all of Jinxi."],"delta":["ΔE00 是两种颜色在视觉上有多不同的指标；数值越高，通常看起来越不同。","ΔE00 estimates visible difference between two colors; higher usually means more different."],"percentile":["P 是新颖度百分位：P98 表示高于约 98% 的校准比较值，不是全镇有 98% 的概率罕见。","P is the novelty percentile. P98 means above about 98% of calibration comparisons, not a 98% chance of rarity across town."],"area":["面积指该颜色区域在当前截图中大约占多少像素，不是地面面积。","Area is approximate pixel coverage in this captured image, not physical ground area."],"chroma":["彩度提升是颜色相较周围有多鲜艳，不是美观程度。","Chroma lift is how much more vivid a color is than its surroundings, not a beauty score."],"network":["本图中 #1 等是候选区域，C1 等是其他区域。连线表示两处在照片中相邻，而且色差超过阈值，不是地理位置连线。","Here #1 etc. are candidate regions and C1 etc. are context regions. A line means adjacent within the image and sufficiently different in color, not a geographic link."],"networkEdge":["本图中连线代表相邻颜色区域的色差达到阈值；线长不代表地理距离。","Here lines connect adjacent image regions above a color-difference threshold, not a real-world distance."],"cielab":["CIELAB 用 a*（偏绿到偏红）和 b*（偏蓝到偏黄）描述颜色。每个点是一个颜色区域，点越大通常表示面积越大。","CIELAB uses a* (green to red) and b* (blue to yellow). Each dot is a color region; larger dots usually show greater area."],"flagged":["每组彩条属于一个候选区域；越长表示该项特征越高。条形颜色只是区分指标，不是区域真实色彩。","Each group of bars belongs to one candidate; longer bars mean higher feature values. Bar colors identify metrics, not actual region colors."],"overlay":["彩色轮廓表示检测到的颜色候选区域；编号与下方列表对应。这不是精确的物体分割。","Outlines show candidate color regions; numbers correspond to the ranking below. These are not exact object boundaries."],"original":["这张图是不带检测轮廓的原始拍摄画面。","The captured frame without detection outlines."],"mosaic":["色块图保留各颜色在照片中的大致位置，不是地理地图。","The mosaic preserves approximate color positions within the frame, not geographical coordinates."],"palette":["色卡宽度近似对应颜色在当前照片中的像素比例。","Palette widths roughly represent each color's pixel share in this frame."],"diagnostics":["图表解释哪些颜色和指标导致区域被标记，并不评价美丑。","Charts show color features behind the highlighted regions, not aesthetic judgments."]};
+    infoDefinitions.referenceNetwork=["左侧为候选颜色区域，右侧为最接近的参考色。连线表示参考颜色的匹配，并非空间相邻。","Left nodes are candidates; right nodes are nearest reference colors. Lines show reference matches, not physical adjacency."];
+    infoDefinitions.referenceEdge=["ΔE00 表示候选色与参考颜色的视觉色差，线的长度没有定量含义。","ΔE00 is color difference between the candidate and reference color; line length has no quantitative meaning."];
+    infoDefinitions.hub=["高亮的枢纽是局部网络中连接较多的节点，不代表颜色一定更好或更差。","A highlighted hub has more qualifying links, not greater aesthetic importance."];
+    infoDefinitions.candidateGuide=[
+      "<p><strong>综合评分</strong>：只表示建议先检查哪些区域，不代表好看或不好看。</p><p><strong>局部对比</strong>：和旁边颜色有多不同；越高，在这张照片中越显眼。ΔE00 是人眼感知色差的近似数值。</p><p><strong>参考新颖度</strong>：和有限参考照片的颜色有多不同。P98 是校准百分位，不代表锦溪全镇的稀有概率。</p><p><strong>面积与彩度</strong>：分别是照片中约占多少像素、以及颜色有多鲜艳；都不是文化或审美价值评分。</p>",
+      "<p><strong>Combined score</strong>: which regions to review first, not whether they look good or bad.</p><p><strong>Local contrast</strong>: how different the region is from its neighbors. ΔE00 approximates perceptual color difference.</p><p><strong>Reference novelty</strong>: how different the color is from the limited reference photos. P98 is a calibration percentile, not its rarity across Jinxi.</p><p><strong>Area and chroma</strong>: image coverage and color vividness, not cultural or aesthetic value.</p>"
+    ];
+    function infoHelp(key,right=false,pill=false){
+      const entry=infoDefinitions[key];
+      if(!entry)return "";
+      const language=currentLanguage==="zh-CN"?0:1;
+      const label=language===0?"查看解释":"Explain this";
+      const displayLabel=pill?(language===0?"ⓘ 评分说明":"ⓘ Read scores"):"i";
+      return '<details class="inline-info'+(right?' info-right':'')+(pill?' help-pill':'')+'"><summary aria-label="'+label+'" title="'+label+'">'+displayLabel+'</summary><div class="info-popup" role="note">'+entry[language]+'</div></details>';
+    }
+    document.addEventListener("toggle",event=>{
+      const node=event.target;
+      if(node instanceof HTMLDetailsElement && node.matches(".inline-info") && node.open){
+        document.querySelectorAll(".inline-info[open]").forEach(other=>{if(other!==node)other.open=false});
+      }
+    },true);
+    document.addEventListener("pointerdown",event=>{
+      if(!event.target.closest(".inline-info"))
+        document.querySelectorAll(".inline-info[open]").forEach(node=>node.open=false);
+    });
     const translations = {
       "zh-CN": {
         referenceNetworkTitle: "参考关系网 · 区域 → 最近参考色",
@@ -1489,6 +1576,12 @@
         chooseLanguageAria: "选择界面语言",
         chooseLanguageTitle: "选择你的体验语言",
         chooseLanguageCopy: "语言会应用于取景、分析结果、网络解释和产品须知。之后仍可随时切换。",
+        tourKicker:"02 / 快速入门", tourTitle:"60 秒学会怎么使用", tourCopy:"先取景，再拍摄，最后比较证据。你进入网站后会依次用到这些功能。",
+tour1Title:"拖动 360° 画面",tour1Copy:"按住鼠标拖动或触摸滑动，选择想观察的方向。滚轮或 +/− 改变视野；不能在场景中自由行走。",
+tour2Title:"按下快门进行分析",tour2Copy:"点击圆形快门（电脑上也可按空格），系统截取当前视角并分析颜色，请等待结果加载。",
+tour3Title:"选择区域并查看网络",tour3Copy:"查看彩色轮廓、Candidate Ranking，切换 Local Network 或 CIELAB。点击节点可定位照片中的区域。",
+tour4Title:"比较两类证据",tour4Copy:"Local Contrast 是与附近颜色的差异；Reference Novelty 是与有限参考照片的差异。点“ⓘ 评分说明”读通俗解释。",
+tourBack:"← 重新选择语言",tourNext:"下一步 · 了解证据边界 →",boundaryKicker:"03 / 证据边界",
         boundaryWelcomeTitle: "使用前，请先了解它能说明什么",
         boundaryWelcomeCopy: "本原型帮助发现值得进一步检查的色彩关系。它提供证据线索，而不是审美裁决。",
         boundaryCard1Title: "测量对象",
@@ -1500,7 +1593,7 @@
         boundaryCard4Title: "最终决定",
         boundaryCard4Copy: "结论需要居民、商户、规划者、维护人员和游客共同检验与修正。",
         boundaryAck: "我理解：结果是可检查的色彩证据，不是对美丑或文化价值的自动判断。",
-        onboardingBack: "← 返回语言选择",
+        onboardingBack: "← 返回教程",
         fullEvidence: "查看完整学习过程与证据 →",
         enterExperience: "理解并进入体验",
         sceneAria: "锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。",
@@ -1643,6 +1736,12 @@
         chooseLanguageAria: "Choose interface language",
         chooseLanguageTitle: "Choose your experience language",
         chooseLanguageCopy: "Your choice applies to framing, analysis, network explanations, and the evidence boundary. You can switch later.",
+        tourKicker:"02 / Quick tour",tourTitle:"Learn the workflow in 60 seconds",tourCopy:"Frame a view, capture it, then compare the evidence. These are the steps you will actually use.",
+tour1Title:"Explore the 360° scene",tour1Copy:"Drag or swipe to look around. Scroll or use +/− to zoom. This is a fixed viewpoint, not a walkable map.",
+tour2Title:"Capture and analyze",tour2Copy:"Press the round shutter button (or Space on a computer). The system captures the view and analyzes color regions.",
+tour3Title:"Inspect candidate regions",tour3Copy:"View the overlay and Candidate Ranking; switch to Local Network or CIELAB. Select a node to locate its image region.",
+tour4Title:"Compare the two scores",tour4Copy:"Local Contrast compares neighboring colors; Reference Novelty compares with limited reference photographs. Open “ⓘ Read scores” for plain-language explanations.",
+tourBack:"← Change language",tourNext:"Next · Evidence boundaries →",boundaryKicker:"03 / Evidence boundary",
         boundaryWelcomeTitle: "Before you begin, understand what this can show",
         boundaryWelcomeCopy: "This prototype helps locate color relationships worth inspecting. It offers evidence cues, not an aesthetic verdict.",
         boundaryCard1Title: "What it measures",
@@ -1654,7 +1753,7 @@
         boundaryCard4Title: "Who decides",
         boundaryCard4Copy: "Residents, businesses, planners, maintenance staff, and visitors should test and correct any interpretation.",
         boundaryAck: "I understand that the result is inspectable color evidence, not an automatic judgment of beauty or cultural value.",
-        onboardingBack: "← Back to language",
+        onboardingBack: "← Back to quick tour",
         fullEvidence: "View the complete learning and evidence record →",
         enterExperience: "I understand · enter",
         sceneAria: "Fixed-position 360-degree Jinxi panorama. Drag or use arrow keys to look around, and scroll to zoom.",
@@ -1868,7 +1967,7 @@
     }
 
     function setOnboardingStep(step) {
-      onboardingStep = step === 2 ? 2 : 1;
+      onboardingStep = [1,2,3].includes(step) ? step : 1;
       els("[data-onboarding-step]").forEach(node => {
         node.classList.toggle("active", Number(node.dataset.onboardingStep) === onboardingStep);
       });
@@ -1878,6 +1977,8 @@
       if (onboardingStep === 1) {
         const selected = el(`.onboarding-language[data-onboarding-language="${currentLanguage}"]`);
         window.setTimeout(() => selected?.focus({ preventScroll: true }), 80);
+      } else if (onboardingStep === 2) {
+        window.setTimeout(() => el("#tourNext")?.focus({ preventScroll: true }), 80);
       } else {
         window.setTimeout(() => el("#boundaryAck")?.focus({ preventScroll: true }), 80);
       }
@@ -2323,16 +2424,19 @@
       if (diagnosticsMode) {
         renderDiagnostics();
         el("#resultCaption").textContent = t("captionDiagnostics");
+        el("#resultCaption").insertAdjacentHTML("beforeend",infoHelp("diagnostics"));
         return;
       }
       if (referenceMode) {
         renderReferenceNetwork(lastPayload?.candidates || []);
         el("#resultCaption").textContent = t("referenceNetworkCopy");
+        el("#resultCaption").insertAdjacentHTML("beforeend",infoHelp("referenceNetwork"));
         return;
       }
       const source = view === "original" ? capturedUrl : resultImages[view];
       el("#resultImage").src = source || "";
       el("#resultCaption").textContent = t(captionKeys[view]);
+      el("#resultCaption").insertAdjacentHTML("beforeend",infoHelp(view));
       el("#downloadResult").href = source || "";
       el("#downloadResult").download = `jinxi-${view}.png`;
     }
@@ -2346,7 +2450,7 @@
       const ns="http://www.w3.org/2000/svg";
       function chart(title, subtitle, height=450) {
         const card=document.createElement("div"); card.className="chart-card";
-        const h=document.createElement("h3"); h.textContent=title; card.append(h);
+        const h=document.createElement("h3"); h.textContent=title; h.innerHTML += infoHelp(title.includes("CIELAB") ? "cielab" : "flagged",true); card.append(h);
         const p=document.createElement("p"); p.className="evidence-copy"; p.textContent=subtitle; card.append(p);
         const svg=document.createElementNS(ns,"svg"); svg.setAttribute("viewBox",`0 0 460 ${height}`); svg.setAttribute("role","img"); svg.setAttribute("aria-label",title); card.append(svg);
         const tip=document.createElement("div"); tip.className="chart-tip"; tip.setAttribute("aria-live","polite"); card.append(tip); grid.append(card);
@@ -2392,6 +2496,7 @@
     function renderReferenceNetwork(candidates) {
       const host = el("#evidenceNetwork");
       host.replaceChildren();
+      el("#referenceNetworkExplain").innerHTML = infoHelp("referenceNetwork",true);
       if (!candidates.length) { host.textContent = t("summaryEmpty"); return; }
       const ns = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(ns, "svg");
@@ -2450,10 +2555,10 @@
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
-            <strong>${t("candidateCombined", { score: combinedScore.toFixed(1) })}</strong>
-            <span class="evidence-local">${t("candidateLocal", { score: localScore.toFixed(1), level: evidenceLevel(localScore), delta: candidate.delta_e.toFixed(1) })}</span>
-            <span class="evidence-reference">${t("candidateReferenceScore", { score: referenceScore.toFixed(1), level: evidenceLevel(referenceScore), percentile: candidate.reference_percentile.toFixed(0), delta: candidate.reference_delta_e.toFixed(1), reference: candidate.closest_reference_hex })}</span>
-            <span>${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
+            <div class="candidate-topline"><strong>${t("candidateCombined", { score: combinedScore.toFixed(1) })}</strong>${infoHelp("candidateGuide",true,true)}</div>
+            <span class="evidence-local metric-help-row">${t("candidateLocal", { score: localScore.toFixed(1), level: evidenceLevel(localScore), delta: candidate.delta_e.toFixed(1) })}</span>
+            <span class="evidence-reference metric-help-row">${t("candidateReferenceScore", { score: referenceScore.toFixed(1), level: evidenceLevel(referenceScore), percentile: candidate.reference_percentile.toFixed(0), delta: candidate.reference_delta_e.toFixed(1), reference: candidate.closest_reference_hex })}</span>
+            <span class="metric-help-row">${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
@@ -2464,7 +2569,8 @@
         item.addEventListener("focus", () => {
           if (activeView === "network") activateNetworkNode(networkId);
         });
-        item.addEventListener("click", () => {
+        item.addEventListener("click", event => {
+          if(event.target.closest(".inline-info"))return;
           selectView("network");
           activateNetworkNode(networkId);
         });
@@ -2527,6 +2633,7 @@
       const svg = el("#networkGraph");
       svg.replaceChildren();
       el("#networkPhoto").src = capturedUrl;
+      el("#networkExplain").innerHTML = infoHelp("network",true);
       if (!network?.nodes?.length) {
         el("#networkReadout").textContent = t("networkEmpty");
         return;
@@ -2602,14 +2709,16 @@
         window.setTimeout(() => setOnboardingStep(2), reducedMotion.matches ? 0 : 140);
       });
     });
-    el("#onboardingBack").addEventListener("click", () => setOnboardingStep(1));
+    el("#tourBack").addEventListener("click", () => setOnboardingStep(1));
+    el("#tourNext").addEventListener("click", () => setOnboardingStep(3));
+    el("#onboardingBack").addEventListener("click", () => setOnboardingStep(2));
     el("#boundaryAck").addEventListener("change", event => {
       el("#enterExperience").disabled = !event.currentTarget.checked;
     });
     el("#enterExperience").addEventListener("click", () => {
       if (el("#boundaryAck").checked) closeOnboarding({ remember: true });
     });
-    el("#boundaryButton").addEventListener("click", () => openOnboarding(2));
+    el("#boundaryButton").addEventListener("click", () => openOnboarding(3));
     els(".tab-button").forEach(button => {
       button.addEventListener("click", () => selectView(button.dataset.view));
       button.addEventListener("keydown", event => {

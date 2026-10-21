@@ -28,9 +28,9 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 
 ## Demo
 
-[![Watch the Jinxi Color Lens demo on YouTube](https://img.youtube.com/vi/km2at-gR-PM/hqdefault.jpg)](https://youtu.be/km2at-gR-PM)
+[![Watch the Jinxi Color Lens demo on YouTube](https://img.youtube.com/vi/U_AO84ZTblc/hqdefault.jpg)](https://youtu.be/U_AO84ZTblc)
 
-**[▶ Watch the full demo on YouTube](https://youtu.be/km2at-gR-PM)**
+**[▶ Watch the full demo on YouTube](https://youtu.be/U_AO84ZTblc)**
 
 Click the video thumbnail or the link above to play the full project walkthrough on YouTube.
 

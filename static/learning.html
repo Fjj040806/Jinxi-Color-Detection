@@ -309,6 +309,7 @@
         <span><strong>JINXI / COLOR LENS</strong><small data-i18n="brandSub">学习与证据页面</small></span>
       </a>
       <div class="nav-actions">
+        <a class="pill" href="/method"><span>⌁</span>&nbsp;<span data-i18n="method">算法原理</span></a>
         <a class="pill" href="/"><span>←</span>&nbsp;<span class="back-copy" data-i18n="back">返回取景器</span></a>
         <div class="language-switch" role="group" aria-label="语言 / Language">
           <button class="active" data-language="zh-CN" aria-pressed="true">简中</button>
@@ -429,7 +430,7 @@
   <script>
     const translations = {
       "zh-CN": {
-        brandSub:"学习与证据页面", back:"返回取景器", eyebrow:"Reference learning / evidence boundary",
+        brandSub:"学习与证据页面", back:"返回取景器", method:"算法原理", eyebrow:"Reference learning / evidence boundary",
         heroTitle:"系统从什么证据中学习？", heroCopy:"这个模型学习的是用户提供的正面案例中反复出现的色彩分布。它将这些颜色压缩成一个可检查的参考记忆，再与当前画面中的局部色差共同提出候选区域。",
         status:"模型状态", references:"参考图数量", regions:"学习区域", prototypes:"颜色原型", weight:"参考证据权重",
         samplesTitle:"学习样本", samplesCopy:"正面展示从参考图派生的空间色块图。将鼠标移到卡片上可翻至背面，检查获准展示的无水印原图、主色卡与模型统计。", loading:"正在读取参考模型…",
@@ -443,7 +444,7 @@
         loadError:"参考模型未能载入。请确认 Python 服务正在运行。"
       },
       en: {
-        brandSub:"Learning and evidence", back:"Back to viewfinder", eyebrow:"Reference learning / evidence boundary",
+        brandSub:"Learning and evidence", back:"Back to viewfinder", method:"How it works", eyebrow:"Reference learning / evidence boundary",
         heroTitle:"What evidence does the system learn from?", heroCopy:"The model learns recurring color distributions from user-supplied positive examples. It compresses them into an inspectable reference memory, then combines that evidence with local color contrast in the current frame.",
         status:"Model status", references:"Reference images", regions:"Learning regions", prototypes:"Color prototypes", weight:"Reference weight",
         samplesTitle:"Learning samples", samplesCopy:"Each card shows a derived spatial color mosaic on the front. Hover to flip it and inspect the permitted watermark-free original, dominant palette, and model statistics.", loading:"Loading reference model…",

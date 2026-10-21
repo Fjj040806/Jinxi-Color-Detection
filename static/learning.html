@@ -324,7 +324,41 @@
     .algo-links a:hover { border-color:var(--jade); }
     @media(max-width:760px) { .algo-two-paths,.algo-meaning{grid-template-columns:1fr;} .algo-panel{padding:16px;} }
 
-</style>
+
+    /* Dedicated responsive layout: the generic section-head uses a narrow title column. */
+    .algo-provenance-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      align-items: start;
+      column-gap: clamp(22px, 3vw, 50px);
+      row-gap: 16px;
+      margin: 28px 0 6px;
+    }
+    .algo-provenance-head > h2 {
+      min-width: 0;
+      margin: 0;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: clamp(25px, 2.15vw, 37px);
+      line-height: 1.13;
+      letter-spacing: -0.025em;
+      overflow-wrap: break-word;
+    }
+    .algo-provenance-head > p {
+      min-width: 0;
+      max-width: 68ch;
+      margin: 0;
+      color: var(--paper-soft);
+      font-size: 13px;
+      line-height: 1.78;
+      overflow-wrap: break-word;
+    }
+    @media (max-width: 920px) {
+      .algo-provenance-head { grid-template-columns: minmax(0, 1fr); }
+      .algo-provenance-head > h2 { font-size: clamp(26px, 5vw, 36px); }
+      .algo-provenance-head > p { max-width: 100%; }
+    }
+
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -415,7 +449,7 @@
           <div><strong data-i18n="algoRefHead">Reference Novelty · 和参考照片比</strong><p data-i18n="algoRefExplain">如果这种颜色在有限的参考照片中不常出现，新颖度可能高；这不等于它在整个锦溪或其他季节都少见。</p></div>
         </div>
         <div class="algo-limits"><span>◎</span><div><b data-i18n="algoBoundaryHead">解释边界：</b> <span data-i18n="algoBoundaryCopy">分数用于确定“先检查哪里”，不能自动决定什么颜色更美、是否符合地方文化、或是否应该移除。当前未使用 PatchCore、Anomalib 或 DINOv2 的深度模型。</span></div></div>
-        <div class="section-head">
+        <div class="algo-provenance-head">
           <h2 data-i18n="algoProvenanceTitle">实现来源与责任</h2>
           <p data-i18n="algoProvenanceCopy">本项目以 AI 辅助编程（vibe coding）构建原型，采用已有 Python 开源库实现经典方法。SLIC、CIEDE2000 与 MiniBatchKMeans 并非团队原创；PatchCore 仅作为研究灵感。下列源码链接可供逐步审核；算法输出仍需独立测试及社区反馈。</p>
         </div>

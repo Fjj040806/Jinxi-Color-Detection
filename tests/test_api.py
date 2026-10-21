@@ -12,7 +12,7 @@ def test_health():
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
     health = response.json()
-    assert health["version"] == "0.6.0"
+    assert health["version"] == "0.7.0"
     assert health["reference_model"] == "ready"
     assert health["model_fingerprint"] == "25eb239bafb2bda1"
     assert health["reference_count"] == 13
@@ -48,6 +48,20 @@ def test_home_contains_camera_interface():
     assert "candidateCombined" in response.text
     assert "candidateLocal" in response.text
     assert "candidateReferenceScore" in response.text
+    assert "prefers-reduced-motion" in response.text
+    assert 'href="/method"' in response.text
+
+
+def test_method_page_explains_the_implemented_pipeline():
+    response = TestClient(app).get("/method")
+    assert response.status_code == 200
+    assert "Algorithm observatory · 07 stages" in response.text
+    assert "SLIC superpixels" in response.text
+    assert "CIEDE2000" in response.text
+    assert "13 references" in response.text
+    assert "2,053 regions" in response.text
+    assert "28 prototypes" in response.text
+    assert "evidence ≠ aesthetic verdict" in response.text
     assert "prefers-reduced-motion" in response.text
 
 

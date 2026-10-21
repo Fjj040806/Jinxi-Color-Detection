@@ -288,8 +288,8 @@
       gap: 10px;
       margin-bottom: 9px;
     }
-    .spacetime-head strong { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
-    .spacetime-head span { color: rgba(239, 233, 220, .42); font-size: 8px; }
+    .spacetime-head strong { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+    .spacetime-head span { color: rgba(239, 233, 220, .58); font-size: 10px; }
     .site-map {
       display: block;
       width: 100%;
@@ -300,12 +300,13 @@
     }
     #mapViewCone { transform-origin: 82px 66px; transition: transform .18s ease-out; }
     .site-map circle:nth-of-type(2) { animation: mapPulse 2.6s ease-out infinite; transform-origin: 82px 66px; }
+    .site-map text { font-size: 10px; font-weight: 700; paint-order: stroke; stroke: rgba(0,0,0,.62); stroke-width: 2px; }
     .map-caption {
       display: flex;
       justify-content: space-between;
       margin: 6px 2px 0;
-      color: rgba(239, 233, 220, .46);
-      font-size: 8px;
+      color: rgba(239, 233, 220, .66);
+      font-size: 10px;
     }
     .capture-timeline {
       display: grid;
@@ -314,7 +315,7 @@
       margin-top: 9px;
       overflow-y: auto;
     }
-    .timeline-empty { color: rgba(239, 233, 220, .4); font-size: 9px; line-height: 1.5; }
+    .timeline-empty { color: rgba(239, 233, 220, .55); font-size: 10px; line-height: 1.5; }
     .timeline-item {
       width: 100%;
       display: grid;
@@ -331,9 +332,9 @@
     }
     .timeline-item:hover { border-color: rgba(155, 197, 180, .34); background: rgba(155, 197, 180, .07); }
     .timeline-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); }
-    .timeline-item strong { display: block; font-size: 9px; font-weight: 650; }
-    .timeline-item small { display: block; color: rgba(239, 233, 220, .42); font-size: 8px; }
-    .timeline-score { color: var(--amber); font-size: 9px; font-variant-numeric: tabular-nums; }
+    .timeline-item strong { display: block; font-size: 10px; font-weight: 650; }
+    .timeline-item small { display: block; color: rgba(239, 233, 220, .56); font-size: 9px; }
+    .timeline-score { color: var(--amber); font-size: 10px; font-variant-numeric: tabular-nums; }
     .meta-label {
       display: block;
       margin-bottom: 3px;
@@ -346,6 +347,20 @@
       font-variant-numeric: tabular-nums;
       font-size: 14px;
     }
+    .backend-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(239, 233, 220, .1);
+      color: rgba(239, 233, 220, .58);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+    .backend-status::before { content: ""; width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px rgba(233,188,105,.1); }
+    .backend-status.ready::before { background: var(--jade); box-shadow: 0 0 0 4px rgba(155,197,180,.1); }
+    .backend-status.error::before { background: var(--danger); box-shadow: 0 0 0 4px rgba(211,99,86,.1); }
 
     .bearing {
       position: fixed;
@@ -738,6 +753,16 @@
     }
     .network-view { display: none; }
     .network-view.active { display: block; animation: softIn .35s ease both; }
+    .network-explainer {
+      margin: 0 0 9px;
+      padding: 10px 12px;
+      border-left: 2px solid var(--jade);
+      border-radius: 0 10px 10px 0;
+      background: rgba(155, 197, 180, .055);
+      color: rgba(239, 233, 220, .7);
+      font-size: 11px;
+      line-height: 1.55;
+    }
     .network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
     .network-photo, .network-graph {
       position: relative;
@@ -762,7 +787,7 @@
     .network-node.hub circle { stroke: var(--amber); stroke-width: 4; filter: drop-shadow(0 0 6px rgba(233,188,105,.72)); }
     .network-node.active circle { stroke: #fff; stroke-width: 4; filter: drop-shadow(0 0 7px rgba(255,255,255,.55)); }
     .network-node.dimmed { opacity: .2; }
-    .network-node text { fill: #fff; font-size: 9px; font-weight: 750; text-anchor: middle; pointer-events: none; paint-order: stroke; stroke: rgba(0,0,0,.7); stroke-width: 2px; }
+    .network-node text { fill: #fff; font-size: 11px; font-weight: 750; text-anchor: middle; pointer-events: none; paint-order: stroke; stroke: rgba(0,0,0,.7); stroke-width: 2px; }
     .network-readout {
       min-height: 48px;
       margin-top: 9px;
@@ -771,11 +796,11 @@
       border-radius: 11px;
       background: rgba(155, 197, 180, .055);
       color: rgba(239, 233, 220, .67);
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1.55;
     }
     .network-readout strong { color: var(--amber); }
-    .network-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 7px; color: rgba(239, 233, 220, .42); font-size: 8px; }
+    .network-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 7px; color: rgba(239, 233, 220, .6); font-size: 10px; }
     .network-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; vertical-align: -1px; background: var(--jade); }
     .network-legend span:first-child::before { background: var(--amber); }
     .result-caption {
@@ -835,7 +860,9 @@
       font-weight: 750;
     }
     .candidate-main strong { display: block; font-size: 12px; }
-    .candidate-main span { display: block; color: rgba(239, 233, 220, .48); font-size: 9px; }
+    .candidate-main span { display: block; margin-top: 2px; color: rgba(239, 233, 220, .6); font-size: 10px; line-height: 1.4; }
+    .candidate-main .evidence-local { color: rgba(239, 233, 220, .78); }
+    .candidate-main .evidence-reference { color: rgba(155, 197, 180, .88); }
     .candidate-swatch {
       width: 32px;
       height: 32px;
@@ -1167,7 +1194,7 @@
   <header class="topbar">
     <div class="brand">
       <div class="brand-line"><span class="brand-mark"></span> JINXI / COLOR LENS</div>
-      <h1><span data-i18n="mainTitle">锦溪取景实验室</span> <span>Field prototype 05</span></h1>
+      <h1><span data-i18n="mainTitle">锦溪取景实验室</span> <span>Field prototype 06</span></h1>
     </div>
     <div class="top-actions">
       <div class="language-switch" role="group" aria-label="语言 / Language" data-i18n-aria="languageAria">
@@ -1184,11 +1211,12 @@
   <aside class="scene-card" aria-label="场景信息" data-i18n-aria="sceneInfoAria">
     <div class="scene-kicker"><span class="live-dot"></span> <span data-i18n="fixedCamera">固定机位 · 在线</span></div>
     <h2 data-i18n="viewpoint">水岸观察点 A</h2>
-    <p data-i18n="sceneDescription">从固定位置选择视角。快门只记录全景画面，不包含界面元素。</p>
+    <p data-i18n="sceneDescription">改变方向与视野，检验取景方式如何影响候选区域。快门只记录全景画面。</p>
     <div class="scene-meta">
       <div><span class="meta-label" data-i18n="direction">方向</span><span class="meta-value" id="angleValue">000°</span></div>
       <div><span class="meta-label" data-i18n="fieldOfView">视野</span><span class="meta-value" id="fovValue">75°</span></div>
     </div>
+    <div class="backend-status" id="backendStatus" role="status"><span id="backendStatusText">正在核验浏览器 → Python 分析链路…</span></div>
   </aside>
 
   <aside class="spacetime-panel" aria-label="二维位置与取景时间" data-i18n-aria="spacetimeAria">
@@ -1270,6 +1298,7 @@
             <img id="resultImage" alt="色彩分析结果" data-i18n-alt="resultAlt">
           </div>
           <div class="network-view" id="networkView">
+            <p class="network-explainer" data-i18n="networkExplainer">节点是照片中的实际分区；连线只连接空间相邻且色差超过阈值的分区。悬停节点会在左侧照片中高亮对应区域。</p>
             <div class="network-grid">
               <div class="network-photo"><img id="networkPhoto" alt="原始取景"><img id="networkMask" alt="当前网络节点对应区域"></div>
               <div class="network-graph"><svg id="networkGraph" viewBox="0 0 360 260" role="img" aria-label="局部色彩对比网络" data-i18n-aria="networkAria"></svg></div>
@@ -1431,6 +1460,8 @@
     let panoramaLoaded = false;
     let onboardingStep = 1;
     let lastOnboardingFocus = null;
+    let backendHealth = null;
+    let backendHealthError = false;
 
     const onboardingStorageKey = "jinxi-color-lens-onboarding-v2";
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -1446,7 +1477,7 @@
         localLabel: "局部语境",
         referenceLabel: "参考比较",
         whyTitle: "为什么出现这个结果？",
-        whyCopy: "局部 ΔE00 衡量候选区域与周边颜色的差异；参考 ΔE00 衡量与最近参考色原型的差异。参考新颖度百分位来自留一参考图校准，较高表示在有限参考集中较少见。综合分数用于排序，不是美丑评分。",
+        whyCopy: "局部 ΔE00 衡量候选区域与周边颜色的差异；参考 ΔE00 衡量与最近参考色原型的差异。参考新颖度百分位来自留一参考图校准，较高表示在有限参考集中较少见。综合分数只用于排序。“较低—很高”是帮助阅读的界面分档，不是经验证的审美阈值。",
         sdgTitle: "社区讨论 · SDG 11.4",
         sdgCopy: "这些色彩证据可为文化遗产保护讨论提供线索。保护决策仍需居民、商户和相关专业人员结合材料、历史与文化意义共同判断。",
 
@@ -1485,7 +1516,7 @@
         sceneInfoAria: "场景信息",
         fixedCamera: "固定机位 · 在线",
         viewpoint: "水岸观察点 A",
-        sceneDescription: "从固定位置选择视角。快门只记录全景画面，不包含界面元素。",
+        sceneDescription: "改变方向与视野，检验取景方式如何影响候选区域。快门只记录全景画面；不同取景可能产生不同分区与分数。",
         spacetimeAria: "二维位置与取景时间",
         spacetimeTitle: "位置 × 时间",
         schematicMap: "场地示意 · 非测绘地图",
@@ -1495,6 +1526,9 @@
         timelineCapture: "取景 {number} · {degrees}° / {fov}°",
         timelinePending: "分析中",
         timelineScore: "枢纽 {degree} 条边",
+        backendChecking: "正在核验浏览器 → Python 分析链路…",
+        backendReady: "分析链路在线 · v{version} · 模型 {fingerprint}",
+        backendError: "分析后端未响应；请确认 Python 服务仍在运行。",
         direction: "方向",
         fieldOfView: "视野",
         relativeView: "相对视角 · 非地理方位",
@@ -1528,8 +1562,8 @@
         tabMosaic: "空间色谱",
         tabPalette: "主色卡",
         tabDiagnostics: "诊断视图",
-        tabNetwork: "色彩关系网",
-        tabReferenceNetwork: "参考关系网",
+        tabNetwork: "局部邻接网络",
+        tabReferenceNetwork: "参考匹配网络",
         resultAlt: "色彩分析结果",
         captionOverlay: "热力与编号轮廓显示相对色彩突出区域",
         captionOriginal: "你从固定观察点选择并拍摄的原始画面",
@@ -1537,6 +1571,7 @@
         captionPalette: "主色块宽度对应其在画面中的像素比例",
         captionDiagnostics: "CIELAB 分布与候选区域特征百分位",
         networkAria: "相邻颜色区域的高色差关系网络",
+        networkExplainer: "节点是照片中的实际分区；连线只连接空间相邻且色差超过阈值的分区。悬停或聚焦节点会在左侧照片中高亮对应区域。节点度最高者称为“枢纽”，但不代表它丑陋。",
         networkHubLegend: "对比枢纽",
         networkNodeLegend: "候选/语境区域",
         networkEdgeLegend: "连线 = 相邻且色差超过阈值",
@@ -1548,7 +1583,7 @@
         downloadView: "下载当前视图 ↓",
         rankedCandidates: "候选区域排名 · 局部证据 × 参考证据",
         boundaryTitle: "解释边界",
-        boundaryCopy: "高分表示某区域同时获得局部色差与有限参考集的支持。它不表示该对象丑陋、缺乏文化价值或应当被移除。天气、阴影、反光和相机白平衡都可能影响结果。",
+        boundaryCopy: "高分表示某区域同时获得局部色差与有限参考集的支持。它不表示该对象丑陋、缺乏文化价值或应当被移除。天气、阴影、反光、相机白平衡、方向和视野都会影响结果。",
         settingsSummary: "调整分析参数并重新拍摄",
         sensitivity: "检测灵敏度",
         sensitivityHelp: "越高越只保留极端区域",
@@ -1563,7 +1598,7 @@
         closeHelpAria: "关闭说明",
         guide1: "拖动画面或使用方向键改变拍摄方向，滚轮或加减按钮改变视野。",
         guide2: "按下圆形快门或空格键。系统会截取无界面的全景画面，并自动运行色彩语境分析。",
-        guide3: "这是固定机位360°原型。用户可以改变角度，但暂时不能在空间中自由移动。",
+        guide3: "360°取景用于检验同一地点中方向与视野如何改变色彩证据。它不是自由移动的3D重建，也不是现场测绘。",
         guide4: "场景由有限实拍素材辅助重建。缺失方向与建筑细节可能不等同于现场测量。",
         loadingFailureHelp: "请刷新页面或确认浏览器已启用 WebGL",
         noWebgl: "当前浏览器不支持 WebGL",
@@ -1572,7 +1607,13 @@
         captureError: "无法从全景画布生成截图。",
         serverError: "服务器返回 {status}",
         unknownError: "未知错误。请确认 Python 服务仍在运行。",
-        candidateMain: "突出度 {score} · ΔE00 {delta}",
+        candidateCombined: "综合复核 {score}/100（只用于排序）",
+        candidateLocal: "局部对比 {score}/100 · {level} · 周边 ΔE00 {delta}",
+        candidateReferenceScore: "参考新颖 {score}/100 · {level} · P{percentile} · 距最近参考色 ΔE00 {delta} · {reference}",
+        levelVeryHigh: "很高",
+        levelHigh: "较高",
+        levelModerate: "中等",
+        levelLower: "较低",
         candidateMeta: "面积 {area}% · 彩度提升 {chroma} · {hex}",
         candidateReference: "参考新颖度 P{percentile} · 最近参考色 {reference}",
         analysisComplete: "色彩语境分析完成",
@@ -1588,7 +1629,7 @@
         localLabel: "Local context",
         referenceLabel: "Reference comparison",
         whyTitle: "Why this result?",
-        whyCopy: "Local ΔE00 measures the color difference between a candidate and its surroundings; reference ΔE00 measures its difference from the nearest reference prototype. Novelty percentiles use leave-one-reference-out calibration: higher means rarer in this limited reference set. The combined score ranks review candidates; it is not a beauty score.",
+        whyCopy: "Local ΔE00 measures the color difference between a candidate and its surroundings; reference ΔE00 measures its difference from the nearest reference prototype. Novelty percentiles use leave-one-reference-out calibration: higher means rarer in this limited set. The combined score is only for ranking. The lower-to-very-high bands are reading aids, not validated aesthetic thresholds.",
         sdgTitle: "Community discussion · SDG 11.4",
         sdgCopy: "Color evidence can inform discussion about protecting cultural heritage. Preservation decisions require residents, businesses, and relevant professionals to consider materials, history, and cultural meaning.",
 
@@ -1627,7 +1668,7 @@
         sceneInfoAria: "Scene information",
         fixedCamera: "Fixed camera · Online",
         viewpoint: "Waterside Viewpoint A",
-        sceneDescription: "Frame a view from this fixed position. The shutter records only the panorama, without interface elements.",
+        sceneDescription: "Change direction and field of view to test how framing affects candidate regions. The shutter records only the panorama; different frames may produce different segments and scores.",
         spacetimeAria: "Two-dimensional position and capture time",
         spacetimeTitle: "Position × time",
         schematicMap: "Site schematic · not a survey map",
@@ -1637,6 +1678,9 @@
         timelineCapture: "Frame {number} · {degrees}° / {fov}°",
         timelinePending: "Analyzing",
         timelineScore: "Hub {degree} edges",
+        backendChecking: "Checking browser → Python analysis path…",
+        backendReady: "Analysis path online · v{version} · model {fingerprint}",
+        backendError: "The analysis backend did not respond. Confirm that the Python service is running.",
         direction: "Direction",
         fieldOfView: "Field of view",
         relativeView: "Relative view · not geographic north",
@@ -1670,8 +1714,8 @@
         tabMosaic: "Spatial mosaic",
         tabPalette: "Color palette",
         tabDiagnostics: "Diagnostics",
-        tabNetwork: "Color network",
-        tabReferenceNetwork: "Reference network",
+        tabNetwork: "Local adjacency network",
+        tabReferenceNetwork: "Reference matching network",
         resultAlt: "Color-analysis result",
         captionOverlay: "Heat and numbered outlines show regions with relatively distinctive colors",
         captionOriginal: "The frame you selected and captured from the fixed viewpoint",
@@ -1679,6 +1723,7 @@
         captionPalette: "Each block's width represents its approximate pixel share",
         captionDiagnostics: "CIELAB distribution and feature percentiles for candidate regions",
         networkAria: "Network of high color-difference relationships between adjacent regions",
+        networkExplainer: "Nodes are actual image regions. An edge appears only when two regions touch in image space and exceed the color-difference threshold. Hover or focus a node to reveal its exact region in the photo. The highest-degree node is a ‘hub,’ not an ugly-object verdict.",
         networkHubLegend: "Contrast hub",
         networkNodeLegend: "Candidate/context region",
         networkEdgeLegend: "Edge = adjacent and above the color-difference threshold",
@@ -1690,7 +1735,7 @@
         downloadView: "Download current view ↓",
         rankedCandidates: "Ranked candidates · local × reference evidence",
         boundaryTitle: "Interpretation boundary",
-        boundaryCopy: "A high value means that both local color contrast and the limited reference set support the candidate. It does not mean the object is ugly, lacks cultural value, or should be removed. Weather, shadows, reflections, and white balance may affect the result.",
+        boundaryCopy: "A high value means that both local color contrast and the limited reference set support the candidate. It does not mean the object is ugly, lacks cultural value, or should be removed. Weather, shadows, reflections, white balance, direction, and field of view may affect the result.",
         settingsSummary: "Adjust analysis settings and capture again",
         sensitivity: "Detection sensitivity",
         sensitivityHelp: "Higher values retain only more extreme regions",
@@ -1705,7 +1750,7 @@
         closeHelpAria: "Close the guide",
         guide1: "Drag the panorama or use the arrow keys to change direction. Use the wheel or plus/minus buttons to change the field of view.",
         guide2: "Press the round shutter or the Space key. The system captures a clean panorama frame and automatically runs contextual color analysis.",
-        guide3: "This is a fixed-position 360° prototype. You can change the viewing angle, but you cannot yet move freely through the scene.",
+        guide3: "The 360° view tests how direction and field of view change color evidence at one location. It is not a freely navigable 3D reconstruction or an on-site survey.",
         guide4: "The scene was reconstructed with limited field material. Unseen directions and architectural details should not be treated as an on-site survey.",
         loadingFailureHelp: "Refresh the page or confirm that WebGL is enabled in your browser",
         noWebgl: "This browser does not support WebGL",
@@ -1714,7 +1759,13 @@
         captureError: "The panorama canvas could not be captured.",
         serverError: "The server returned status {status}",
         unknownError: "Unknown error. Confirm that the Python service is still running.",
-        candidateMain: "Distinctiveness {score} · ΔE00 {delta}",
+        candidateCombined: "Combined review score {score}/100 (ranking only)",
+        candidateLocal: "Local contrast {score}/100 · {level} · surrounding ΔE00 {delta}",
+        candidateReferenceScore: "Reference novelty {score}/100 · {level} · P{percentile} · nearest-color ΔE00 {delta} · {reference}",
+        levelVeryHigh: "very high",
+        levelHigh: "high",
+        levelModerate: "moderate",
+        levelLower: "lower",
         candidateMeta: "Area {area}% · Chroma lift {chroma} · {hex}",
         candidateReference: "Reference novelty P{percentile} · nearest reference {reference}",
         analysisComplete: "Contextual color analysis complete",
@@ -1743,6 +1794,36 @@
       return "zh-CN";
     }
 
+    function renderBackendStatus() {
+      const host = el("#backendStatus");
+      const text = el("#backendStatusText");
+      host.classList.toggle("ready", Boolean(backendHealth));
+      host.classList.toggle("error", backendHealthError);
+      if (backendHealth) {
+        text.textContent = t("backendReady", {
+          version: backendHealth.version,
+          fingerprint: backendHealth.model_fingerprint || "—"
+        });
+      } else {
+        text.textContent = t(backendHealthError ? "backendError" : "backendChecking");
+      }
+    }
+
+    async function checkBackend() {
+      backendHealthError = false;
+      renderBackendStatus();
+      try {
+        const response = await fetch("/api/health", { cache: "no-store" });
+        if (!response.ok) throw new Error(String(response.status));
+        backendHealth = await response.json();
+      } catch (error) {
+        console.error(error);
+        backendHealth = null;
+        backendHealthError = true;
+      }
+      renderBackendStatus();
+    }
+
     function applyLanguage(language) {
       currentLanguage = language === "en" ? "en" : "zh-CN";
       document.documentElement.lang = currentLanguage;
@@ -1764,6 +1845,7 @@
         button.setAttribute("aria-pressed", String(active));
       });
       el("#autoButton .label").textContent = rotating ? t("pauseAuto") : t("auto");
+      renderBackendStatus();
       setPipelineStep(currentPipelineIndex);
       if (lastPayload) {
         el("#summary").textContent = localizedSummary(lastPayload);
@@ -2341,6 +2423,13 @@
       host.append(svg);
     }
 
+    function evidenceLevel(value) {
+      if (value >= 90) return t("levelVeryHigh");
+      if (value >= 70) return t("levelHigh");
+      if (value >= 40) return t("levelModerate");
+      return t("levelLower");
+    }
+
     function renderCandidates(candidates) {
       const container = el("#candidateList");
       container.replaceChildren();
@@ -2350,12 +2439,16 @@
         item.id = `candidate-${candidate.rank.replace("#", "")}`;
         item.style.animationDelay = `${Math.min(index * 65, 260)}ms`;
         item.tabIndex = 0;
+        const combinedScore = candidate.combined_review_score ?? candidate.score;
+        const localScore = candidate.local_contrast_score ?? candidate.score;
+        const referenceScore = candidate.reference_novelty_score ?? candidate.reference_percentile;
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
-            <strong>${t("localLabel")} · ${t("candidateMain", { score: candidate.score.toFixed(1), delta: candidate.delta_e.toFixed(1) })}</strong>
+            <strong>${t("candidateCombined", { score: combinedScore.toFixed(1) })}</strong>
+            <span class="evidence-local">${t("candidateLocal", { score: localScore.toFixed(1), level: evidenceLevel(localScore), delta: candidate.delta_e.toFixed(1) })}</span>
+            <span class="evidence-reference">${t("candidateReferenceScore", { score: referenceScore.toFixed(1), level: evidenceLevel(referenceScore), percentile: candidate.reference_percentile.toFixed(0), delta: candidate.reference_delta_e.toFixed(1), reference: candidate.closest_reference_hex })}</span>
             <span>${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
-            <span>${t("referenceLabel")} · ΔE00 ${candidate.reference_delta_e.toFixed(1)} · ${t("candidateReference", { percentile: candidate.reference_percentile.toFixed(0), reference: candidate.closest_reference_hex })}</span>
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
@@ -2596,6 +2689,7 @@
 
     window.panoramaState = () => ({ yaw, pitch, fov, ready, rotating, analyzing, language: currentLanguage, onboardingStep, onboardingComplete: hasCompletedOnboarding() });
     applyLanguage(preferredLanguage());
+    checkBackend();
     initPanorama();
   </script>
 </body>

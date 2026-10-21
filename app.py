@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import io
+import os
 from pathlib import Path
 
 import numpy as np
@@ -22,6 +23,13 @@ STATIC = ROOT / "static"
 REFERENCE_MODEL_PATH = ROOT / "reference_model.json"
 REFERENCE_MODEL = load_reference_model(REFERENCE_MODEL_PATH)
 MAX_UPLOAD_BYTES = 18 * 1024 * 1024
+APP_VERSION = "0.6.0"
+BUILD_SHA = (
+    os.getenv("VERCEL_GIT_COMMIT_SHA")
+    or os.getenv("GITHUB_SHA")
+    or os.getenv("COMMIT_SHA")
+    or "local"
+)
 
 app = FastAPI(
     title="Jinxi 360 Color Lens",
@@ -29,7 +37,7 @@ app = FastAPI(
         "A fixed-position 360-degree field prototype that captures a user-framed "
         "view and measures contextual color differences."
     ),
-    version="0.5.0",
+    version=APP_VERSION,
 )
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
@@ -49,7 +57,12 @@ def _candidate_records(table) -> list[dict[str, object]]:
         records.append(
             {
                 "rank": str(row["候选区域"]),
-                "score": float(row["相对色彩突出度 (0–100)"]),
+                # Keep `score` for older front ends, while exposing the three
+                # evidence channels with names that match the interface.
+                "score": float(row["综合复核分数 (0–100)"]),
+                "combined_review_score": float(row["综合复核分数 (0–100)"]),
+                "local_contrast_score": float(row["局部对比分数 (0–100)"]),
+                "reference_novelty_score": float(row["参考新颖度分数 (0–100)"]),
                 "area": float(row["画面面积 (%)"]),
                 "delta_e": float(row["局部色差 ΔE00"]),
                 "chromatic_distance": float(row["色度距离 Δab"]),
@@ -93,11 +106,22 @@ def learning() -> FileResponse:
 
 
 @app.get("/api/health")
-def health() -> dict[str, str]:
+def health() -> dict[str, object]:
     return {
         "status": "ok",
-        "version": "0.5.0",
+        "version": APP_VERSION,
+        "build_sha": BUILD_SHA[:12] if BUILD_SHA != "local" else BUILD_SHA,
         "reference_model": "ready" if REFERENCE_MODEL else "missing",
+        "model_fingerprint": REFERENCE_MODEL.get("fingerprint") if REFERENCE_MODEL else None,
+        "reference_count": REFERENCE_MODEL.get("reference_count", 0) if REFERENCE_MODEL else 0,
+        "methods": [
+            "SLIC",
+            "CIELAB",
+            "CIEDE2000",
+            "MiniBatchKMeans",
+            "leave-one-reference-out calibration",
+        ],
+        "patchcore_implemented": False,
     }
 
 

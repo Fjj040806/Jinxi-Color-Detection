@@ -264,6 +264,7 @@
     .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .research-card { padding: 20px; border-top: 1px solid var(--line); background: var(--panel); }
     .research-card h3 { margin: 0 0 9px; font-size: 18px; }
+    .research-status { display: inline-block; margin: 0 0 10px; padding: 4px 7px; border: 1px solid rgba(233,188,105,.35); border-radius: 999px; color: var(--amber); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
     .research-card p { margin: 0 0 15px; color: var(--muted); font-size: 11px; line-height: 1.6; }
     .research-card a { color: var(--jade); font-size: 11px; text-underline-offset: 3px; }
     .loading { padding: 30px; color: var(--muted); text-align: center; }
@@ -416,13 +417,13 @@
         <p data-i18n="researchCopy">我们采用了正常样本异常检测的核心思想，但当前先实现轻量、可解释的颜色记忆。当数据规模扩大后，可以用深度 patch 特征做对照实验。</p>
       </div>
       <div class="research-grid">
-        <article class="research-card"><h3>PatchCore</h3><p data-i18n="patchcoreCopy">以正常图像 patch 特征建立代表性记忆库，再用最近邻距离定位异常。</p><a href="https://github.com/amazon-science/patchcore-inspection" target="_blank" rel="noreferrer">Official repository ↗</a></article>
-        <article class="research-card"><h3>Anomalib</h3><p data-i18n="anomalibCopy">集合 PatchCore、PaDiM 等视觉异常检测方法，适合未来统一基准测试。</p><a href="https://github.com/open-edge-platform/anomalib" target="_blank" rel="noreferrer">Official repository ↗</a></article>
-        <article class="research-card"><h3>DINOv2</h3><p data-i18n="dinov2Copy">提供无需任务微调的通用视觉特征，可在更大数据集上补充物体与材质语义。</p><a href="https://github.com/facebookresearch/dinov2" target="_blank" rel="noreferrer">Official repository ↗</a></article>
+        <article class="research-card"><h3>PatchCore</h3><span class="research-status" data-i18n="notImplemented">研究先例 · 当前未实现</span><p data-i18n="patchcoreCopy">PatchCore 使用深度 patch 特征建立记忆库。本原型只借鉴其正常样本异常检测思路，并未运行 PatchCore。</p><a href="https://github.com/amazon-science/patchcore-inspection" target="_blank" rel="noreferrer">Official repository ↗</a></article>
+        <article class="research-card"><h3>Anomalib</h3><span class="research-status" data-i18n="notImplemented">研究先例 · 当前未实现</span><p data-i18n="anomalibCopy">Anomalib 汇集 PatchCore、PaDiM 等方法，可供未来统一基准测试；当前后端未导入它。</p><a href="https://github.com/open-edge-platform/anomalib" target="_blank" rel="noreferrer">Official repository ↗</a></article>
+        <article class="research-card"><h3>DINOv2</h3><span class="research-status" data-i18n="notImplemented">研究先例 · 当前未实现</span><p data-i18n="dinov2Copy">DINOv2 可在更大数据集上补充物体与材质语义；当前模型不使用它的特征。</p><a href="https://github.com/facebookresearch/dinov2" target="_blank" rel="noreferrer">Official repository ↗</a></article>
       </div>
     </section>
 
-    <footer><span>Jinxi Color Lens · Prototype 03</span><span id="fingerprint">Model fingerprint —</span></footer>
+    <footer><span>Jinxi Color Lens · Prototype 0.6</span><span id="fingerprint">Model fingerprint —</span></footer>
   </main>
 
   <script>
@@ -437,7 +438,7 @@
         memoryTitle:"模型学到的颜色记忆", memoryCopy:"色块宽度表示各原型在参考集中获得的支持度。散点图显示原型在 CIELAB 的 a*–b* 色度平面中的位置。", prototypeLabel:"参考颜色原型", calibrationLabel:"留一参考图校准", scatterCaption:"横轴为 a*（绿色—红色），纵轴为 b*（蓝色—黄色）。点越大，参考支持度越高。",
         calibrationCaption:"曲线来自留一图片比较：每张正面案例只与其余参考图学习到的记忆匹配。", inspectTitle:"亲自检查一种颜色", inspectCopy:"选择一种颜色，页面会在参考记忆中找到最接近的原型，并显示它相对于正面案例的新颖程度。这只是颜色证据，不是审美评分。", selectedColor:"选择的颜色", nearestColor:"最接近的参考色", distance:"CIEDE2000 距离", percentile:"参考新颖度百分位",
         boundaryTitle:"证据边界", boundaryCopy:"这些限制不是附注，而是模型输出的一部分。候选区域必须由人进一步解释、验证和讨论。", nextTitle:"下一步需要什么证据？", nextCopy:"扩大参考图数量并不自动等于更可靠。数据还需要覆盖不同季节、天气、设备和利益相关者。",
-        researchTitle:"开源研究路线", researchCopy:"我们采用了正常样本异常检测的核心思想，但当前先实现轻量、可解释的颜色记忆。当数据规模扩大后，可以用深度 patch 特征做对照实验。", patchcoreCopy:"以正常图像 patch 特征建立代表性记忆库，再用最近邻距离定位异常。", anomalibCopy:"集合 PatchCore、PaDiM 等视觉异常检测方法，适合未来统一基准测试。", dinov2Copy:"提供无需任务微调的通用视觉特征，可在更大数据集上补充物体与材质语义。",
+        researchTitle:"开源研究路线", researchCopy:"下面三项是研究先例与未来比较路线，不是当前依赖。当前实现只有可解释的颜色记忆、SLIC、CIELAB/CIEDE2000、MiniBatchKMeans 与留一参考图校准。", notImplemented:"研究先例 · 当前未实现", patchcoreCopy:"PatchCore 使用深度 patch 特征建立记忆库。本原型只借鉴其正常样本异常检测思路，并未运行 PatchCore。", anomalibCopy:"Anomalib 汇集 PatchCore、PaDiM 等方法，可供未来统一基准测试；当前后端未导入它。", dinov2Copy:"DINOv2 可在更大数据集上补充物体与材质语义；当前模型不使用它的特征。",
         positiveReference:"正面参考", regionsUnit:"个区域", originalLabel:"授权原图", flipAria:"翻转查看原图与色卡分析", originalPermission:"用户已确认本项目可使用和展示该无水印原图；创作者署名、拍摄时间和具体许可条款仍待补充。", modelStatus:"原型证据", formula:"融合分数 = (1 − {w}) × 局部证据 + {w} × 参考证据 + 0.08 × 二者较小值", q95:"正面参考的第95百分位距离为 ΔE00 {value}。超过该范围表示“参考集中少见”，不是“不美观”。",
         loadError:"参考模型未能载入。请确认 Python 服务正在运行。"
       },
@@ -451,7 +452,7 @@
         memoryTitle:"The learned color memory", memoryCopy:"Block width represents support for each prototype in the reference set. The scatter plot positions prototypes in the CIELAB a*–b* chromatic plane.", prototypeLabel:"Reference color prototypes", calibrationLabel:"Leave-one-reference-out calibration", scatterCaption:"The x-axis is a* (green–red); the y-axis is b* (blue–yellow). Larger points have more reference support.",
         calibrationCaption:"The curve comes from held-out comparisons: each positive example is matched only against memory learned from all remaining reference images.", inspectTitle:"Inspect a color yourself", inspectCopy:"Choose a color to find its nearest reference prototype and its novelty relative to the positive examples. This is color evidence, not an aesthetic score.", selectedColor:"Selected color", nearestColor:"Nearest reference color", distance:"CIEDE2000 distance", percentile:"Reference novelty percentile",
         boundaryTitle:"Evidence boundaries", boundaryCopy:"These limitations are part of the model output, not a footnote. Candidate regions still require human interpretation, validation, and discussion.", nextTitle:"What evidence is needed next?", nextCopy:"More images do not automatically make the system reliable. Data must also cover seasons, weather, devices, and stakeholders.",
-        researchTitle:"Open-source research path", researchCopy:"We adopted the core idea of normal-only anomaly detection while implementing a lightweight, interpretable color memory first. Deep patch features can become a comparison model after the dataset expands.", patchcoreCopy:"Builds a representative memory bank of normal patch features and localizes anomalies through nearest-neighbor distance.", anomalibCopy:"Collects visual anomaly methods such as PatchCore and PaDiM for future standardized benchmarking.", dinov2Copy:"Provides general visual features without task-specific fine-tuning and could add object and material semantics with a larger dataset.",
+        researchTitle:"Open-source research path", researchCopy:"These are research precedents and future comparison routes, not current dependencies. The implemented pipeline uses interpretable color memory, SLIC, CIELAB/CIEDE2000, MiniBatchKMeans, and leave-one-reference-out calibration.", notImplemented:"Research precedent · not implemented", patchcoreCopy:"PatchCore builds a memory bank from deep patch features. This prototype borrows the normal-only anomaly-detection idea but does not run PatchCore.", anomalibCopy:"Anomalib collects methods such as PatchCore and PaDiM for future standardized benchmarks; the current backend does not import it.", dinov2Copy:"DINOv2 could add object and material semantics with more data; the current model does not use its features.",
         positiveReference:"Positive reference", regionsUnit:"regions", originalLabel:"Permitted original", flipAria:"Flip to inspect the original and palette analysis", originalPermission:"The user confirmed permission to use and display this watermark-free image in the project; creator credit, capture time, and specific license terms still need documentation.", modelStatus:"Prototype evidence", formula:"Fusion score = (1 − {w}) × local evidence + {w} × reference evidence + 0.08 × their minimum", q95:"The 95th-percentile positive-reference distance is ΔE00 {value}. Exceeding it means “rare in this reference set,” not “unattractive.”",
         loadError:"The reference model could not be loaded. Confirm that the Python service is running."
       }

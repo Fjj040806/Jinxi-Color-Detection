@@ -11,8 +11,19 @@ def test_health():
     response = TestClient(app).get("/api/health")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
-    assert response.json()["version"] == "0.5.0"
-    assert response.json()["reference_model"] == "ready"
+    health = response.json()
+    assert health["version"] == "0.6.0"
+    assert health["reference_model"] == "ready"
+    assert health["model_fingerprint"] == "25eb239bafb2bda1"
+    assert health["reference_count"] == 13
+    assert health["patchcore_implemented"] is False
+    assert health["methods"] == [
+        "SLIC",
+        "CIELAB",
+        "CIEDE2000",
+        "MiniBatchKMeans",
+        "leave-one-reference-out calibration",
+    ]
 
 
 def test_home_contains_camera_interface():
@@ -32,6 +43,11 @@ def test_home_contains_camera_interface():
     assert 'id="onboarding"' in response.text
     assert 'id="boundaryAck"' in response.text
     assert 'id="boundaryButton"' in response.text
+    assert 'id="backendStatus"' in response.text
+    assert 'data-i18n="networkExplainer"' in response.text
+    assert "candidateCombined" in response.text
+    assert "candidateLocal" in response.text
+    assert "candidateReferenceScore" in response.text
     assert "prefers-reduced-motion" in response.text
 
 
@@ -47,6 +63,8 @@ def test_learning_page_and_reference_model_are_available():
     assert "data-full-original" in page.text
     assert "repeat(5, minmax(0, 1fr))" in page.text
     assert "rotateY(180deg)" in page.text
+    assert "Research precedent · not implemented" in page.text
+    assert "研究先例 · 当前未实现" in page.text
 
     response = client.get("/api/reference-model")
     assert response.status_code == 200
@@ -86,6 +104,11 @@ def test_analysis_returns_linked_network_masks():
     assert payload["network"]["edges"]
     assert payload["network"]["hub_id"]
     assert payload["network"]["nodes"][0]["mask"].startswith("data:image/png;base64,")
+    assert payload["candidates"]
+    first = payload["candidates"][0]
+    assert first["score"] == first["combined_review_score"]
+    assert 0 <= first["local_contrast_score"] <= 100
+    assert 0 <= first["reference_novelty_score"] <= 100
     assert payload["diagnostic_data"]["points"]
     assert payload["diagnostic_data"]["candidates"]
     assert "adjacency" in payload["method"]["network_definition"]

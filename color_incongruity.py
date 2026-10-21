@@ -230,7 +230,7 @@ def _attach_reference_evidence(
     """Fuse within-image contrast with positive-reference color novelty.
 
     The reference contribution is intentionally capped. With the current
-    three-image demonstration set, local evidence still has the larger role.
+    small demonstration set, local evidence still has the larger role.
     """
 
     local_scores = np.asarray(analysis["scores"], dtype=float).copy()
@@ -911,7 +911,11 @@ def _results_table(candidates: list[dict[str, Any]]) -> pd.DataFrame:
         rows.append(
             {
                 "候选区域": f"#{candidate['rank']}",
-                "相对色彩突出度 (0–100)": round(candidate["score"], 1),
+                "综合复核分数 (0–100)": round(candidate["score"], 1),
+                "局部对比分数 (0–100)": round(candidate["local_evidence_score"], 1),
+                "参考新颖度分数 (0–100)": round(
+                    candidate.get("reference_evidence_score", 0.0), 1
+                ),
                 "画面面积 (%)": round(candidate["area_percent"], 2),
                 "局部色差 ΔE00": round(candidate["local_delta_e"], 1),
                 "色度距离 Δab": round(candidate["chromatic_delta"], 1),

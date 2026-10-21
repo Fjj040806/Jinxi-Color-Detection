@@ -1,4 +1,19 @@
-# Validation record · Prototype 0.5
+# Validation record · Prototype 0.6
+
+## Advisor-feedback changes
+
+- Candidate cards and the API now expose local contrast, reference novelty,
+  and combined review score as three distinct quantities.
+- The local adjacency network permanently defines nodes and edges, links each
+  node to its exact photo region, and states that “hub” is not an aesthetic
+  verdict. The two network tabs now have unambiguous names.
+- Spatial-temporal labels and network labels were enlarged for presentation.
+- The 360° interaction is justified as a framing-sensitivity test. The interface
+  now warns that direction and field of view can change segments and scores.
+- The browser displays the FastAPI/Python version and model fingerprint returned
+  by `/api/health`, making the deployed analysis chain inspectable.
+- The Learning & Evidence page labels PatchCore, Anomalib, and DINOv2 as
+  research precedents that are not implemented.
 
 ## First-use and motion experience
 
@@ -53,22 +68,26 @@
 - Touch users can toggle a card by tapping. Reduced-motion preference removes
   the animated transition while preserving the two-sided content.
 
-## Field-image checks
+## Field-image check against the current model
 
-The following checks were recorded against the earlier three-reference model
-and must be repeated before being treated as current quantitative evidence:
+One exact 960 × 540 panorama-derived input is versioned at
+`evidence/lotus_yaw107_fov34.jpg` (SHA-256 `e33cacc5…e94aa72`). With model
+fingerprint `25eb239bafb2bda1`, sensitivity 84, detail 260, top-k 5, and mosaic
+cells 18, the pink lotus region appears as candidate #2:
 
-- The supplied pink-lotus image returned the lotus as candidate #1. The region
-  covered 1.91% of the frame, had local `ΔE00 = 26.2`, and reached the 100th
-  reference-novelty percentile (`ΔE00 = 21.4` from its nearest prototype).
-- A supplied fish-decoration image placed the fish regions among the leading
-  candidates and reached the 100th reference-novelty percentile.
-- A held positive-reference image produced a lower top-candidate reference
-  novelty of P79, illustrating that local and reference evidence are distinct.
+- combined review score: 80.7/100;
+- local contrast score: 92.5/100;
+- local CIEDE2000 difference: 27.8;
+- reference novelty score: 100/100;
+- reference novelty percentile: P99.8;
+- nearest-reference CIEDE2000 difference: 19.7;
+- representative color: `#9F7583`.
 
-They remain useful regression targets, but their exact scores are not claims
-about the retrained 13-reference model. They do not establish accuracy,
-cultural validity, or generalization.
+The local adjacency network contains 14 nodes and 9 retained edges at an
+adaptive threshold of ΔE00 24.0. Candidate #1—not the lotus—is the highest-degree
+hub, which demonstrates why hub degree and combined candidate ranking must not
+be treated as the same claim. The automated regression test checks these values.
+They do not establish accuracy, cultural validity, or generalization.
 
 ## Automated checks
 
@@ -84,6 +103,8 @@ cultural validity, or generalization.
 - End-to-end analysis request: HTTP 200 with overlay, mosaic, palette,
   diagnostics, ranked candidates, linked network data and masks, reference
   metrics, and claim boundary.
+- GitHub Actions installs the pinned development test dependencies and runs the
+  complete suite on every push to `main` and every pull request.
 
 ## Manual checks still recommended
 
@@ -101,3 +122,5 @@ cultural validity, or generalization.
 - Expand the demonstration set with seasonally and environmentally diverse
   evidence before interpreting results.
 - Treat all candidate regions as prompts for inspection, not aesthetic labels.
+- Run the task-based protocol in `USABILITY_TEST.md` with people who were not
+  involved in development; report results before claiming usability.

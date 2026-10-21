@@ -8,7 +8,7 @@ pinned: false
 license: mit
 ---
 
-# Jinxi 360 Color Lens · Prototype 0.5
+# Jinxi 360 Color Lens · Prototype 0.6
 
 This version adds a small-sample positive-reference color model to the existing
 360-degree field experience. A visitor frames a view, takes a virtual
@@ -28,9 +28,11 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 
 ## Demo
 
-![Jinxi Color Lens demo](media/demo.gif)
+[![Watch the Jinxi Color Lens demo on YouTube](https://img.youtube.com/vi/km2at-gR-PM/hqdefault.jpg)](https://youtu.be/km2at-gR-PM)
 
-[Download the short MP4 demo](media/demo.mp4)
+**[▶ Watch the full demo on YouTube](https://youtu.be/km2at-gR-PM)**
+
+Click the video thumbnail or the link above to play the full project walkthrough on YouTube.
 
 ## What this version supports
 
@@ -44,6 +46,8 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 - equal contribution per reference image and capped region weights so broad
   sky, wall, or water areas do not dominate the memory;
 - leave-one-reference-out calibration of the reference-novelty percentile;
+- three separately reported candidate signals: local contrast, reference
+  novelty, and a combined review score used only for ranking;
 - coordinated overlay, spatial mosaic, dominant palette, diagnostics, and
   ranked candidate views;
 - a linked color-contrast network in which nodes are exact image regions and
@@ -64,17 +68,24 @@ beautiful, ugly, culturally appropriate, authentic, or suitable for removal.
 - a cinematic motion mode with slow panorama movement, ambient light, animated
   reticle/network cues, pointer-responsive depth, staged result reveals, and
   automatic reduced-motion support.
+- a visible browser-to-Python health check that reports the deployed app version
+  and reference-model fingerprint;
+- an inspectable real-field regression frame plus automated unit, API, and
+  field-case checks in GitHub Actions.
 
 The reference contribution is deliberately capped at 35% because the current
-dataset contains only 13 user-selected images. The local detector remains the main source
-of evidence.
+dataset contains only 13 user-selected images. The local detector remains the
+main source of evidence. PatchCore, Anomalib, PaDiM, and DINOv2 are reviewed
+research precedents; none is imported or executed by this version.
 
 ## Review workflow
 
 Choose Chinese or English in the first-session evidence notice, enter the fixed
 360° observation point, frame and capture a view, then inspect the ranked
-candidates. The results distinguish local-context evidence from reference
-comparison and include a region-to-nearest-reference-color network. The diagnostics tab now renders animated SVG CIELAB scatter and feature bars
+candidates. Each card distinguishes local contrast, reference novelty, and the
+combined review score instead of presenting one ambiguous “distinctiveness”
+number. The interface also includes a region-to-nearest-reference-color network.
+The diagnostics tab renders animated SVG CIELAB scatter and feature bars
 from measured API data. Hover/focus reveals values, and reduced-motion
 preferences disable entrance animations. The interface follows shadcn/ui-style
 Tabs, Card, and button conventions in the existing native HTML stack. Network
@@ -87,6 +98,33 @@ The SDG 11.4 note connects evidence to community heritage discussion without
 claiming that the tool establishes preservation decisions or measured SDG
 impact. This version has one fixed panorama; a navigable Jinxi map requires
 verified observation coordinates and additional scenes.
+
+## Inspectable field case
+
+The repository includes `evidence/lotus_yaw107_fov34.jpg`, a fixed 960 × 540
+view derived from the public panorama. With model fingerprint
+`25eb239bafb2bda1` and the documented parameters, the pink lotus region is
+candidate #2: combined review 80.7/100, local contrast 92.5/100, local ΔE00
+27.8, reference novelty 100/100, P99.8, and nearest-reference ΔE00 19.7.
+
+This is a reproducible demonstration of two measured signals, not evidence
+that the decoration is ugly or should be removed. See `evidence/README.md` and
+`tests/test_field_regression.py` for the exact input, hash, parameters, and
+assertions.
+
+## Verification
+
+Install the development dependencies and run all automated checks:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
+The `/api/health` endpoint reports the application version, deployed build SHA
+when available, reference-model fingerprint, implemented methods, and an
+explicit `patchcore_implemented: false` field. The interface displays this
+browser → FastAPI/Python connection status next to the viewpoint metadata.
 
 ## Run on Windows
 

@@ -15,7 +15,7 @@ For each image, record at minimum:
 - who selected it as a positive case and why;
 - community disagreement or alternative interpretations.
 
-Prototype 0.5 contains the permitted, watermark-free originals together with
+Prototype 0.6 contains the permitted, watermark-free originals together with
 derived mosaics, palettes, hashes, and model statistics for 13 examples.
 
 On 2026-10-06, the original three sources were supplied again along with ten

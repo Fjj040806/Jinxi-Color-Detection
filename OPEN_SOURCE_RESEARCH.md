@@ -37,11 +37,11 @@ DINOv2 provides general-purpose self-supervised visual features. These features
 could complement color evidence with material, texture, and object-level
 signals, but they would also make the current evidence chain harder to inspect.
 
-## Why Prototype 0.3 uses a transparent color memory
+## Why Prototype 0.6 uses a transparent color memory
 
-The current evidence set has only three positive images. A deep model would add
+The current evidence set has only 13 positive images. A deep model would add
 deployment cost and apparent sophistication without solving the central data
-problem. Prototype 0.3 therefore adopts the normal-only memory-bank idea while
+problem. Prototype 0.6 therefore adopts the normal-only memory-bank idea while
 keeping every feature visible:
 
 - SLIC regions;
@@ -63,4 +63,5 @@ models.
 The implementation uses NumPy, Pillow, scikit-image, scikit-learn, SciPy,
 pandas, Matplotlib, FastAPI, Uvicorn, and python-multipart. PatchCore, PaDiM,
 Anomalib, and DINOv2 were reviewed as research precedents but are **not** copied
-or imported into Prototype 0.3.
+or imported into Prototype 0.6. The deployed `/api/health` manifest records
+`patchcore_implemented: false` so the implementation boundary is machine-readable.

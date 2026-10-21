@@ -1009,8 +1009,11 @@
     .onboarding-panel {
       position: relative;
       width: min(760px, 100%);
-      min-height: 520px;
-      overflow: hidden;
+      min-height: min(520px, calc(100dvh - 40px));
+      max-height: calc(100dvh - 40px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       border: 1px solid rgba(239,233,220,.18);
       border-radius: 28px;
       background: linear-gradient(145deg, rgba(17,31,28,.96), rgba(8,16,15,.96));
@@ -1038,6 +1041,13 @@
     .onboarding-progress { display: flex; align-items: center; gap: 7px; }
     .progress-dot { width: 22px; height: 3px; border-radius: 99px; background: rgba(239,233,220,.14); transition: width .35s ease, background .35s ease; }
     .progress-dot.active { width: 42px; background: var(--amber); }
+    @media(max-height:650px){.onboarding-step{padding-top:24px;padding-bottom:22px}}
+    .tour-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0 8px}
+    .tour-step{display:flex;gap:13px;min-width:0;padding:17px;border:1px solid rgba(239,233,220,.13);border-radius:14px;background:rgba(239,233,220,.035)}
+    .tour-number{flex-shrink:0;display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(155,197,180,.34);border-radius:10px;color:var(--jade);font:700 11px system-ui}
+    .tour-step strong{display:block;margin:1px 0 7px;color:var(--paper);font-size:13px}
+    .tour-step p{margin:0;color:rgba(239,233,220,.68);font-size:11.5px;line-height:1.65}
+    @media(max-width:650px){.tour-steps{grid-template-columns:1fr;gap:8px}.tour-step{padding:12px}.tour-step p{font-size:11px}}
     .onboarding-step { display: none; position: relative; padding: 42px 48px 38px; }
     .onboarding-step.active { display: block; animation: stepIn .46s cubic-bezier(.2,.72,.2,1) both; }
     .step-kicker { color: var(--jade); font-size: 10px; font-weight: 750; letter-spacing: .18em; text-transform: uppercase; }
@@ -1400,7 +1410,7 @@
         <div class="onboarding-brand">JINXI / COLOR LENS · 0.5</div>
         <div class="onboarding-progress" aria-label="设置进度" data-i18n-aria="onboardingProgressAria">
           <span class="progress-dot active" data-step-dot="1"></span>
-          <span class="progress-dot" data-step-dot="2"></span>
+          <span class="progress-dot" data-step-dot="2"></span><span class="progress-dot" data-step-dot="3"></span>
         </div>
       </header>
 
@@ -1419,7 +1429,19 @@
       </div>
 
       <div class="onboarding-step" data-onboarding-step="2">
-        <div class="step-kicker">02 / Evidence boundary</div>
+  <div class="step-kicker" data-i18n="tourKicker">02 / Quick tour</div>
+  <h2 data-i18n="tourTitle">60 秒学会怎么使用</h2>
+  <p class="onboarding-intro" data-i18n="tourCopy">先取景，再拍摄，最后比较证据。</p>
+  <div class="tour-steps">
+    <article class="tour-step"><span class="tour-number">01</span><div><strong data-i18n="tour1Title">拖动 360° 画面</strong><p data-i18n="tour1Copy">按住鼠标拖动或触摸滑动选择方向；滚轮或 +/− 调整视野。</p></div></article>
+    <article class="tour-step"><span class="tour-number">02</span><div><strong data-i18n="tour2Title">按下快门进行分析</strong><p data-i18n="tour2Copy">点击圆形快门，截取当前视角并分析颜色。</p></div></article>
+    <article class="tour-step"><span class="tour-number">03</span><div><strong data-i18n="tour3Title">选择区域并查看网络</strong><p data-i18n="tour3Copy">在结果中检查彩色标记和排名；点击网络节点定位照片中的区域。</p></div></article>
+    <article class="tour-step"><span class="tour-number">04</span><div><strong data-i18n="tour4Title">比较两类证据</strong><p data-i18n="tour4Copy">Local Contrast 比较邻近颜色，Reference Novelty 比较参考照片；点击评分说明了解区别。</p></div></article>
+  </div>
+  <div class="onboarding-actions"><button class="onboarding-secondary" id="tourBack" type="button" data-i18n="tourBack">← 返回语言选择</button><button class="onboarding-primary" id="tourNext" type="button" data-i18n="tourNext">下一步 · 证据边界 →</button></div>
+ </div>
+ <div class="onboarding-step" data-onboarding-step="3">
+        <div class="step-kicker" data-i18n="boundaryKicker">03 / Evidence boundary</div>
         <h2 data-i18n="boundaryWelcomeTitle">使用前，请先了解它能说明什么</h2>
         <p class="onboarding-intro" data-i18n="boundaryWelcomeCopy">本原型帮助发现值得进一步检查的色彩关系。它提供证据线索，而不是审美裁决。</p>
         <div class="boundary-grid">
@@ -1503,7 +1525,7 @@
     let backendHealth = null;
     let backendHealthError = false;
 
-    const onboardingStorageKey = "jinxi-color-lens-onboarding-v2";
+    const onboardingStorageKey = "jinxi-color-lens-onboarding-v3";
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -1554,6 +1576,12 @@
         chooseLanguageAria: "选择界面语言",
         chooseLanguageTitle: "选择你的体验语言",
         chooseLanguageCopy: "语言会应用于取景、分析结果、网络解释和产品须知。之后仍可随时切换。",
+        tourKicker:"02 / 快速入门", tourTitle:"60 秒学会怎么使用", tourCopy:"先取景，再拍摄，最后比较证据。你进入网站后会依次用到这些功能。",
+tour1Title:"拖动 360° 画面",tour1Copy:"按住鼠标拖动或触摸滑动，选择想观察的方向。滚轮或 +/− 改变视野；不能在场景中自由行走。",
+tour2Title:"按下快门进行分析",tour2Copy:"点击圆形快门（电脑上也可按空格），系统截取当前视角并分析颜色，请等待结果加载。",
+tour3Title:"选择区域并查看网络",tour3Copy:"查看彩色轮廓、Candidate Ranking，切换 Local Network 或 CIELAB。点击节点可定位照片中的区域。",
+tour4Title:"比较两类证据",tour4Copy:"Local Contrast 是与附近颜色的差异；Reference Novelty 是与有限参考照片的差异。点“ⓘ 评分说明”读通俗解释。",
+tourBack:"← 重新选择语言",tourNext:"下一步 · 了解证据边界 →",boundaryKicker:"03 / 证据边界",
         boundaryWelcomeTitle: "使用前，请先了解它能说明什么",
         boundaryWelcomeCopy: "本原型帮助发现值得进一步检查的色彩关系。它提供证据线索，而不是审美裁决。",
         boundaryCard1Title: "测量对象",
@@ -1565,7 +1593,7 @@
         boundaryCard4Title: "最终决定",
         boundaryCard4Copy: "结论需要居民、商户、规划者、维护人员和游客共同检验与修正。",
         boundaryAck: "我理解：结果是可检查的色彩证据，不是对美丑或文化价值的自动判断。",
-        onboardingBack: "← 返回语言选择",
+        onboardingBack: "← 返回教程",
         fullEvidence: "查看完整学习过程与证据 →",
         enterExperience: "理解并进入体验",
         sceneAria: "锦溪固定机位360度全景。拖动或使用方向键环视，滚轮缩放。",
@@ -1708,6 +1736,12 @@
         chooseLanguageAria: "Choose interface language",
         chooseLanguageTitle: "Choose your experience language",
         chooseLanguageCopy: "Your choice applies to framing, analysis, network explanations, and the evidence boundary. You can switch later.",
+        tourKicker:"02 / Quick tour",tourTitle:"Learn the workflow in 60 seconds",tourCopy:"Frame a view, capture it, then compare the evidence. These are the steps you will actually use.",
+tour1Title:"Explore the 360° scene",tour1Copy:"Drag or swipe to look around. Scroll or use +/− to zoom. This is a fixed viewpoint, not a walkable map.",
+tour2Title:"Capture and analyze",tour2Copy:"Press the round shutter button (or Space on a computer). The system captures the view and analyzes color regions.",
+tour3Title:"Inspect candidate regions",tour3Copy:"View the overlay and Candidate Ranking; switch to Local Network or CIELAB. Select a node to locate its image region.",
+tour4Title:"Compare the two scores",tour4Copy:"Local Contrast compares neighboring colors; Reference Novelty compares with limited reference photographs. Open “ⓘ Read scores” for plain-language explanations.",
+tourBack:"← Change language",tourNext:"Next · Evidence boundaries →",boundaryKicker:"03 / Evidence boundary",
         boundaryWelcomeTitle: "Before you begin, understand what this can show",
         boundaryWelcomeCopy: "This prototype helps locate color relationships worth inspecting. It offers evidence cues, not an aesthetic verdict.",
         boundaryCard1Title: "What it measures",
@@ -1719,7 +1753,7 @@
         boundaryCard4Title: "Who decides",
         boundaryCard4Copy: "Residents, businesses, planners, maintenance staff, and visitors should test and correct any interpretation.",
         boundaryAck: "I understand that the result is inspectable color evidence, not an automatic judgment of beauty or cultural value.",
-        onboardingBack: "← Back to language",
+        onboardingBack: "← Back to quick tour",
         fullEvidence: "View the complete learning and evidence record →",
         enterExperience: "I understand · enter",
         sceneAria: "Fixed-position 360-degree Jinxi panorama. Drag or use arrow keys to look around, and scroll to zoom.",
@@ -1933,7 +1967,7 @@
     }
 
     function setOnboardingStep(step) {
-      onboardingStep = step === 2 ? 2 : 1;
+      onboardingStep = [1,2,3].includes(step) ? step : 1;
       els("[data-onboarding-step]").forEach(node => {
         node.classList.toggle("active", Number(node.dataset.onboardingStep) === onboardingStep);
       });
@@ -1943,6 +1977,8 @@
       if (onboardingStep === 1) {
         const selected = el(`.onboarding-language[data-onboarding-language="${currentLanguage}"]`);
         window.setTimeout(() => selected?.focus({ preventScroll: true }), 80);
+      } else if (onboardingStep === 2) {
+        window.setTimeout(() => el("#tourNext")?.focus({ preventScroll: true }), 80);
       } else {
         window.setTimeout(() => el("#boundaryAck")?.focus({ preventScroll: true }), 80);
       }
@@ -2673,14 +2709,16 @@
         window.setTimeout(() => setOnboardingStep(2), reducedMotion.matches ? 0 : 140);
       });
     });
-    el("#onboardingBack").addEventListener("click", () => setOnboardingStep(1));
+    el("#tourBack").addEventListener("click", () => setOnboardingStep(1));
+    el("#tourNext").addEventListener("click", () => setOnboardingStep(3));
+    el("#onboardingBack").addEventListener("click", () => setOnboardingStep(2));
     el("#boundaryAck").addEventListener("change", event => {
       el("#enterExperience").disabled = !event.currentTarget.checked;
     });
     el("#enterExperience").addEventListener("click", () => {
       if (el("#boundaryAck").checked) closeOnboarding({ remember: true });
     });
-    el("#boundaryButton").addEventListener("click", () => openOnboarding(2));
+    el("#boundaryButton").addEventListener("click", () => openOnboarding(3));
     els(".tab-button").forEach(button => {
       button.addEventListener("click", () => selectView(button.dataset.view));
       button.addEventListener("keydown", event => {

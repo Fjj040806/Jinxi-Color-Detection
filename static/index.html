@@ -830,16 +830,45 @@
       letter-spacing: .16em;
       text-transform: uppercase;
     }
-    .inline-info{display:inline-block;position:relative;margin-left:5px;vertical-align:middle;font-size:initial;letter-spacing:normal;text-transform:none;font-weight:400}
-    .inline-info>summary{display:inline-grid;place-items:center;list-style:none;width:19px;height:19px;border:1px solid #9bc5b4;border-radius:50%;color:#b8dfce;background:#9bc5b420;font:700 12px system-ui;cursor:pointer}
-    .inline-info>summary::-webkit-details-marker{display:none}
-    .inline-info>summary:focus-visible{outline:2px solid #e9bc69;outline-offset:3px}
-    .inline-info[open]>summary{color:#e9bc69;border-color:#e9bc69}
-    .inline-info .info-popup{position:absolute;z-index:100;top:calc(100% + 8px);left:0;width:min(290px,75vw);box-sizing:border-box;padding:12px 14px;background:#1e2c29;color:#efe9dc;border:1px solid #9bc5b4;border-radius:10px;box-shadow:0 14px 32px #0009;font:400 13px/1.55 system-ui;text-align:left;white-space:normal;overflow-wrap:break-word}
-    .inline-info.info-right .info-popup{left:auto;right:0}
-    .candidate-main{min-width:0}
-    .candidate-main .metric-help-row{display:block;line-height:1.9}
-    .chart-card{overflow:visible}
+
+    /* Quiet, editorial help controls: one intentional affordance per evidence block. */
+    .inline-info { display:inline-block; position:relative; margin-left:8px; vertical-align:baseline;
+      font-family:system-ui,-apple-system,sans-serif; font-size:initial; font-weight:400; text-transform:none; letter-spacing:normal; }
+    .inline-info > summary { display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      min-width:20px; min-height:20px; padding:0 6px; box-sizing:border-box; border-radius:6px;
+      border:1px solid rgba(155,197,180,.2); background:rgba(155,197,180,.065);
+      color:rgba(190,221,207,.7); list-style:none; font:600 11px/1.3 system-ui,sans-serif;
+      cursor:pointer; transition:color .2s,border-color .2s,background .2s; }
+    .inline-info > summary::-webkit-details-marker { display:none; }
+    .inline-info > summary:hover, .inline-info[open] > summary {
+      color:#d4e7dd; background:rgba(155,197,180,.15); border-color:rgba(155,197,180,.48); }
+    .inline-info > summary:focus-visible { outline:2px solid #e9bc69; outline-offset:3px; }
+    .inline-info .info-popup { position:absolute; z-index:90; top:calc(100% + 10px); left:0;
+      width:min(330px,calc(100vw - 60px)); box-sizing:border-box; padding:16px 18px;
+      border-radius:12px; border:1px solid rgba(155,197,180,.28);
+      background:#17231f; box-shadow:0 18px 42px rgba(0,0,0,.55);
+      color:#dfdfd5; font:400 12.5px/1.7 system-ui,-apple-system,sans-serif;
+      text-align:left; white-space:normal; overflow-wrap:break-word; }
+    .inline-info .info-popup strong { color:#b8dbc9; font-weight:650; }
+    .inline-info .info-popup p { margin:0 0 10px; } 
+    .inline-info .info-popup p:last-child { margin-bottom:0; }
+    .inline-info.info-right .info-popup { left:auto; right:0; }
+    .inline-info.help-pill > summary { padding:5px 9px; border-radius:999px; font-size:10px; letter-spacing:.015em; }
+    .inline-info.help-pill .info-popup { left:auto; right:0; }
+    .candidate-main { min-width:0; }
+    .candidate-main .metric-help-row { display:block; line-height:1.5; }
+    .candidate-topline { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+    .candidate-topline > strong { min-width:0; line-height:1.55; }
+    .candidate-topline .inline-info { margin-top:0; flex-shrink:0; }
+    .chart-card { overflow:visible; }
+    .chart-card h3 .inline-info { margin-left:10px; }
+    .network-explain-bar { display:flex; justify-content:flex-end; gap:8px; padding:8px 2px 0; }
+    .network-explain-bar .inline-info { margin-left:0; }
+    @media (max-width:600px) {
+      .inline-info .info-popup { width:min(285px,calc(100vw - 40px)); padding:13px 14px; }
+      .candidate-topline { align-items:flex-start; }
+      .inline-info.help-pill > summary { font-size:10px; }
+    }
     .candidate-list { display: grid; gap: 8px; }
     .candidate {
       display: grid;
@@ -1314,7 +1343,7 @@
               <div class="network-photo"><img id="networkPhoto" alt="原始取景"><img id="networkMask" alt="当前网络节点对应区域"></div>
               <div class="network-graph"><svg id="networkGraph" viewBox="0 0 360 260" role="img" aria-label="局部色彩对比网络" data-i18n-aria="networkAria"></svg></div>
             </div>
-            <div class="network-readout" id="networkReadout"></div><div id="networkExplain"></div>
+            <div class="network-readout" id="networkReadout"></div><div class="network-explain-bar" id="networkExplain"></div>
             <div class="network-legend"><span data-i18n="networkHubLegend">对比枢纽</span><span data-i18n="networkNodeLegend">候选/语境区域</span><em data-i18n="networkEdgeLegend">连线 = 相邻且色差超过阈值</em></div>
           </div>
           <div class="result-caption" id="resultCaptionRow">
@@ -1323,7 +1352,7 @@
           </div>
 
           <section id="diagnosticPanel" class="idiom-panel" hidden></section>
-          <section id="referenceNetworkPanel" class="idiom-panel" hidden><h3 data-i18n="referenceNetworkTitle"></h3><p class="evidence-copy" data-i18n="referenceNetworkCopy"></p><div id="referenceNetworkExplain"></div><div id="evidenceNetwork"></div></section>
+          <section id="referenceNetworkPanel" class="idiom-panel" hidden><h3 data-i18n="referenceNetworkTitle"></h3><p class="evidence-copy" data-i18n="referenceNetworkCopy"></p><div class="network-explain-bar" id="referenceNetworkExplain"></div><div id="evidenceNetwork"></div></section>
           <h3 class="section-label" data-i18n="rankedCandidates">候选区域排名 · 同一画面内比较</h3>
           <div class="candidate-list" id="candidateList"></div>
 
@@ -1485,12 +1514,17 @@
     infoDefinitions.referenceNetwork=["左侧为候选颜色区域，右侧为最接近的参考色。连线表示参考颜色的匹配，并非空间相邻。","Left nodes are candidates; right nodes are nearest reference colors. Lines show reference matches, not physical adjacency."];
     infoDefinitions.referenceEdge=["ΔE00 表示候选色与参考颜色的视觉色差，线的长度没有定量含义。","ΔE00 is color difference between the candidate and reference color; line length has no quantitative meaning."];
     infoDefinitions.hub=["高亮的枢纽是局部网络中连接较多的节点，不代表颜色一定更好或更差。","A highlighted hub has more qualifying links, not greater aesthetic importance."];
-    function infoHelp(key,right=false){
+    infoDefinitions.candidateGuide=[
+      "<p><strong>综合评分</strong>：只表示建议先检查哪些区域，不代表好看或不好看。</p><p><strong>局部对比</strong>：和旁边颜色有多不同；越高，在这张照片中越显眼。ΔE00 是人眼感知色差的近似数值。</p><p><strong>参考新颖度</strong>：和有限参考照片的颜色有多不同。P98 是校准百分位，不代表锦溪全镇的稀有概率。</p><p><strong>面积与彩度</strong>：分别是照片中约占多少像素、以及颜色有多鲜艳；都不是文化或审美价值评分。</p>",
+      "<p><strong>Combined score</strong>: which regions to review first, not whether they look good or bad.</p><p><strong>Local contrast</strong>: how different the region is from its neighbors. ΔE00 approximates perceptual color difference.</p><p><strong>Reference novelty</strong>: how different the color is from the limited reference photos. P98 is a calibration percentile, not its rarity across Jinxi.</p><p><strong>Area and chroma</strong>: image coverage and color vividness, not cultural or aesthetic value.</p>"
+    ];
+    function infoHelp(key,right=false,pill=false){
       const entry=infoDefinitions[key];
       if(!entry)return "";
       const language=currentLanguage==="zh-CN"?0:1;
       const label=language===0?"查看解释":"Explain this";
-      return '<details class="inline-info'+(right?' info-right':'')+'"><summary aria-label="'+label+'" title="'+label+'">i</summary><span class="info-popup" role="note">'+entry[language]+'</span></details>';
+      const displayLabel=pill?(language===0?"ⓘ 评分说明":"ⓘ Read scores"):"i";
+      return '<details class="inline-info'+(right?' info-right':'')+(pill?' help-pill':'')+'"><summary aria-label="'+label+'" title="'+label+'">'+displayLabel+'</summary><div class="info-popup" role="note">'+entry[language]+'</div></details>';
     }
     document.addEventListener("toggle",event=>{
       const node=event.target;
@@ -2426,7 +2460,7 @@
     function renderReferenceNetwork(candidates) {
       const host = el("#evidenceNetwork");
       host.replaceChildren();
-      el("#referenceNetworkExplain").innerHTML = infoHelp("referenceNetwork") + infoHelp("referenceEdge");
+      el("#referenceNetworkExplain").innerHTML = infoHelp("referenceNetwork",true);
       if (!candidates.length) { host.textContent = t("summaryEmpty"); return; }
       const ns = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(ns, "svg");
@@ -2485,10 +2519,10 @@
         item.innerHTML = `
           <div class="candidate-rank">${candidate.rank.replace("#", "")}</div>
           <div class="candidate-main">
-            <strong class="metric-help-row">${t("candidateCombined", { score: combinedScore.toFixed(1) })}${infoHelp("combined")}</strong>
-            <span class="evidence-local metric-help-row">${t("candidateLocal", { score: localScore.toFixed(1), level: evidenceLevel(localScore), delta: candidate.delta_e.toFixed(1) })}${infoHelp("local")}${infoHelp("delta")}</span>
-            <span class="evidence-reference metric-help-row">${t("candidateReferenceScore", { score: referenceScore.toFixed(1), level: evidenceLevel(referenceScore), percentile: candidate.reference_percentile.toFixed(0), delta: candidate.reference_delta_e.toFixed(1), reference: candidate.closest_reference_hex })}${infoHelp("reference")}${infoHelp("percentile")}</span>
-            <span class="metric-help-row">${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}${infoHelp("area")}${infoHelp("chroma")}</span>
+            <div class="candidate-topline"><strong>${t("candidateCombined", { score: combinedScore.toFixed(1) })}</strong>${infoHelp("candidateGuide",true,true)}</div>
+            <span class="evidence-local metric-help-row">${t("candidateLocal", { score: localScore.toFixed(1), level: evidenceLevel(localScore), delta: candidate.delta_e.toFixed(1) })}</span>
+            <span class="evidence-reference metric-help-row">${t("candidateReferenceScore", { score: referenceScore.toFixed(1), level: evidenceLevel(referenceScore), percentile: candidate.reference_percentile.toFixed(0), delta: candidate.reference_delta_e.toFixed(1), reference: candidate.closest_reference_hex })}</span>
+            <span class="metric-help-row">${t("candidateMeta", { area: candidate.area.toFixed(2), chroma: candidate.chroma_lift.toFixed(1), hex: candidate.hex })}</span>
           </div>
           <span class="candidate-swatch" style="background:${candidate.hex}" title="${candidate.hex}"></span>
         `;
@@ -2563,7 +2597,7 @@
       const svg = el("#networkGraph");
       svg.replaceChildren();
       el("#networkPhoto").src = capturedUrl;
-      el("#networkExplain").innerHTML = infoHelp("network") + infoHelp("networkEdge") + infoHelp("hub");
+      el("#networkExplain").innerHTML = infoHelp("network",true);
       if (!network?.nodes?.length) {
         el("#networkReadout").textContent = t("networkEmpty");
         return;
